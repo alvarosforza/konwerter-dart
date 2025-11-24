@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Piniu">
+	<meta name="theme-color" content="#7952b3">
+    <title>Konwerter KPLD</title>
+	
+	<link rel="apple-touch-icon" sizes="57x57" href="https://dart.org.pl/assets/img/apple-icon-57x57.png">
+	<link rel="apple-touch-icon" sizes="60x60" href="https://dart.org.pl/assets/img/apple-icon-60x60.png">
+	<link rel="apple-touch-icon" sizes="72x72" href="https://dart.org.pl/assets/img/apple-icon-72x72.png">
+	<link rel="apple-touch-icon" sizes="76x76" href="https://dart.org.pl/assets/img/apple-icon-76x76.png">
+	<link rel="apple-touch-icon" sizes="114x114" href="https://dart.org.pl/assets/img/apple-icon-114x114.png">
+	<link rel="apple-touch-icon" sizes="120x120" href="https://dart.org.pl/assets/img/apple-icon-120x120.png">
+	<link rel="apple-touch-icon" sizes="144x144" href="https://dart.org.pl/assets/img/apple-icon-144x144.png">
+	<link rel="apple-touch-icon" sizes="152x152" href="https://dart.org.pl/assets/img/apple-icon-152x152.png">
+	<link rel="apple-touch-icon" sizes="180x180" href="https://dart.org.pl/assets/img/apple-icon-180x180.png">
+	<link rel="icon" type="image/png" sizes="192x192" href="https://dart.org.pl/assets/img/android-icon-192x192.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="https://dart.org.pl/assets/img/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="96x96" href="https://dart.org.pl/assets/img/favicon-96x96.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="https://dart.org.pl/assets/img/favicon-16x16.png">
+	<link rel="manifest" href="https://dart.org.pl/assets/img/manifest.json">
+
+	<link href="konwerter_pliki/bootstrap.min.css" rel="stylesheet">
+	
+	<script src="konwerter_pliki/jquery-3.6.0.min.js"></script>
+	
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+    </style>
+	<script>
+		$(document).ready(function(){
+			$('.wynik').mask('0:0');
+			$('.date').datepicker();
+		});
+	</script>
+
+  </head>
+  <body class="bg-light">
+    
+<div class="container">
+  <main>
+    <div class="py-3 text-center">
+      <img class="d-block mx-auto mb-4" src="konwerter_pliki/kpld.png" alt="" width="100" height="100">
+      <h2><b>Konwerter KPLD</b></h2>
+	  <hr class="my-4">
+    </div>
+
+    <div class="row">
+     
+      
+        
+         <form action="convert.php" target="_blank" method="post" class="needs-validation" novalidate=""> 
+          
+		  <div class="row g-3">
+		  <div class="col-6">
+              <h4 class="mb-3">Kolejka:</h4>
+              <input type="text" class="form-control" id="kolejka" name="kolejka" required="">
+              <div class="invalid-feedback">
+                Pole wymagane.
+              </div>
+            </div>
+			<div class="col-6">
+              <h4 class="mb-3">Data:</h4>
+              <input type="date" class="form-control" id="date" name="date" required="">
+              <div class="invalid-feedback">
+                Pole wymagane.
+              </div>
+            </div>
+		  <h4 class="mb-3">Mecz pomiędzy:</h4>
+            <div class="col-sm-6">
+              <input type="text" class="form-control" id="gospodarz" name="gospodarz" placeholder="Gospodarz" required="">
+              <div class="invalid-feedback">
+                Pole wymagane.
+              </div>
+            </div>
+
+            <div class="col-sm-6">
+              <input type="text" class="form-control" id="gosc" name="gosc" placeholder="Gość" required="">
+              <div class="invalid-feedback">
+                Pole wymagane.
+              </div>
+            </div>
+
+					<h4 class="mb-3  mt-5 btn btn-success text-white">Składy:</h4>
+            
+
+					 <div class="col-6">
+					  <input type="text" class="form-control" id="h1" name="h1" placeholder="H1" required="">
+					  <div class="invalid-feedback">
+						Pole wymagane.
+					  </div>
+					</div>
+					<div class="col-6">
+					  <input type="text" class="form-control" id="g1" name="g1" placeholder="G1" required="">
+					  <div class="invalid-feedback">
+						Pole wymagane.
+					  </div>
+					</div>
+					
+					<div class="col-6">
+					  <input type="text" class="form-control" id="h2" name="h2" placeholder="H2" required="">
+					  <div class="invalid-feedback">
+						Pole wymagane.
+					  </div>
+					</div>
+					<div class="col-6">
+					  <input type="text" class="form-control" id="g2" name="g2" placeholder="G2" required="">
+					  <div class="invalid-feedback">
+						Pole wymagane.
+					  </div>
+					</div>
+					
+					<div class="col-6">
+					  <input type="text" class="form-control" id="h3" name="h3" placeholder="H3" required="">
+					  <div class="invalid-feedback">
+						Pole wymagane.
+					  </div>
+					</div>
+					<div class="col-6">
+					  <input type="text" class="form-control" id="g3" name="g3" placeholder="G3" required="">
+					  <div class="invalid-feedback">
+						Pole wymagane.
+					  </div>
+					</div>
+					
+					<div class="col-6">
+					  <input type="text" class="form-control" id="h4" name="h4" placeholder="H4" required="">
+					  <div class="invalid-feedback">
+						Pole wymagane.
+					  </div>
+					</div>
+					<div class="col-6">
+					  <input type="text" class="form-control" id="g4" name="g4" placeholder="G4" required="">
+					  <div class="invalid-feedback">
+						Pole wymagane.
+					  </div>
+					</div>
+					
+					<div class="col-6">
+					  <input type="text" class="form-control" id="hr1" name="hr1" placeholder="HR1">
+					  
+					</div>
+					<div class="col-6">
+					  <input type="text" class="form-control" id="gr1" name="gr1" placeholder="GR1">
+					  
+					</div>
+					
+					<div class="col-6">
+					  <input type="text" class="form-control" id="hr2" name="hr2" placeholder="HR2">
+					  
+					</div>
+					<div class="col-6">
+					  <input type="text" class="form-control" id="gr2" name="gr2" placeholder="GR2">
+					  
+					</div>
+					
+					<div class="col-6">
+					  <input type="text" class="form-control" id="hr3" name="hr3" placeholder="HR3">
+					  
+					</div>
+					<div class="col-6">
+					  <input type="text" class="form-control" id="gr3" name="gr3" placeholder="GR3">
+					  
+					</div>
+					
+					<div class="col-6">
+					  <input type="text" class="form-control" id="hr4" name="hr4" placeholder="HR4">
+					  
+					</div>
+					<div class="col-6">
+					  <input type="text" class="form-control" id="gr4" name="gr4" placeholder="GR4">
+					  
+					</div>
+					
+					
+			<h4 class="mb-3  mt-5 btn btn-success text-white">Przebieg meczu:</h4>		
+
+    </div>
+	
+	<!-- ///////////////////////////// przebieg meczu  /////////////////////////////////////////// -->
+	
+	<div class="row g-3 py-2">
+			<div class="col-4">
+				<select class="form-select btn-info" id="s1gospodarz" name="s1[gospodarz]">
+				  <option value="h1" selected="selected">H1</option>
+				  <option value="h2">H2</option>
+				  <option value="h3">H3</option>
+				  <option value="h4">H4</option>
+				  <option value="hr1">HR1</option>
+				  <option value="hr2">HR2</option>
+				  <option value="hr3">HR3</option>
+				  <option value="hr4">HR4</option> 
+				</select>
+				</div>
+				<div class="col-4">
+					<input type="text" class="form-control wynik text-center" placeholder="0:0" id="s1wynik" name="s1[wynik]" required="" maxlength="3">
+				</div>
+			<div class="col-4">
+				<select class="form-select btn-warning" id="s1gosc" name="s1[gosc]">
+				  <option value="g1" selected="selected">G1</option>
+				  <option value="g2">G2</option>
+				  <option value="g3">G3</option>
+				  <option value="g4">G4</option>
+				  <option value="gr1">GR1</option>
+				  <option value="gr2">GR2</option>
+				  <option value="gr3">GR3</option>
+				  <option value="gr4">GR4</option> 
+
+				</select>
+				</div>
+	</div>
+	<div class="row g-3 py-2">
+			<div class="col-4">
+				<select class="form-select btn-info" id="s2gospodarz" name="s2[gospodarz]">
+				  <option value="h1">H1</option>
+				  <option value="h2" selected="selected">H2</option>
+				  <option value="h3">H3</option>
+				  <option value="h4">H4</option>
+				  <option value="hr1">HR1</option>
+				  <option value="hr2">HR2</option>
+				  <option value="hr3">HR3</option>
+				  <option value="hr4">HR4</option> 
+				</select>
+				</div>
+				<div class="col-4">
+					<input type="text" class="form-control wynik text-center" placeholder="0:0" id="s2wynik" name="s2[wynik]" required="" maxlength="3">
+				</div>
+			<div class="col-4">
+				<select class="form-select btn-warning" id="s2gosc" name="s2[gosc]">
+				  <option value="g1">G1</option>
+				  <option value="g2" selected="selected">G2</option>
+				  <option value="g3">G3</option>
+				  <option value="g4">G4</option>
+				  <option value="gr1">GR1</option>
+				  <option value="gr2">GR2</option>
+				  <option value="gr3">GR3</option>
+				  <option value="gr4">GR4</option> 
+				</select>
+				</div>
+	</div>
+	<div class="row g-3 py-2">
+			<div class="col-4">
+				<select class="form-select btn-info" id="s3gospodarz" name="s3[gospodarz]">
+				  <option value="h1">H1</option>
+				  <option value="h2">H2</option>
+				  <option value="h3" selected="selected">H3</option>
+				  <option value="h4">H4</option>
+				  <option value="hr1">HR1</option>
+				  <option value="hr2">HR2</option>
+				  <option value="hr3">HR3</option>
+				  <option value="hr4">HR4</option> 
+				</select>
+				</div>
+				<div class="col-4">
+					<input type="text" class="form-control wynik text-center" placeholder="0:0" id="s3wynik" name="s3[wynik]" required="" maxlength="3">
+				</div>
+			<div class="col-4">
+				<select class="form-select btn-warning" id="s3gosc" name="s3[gosc]">
+				  <option value="g1">G1</option>
+				  <option value="g2">G2</option>
+				  <option value="g3">G3</option>
+				  <option value="g4" selected="selected">G4</option>
+				  <option value="gr1">GR1</option>
+				  <option value="gr2">GR2</option>
+				  <option value="gr3">GR3</option>
+				  <option value="gr4">GR4</option> 
+				</select>
+				</div>
+	</div>
+	<div class="row g-3 py-2">
+			<div class="col-4">
+				<select class="form-select btn-info" id="s4gospodarz" name="s4[gospodarz]">
+				  <option value="h1">H1</option>
+				  <option value="h2">H2</option>
+				  <option value="h3">H3</option>
+				  <option value="h4" selected="selected">H4</option>
+				  <option value="hr1">HR1</option>
+				  <option value="hr2">HR2</option>
+				  <option value="hr3">HR3</option>
+				  <option value="hr4">HR4</option> 
+				</select>
+				</div>
+				<div class="col-4">
+					<input type="text" class="form-control wynik text-center" placeholder="0:0" id="s4wynik" name="s4[wynik]" required="" maxlength="3">
+				</div>
+			<div class="col-4">
+				<select class="form-select btn-warning" id="s4gosc" name="s4[gosc]">
+				  <option value="g1">G1</option>
+				  <option value="g2">G2</option>
+				  <option value="g3" selected="selected">G3</option>
+				  <option value="g4">G4</option>
+				  <option value="gr1">GR1</option>
+				  <option value="gr2">GR2</option>
+				  <option value="gr3">GR3</option>
+				  <option value="gr4">GR4</option> 
+				</select>
+				</div>
+	</div>
+	
+	
+	<!-- ///////////////////////////////  deble ///////////////////////////////////////////// -->
+	
+	
+	<div class="row g-3 py-2">
+			<div class="col-2">
+				<select class="form-select btn-info" id="d1gospodarz1" name="d1[gospodarz1]">
+				  <option value="h1" selected="selected">H1</option>
+				  <option value="h2">H2</option>
+				  <option value="h3">H3</option>
+				  <option value="h4">H4</option>
+				  <option value="hr1">HR1</option>
+				  <option value="hr2">HR2</option>
+				  <option value="hr3">HR3</option>
+				  <option value="hr4">HR4</option> 
+				</select>
+				</div>
+				<div class="col-2">
+				<select class="form-select btn-info" id="d1gospodarz2" name="d1[gospodarz2]">
+				  <option value="h1">H1</option>
+				  <option value="h2" selected="selected">H2</option>
+				  <option value="h3">H3</option>
+				  <option value="h4">H4</option>
+				  <option value="hr1">HR1</option>
+				  <option value="hr2">HR2</option>
+				  <option value="hr3">HR3</option>
+				  <option value="hr4">HR4</option> 
+
+				</select>
+				</div>
+				<div class="col-4">
+					<input type="text" class="form-control wynik text-center" placeholder="0:0" id="d1wynik" name="d1[wynik]" required="" maxlength="3">
+				</div>
+			<div class="col-2">
+				<select class="form-select btn-warning" id="d1gosc1" name="d1[gosc1]">
+				  <option value="g1">G1</option>
+				  <option value="g2">G2</option>
+				  <option value="g3" selected="selected">G3</option>
+				  <option value="g4">G4</option>
+				  <option value="gr1">GR1</option>
+				  <option value="gr2">GR2</option>
+				  <option value="gr3">GR3</option>
+				  <option value="gr4">GR4</option> 
+				</select>
+				</div>
+				<div class="col-2">
+				<select class="form-select btn-warning" id="d1gosc2" name="d1[gosc2]">
+				  <option value="g1">G1</option>
+				  <option value="g2">G2</option>
+				  <option value="g3">G3</option>
+				  <option value="g4" selected="selected">G4</option>
+				  <option value="gr1">GR1</option>
+				  <option value="gr2">GR2</option>
+				  <option value="gr3">GR3</option>
+				  <option value="gr4">GR4</option>
+				</select>
+				</div>
+	</div>
+	<div class="row g-3 py-2">
+			<div class="col-2">
+				<select class="form-select btn-info" id="d2gospodarz1" name="d2[gospodarz1]">
+				  <option value="h1">H1</option>
+				  <option value="h2">H2</option>
+				  <option value="h3" selected="selected">H3</option>
+				  <option value="h4">H4</option>
+				  <option value="hr1">HR1</option>
+				  <option value="hr2">HR2</option>
+				  <option value="hr3">HR3</option>
+				  <option value="hr4">HR4</option> 
+				</select>
+				</div>
+				<div class="col-2">
+				<select class="form-select btn-info" id="d2gospodarz2" name="d2[gospodarz2]">
+				  <option value="h1">H1</option>
+				  <option value="h2">H2</option>
+				  <option value="h3">H3</option>
+				  <option value="h4" selected="selected">H4</option>
+				  <option value="hr1">HR1</option>
+				  <option value="hr2">HR2</option>
+				  <option value="hr3">HR3</option>
+				  <option value="hr4">HR4</option> 
+				</select>
+				</div>
+				<div class="col-4">
+					<input type="text" class="form-control wynik text-center" placeholder="0:0" id="d2wynik" name="d2[wynik]" required="" maxlength="3">
+				</div>
+			<div class="col-2">
+				<select class="form-select btn-warning" id="d2gosc1" name="d2[gosc1]">
+				  <option value="g1" selected="selected">G1</option>
+				  <option value="g2">G2</option>
+				  <option value="g3">G3</option>
+				  <option value="g4">G4</option>
+				  <option value="gr1">GR1</option>
+				  <option value="gr2">GR2</option>
+				  <option value="gr3">GR3</option>
+				  <option value="gr4">GR4</option> 
+
+				</select>
+				</div>
+				<div class="col-2">
+				<select class="form-select btn-warning" id="d2gosc2" name="d2[gosc2]">
+				  <option value="g1">G1</option>
+				  <option value="g2" selected="selected">G2</option>
+				  <option value="g3">G3</option>
+				  <option value="g4">G4</option>
+				  <option value="gr1">GR1</option>
+				  <option value="gr2">GR2</option>
+				  <option value="gr3">GR3</option>
+				  <option value="gr4">GR4</option> 
+				</select>
+				</div>
+	</div>
+	<div class="row g-3 py-2">
+			<div class="col-2">
+				<select class="form-select btn-info" id="d3gospodarz1" name="d3[gospodarz1]">
+				  <option value="h1" selected="selected">H1</option>
+				  <option value="h2">H2</option>
+				  <option value="h3">H3</option>
+				  <option value="h4">H4</option>
+				  <option value="hr1">HR1</option>
+				  <option value="hr2">HR2</option>
+				  <option value="hr3">HR3</option>
+				  <option value="hr4">HR4</option> 
+				</select>
+				</div>
+				<div class="col-2">
+				<select class="form-select btn-info" id="d3gospodarz2" name="d3[gospodarz2]">
+				  <option value="h1">H1</option>
+				  <option value="h2">H2</option>
+				  <option value="h3" selected="selected">H3</option>
+				  <option value="h4">H4</option>
+				  <option value="hr1">HR1</option>
+				  <option value="hr2">HR2</option>
+				  <option value="hr3">HR3</option>
+				  <option value="hr4">HR4</option> 
+				</select>
+				</div>
+				<div class="col-4">
+					<input type="text" class="form-control wynik text-center" placeholder="0:0" id="d3wynik" name="d3[wynik]" required="" maxlength="3">
+				</div>
+			<div class="col-2">
+				<select class="form-select btn-warning" id="d3gosc1" name="d3[gosc1]">
+				  <option value="g1">G1</option>
+				  <option value="g2">G2</option>
+				  <option value="g3">G3</option>
+				  <option value="g4" selected="selected">G4</option>
+				  <option value="gr1">GR1</option>
+				  <option value="gr2">GR2</option>
+				  <option value="gr3">GR3</option>
+				  <option value="gr4">GR4</option> 
+				</select>
+				</div>
+				<div class="col-2">
+				<select class="form-select btn-warning" id="d3gosc2" name="d3[gosc2]">
+				  <option value="g1">G1</option>
+				  <option value="g2" selected="selected">G2</option>
+				  <option value="g3">G3</option>
+				  <option value="g4">G4</option>
+				  <option value="gr1">GR1</option>
+				  <option value="gr2">GR2</option>
+				  <option value="gr3">GR3</option>
+				  <option value="gr4">GR4</option> 
+				</select>
+				</div>
+	</div>
+	<div class="row g-3 py-2">
+			<div class="col-2">
+				<select class="form-select btn-info" id="d4gospodarz1" name="d4[gospodarz1]">
+				  <option value="h1">H1</option>
+				  <option value="h2" selected="selected">H2</option>
+				  <option value="h3">H3</option>
+				  <option value="h4">H4</option>
+				  <option value="hr1">HR1</option>
+				  <option value="hr2">HR2</option>
+				  <option value="hr3">HR3</option>
+				  <option value="hr4">HR4</option> 
+				</select>
+				</div>
+				<div class="col-2">
+				<select class="form-select btn-info" id="d4gospodarz2" name="d4[gospodarz2]">
+				  <option value="h1">H1</option>
+				  <option value="h2">H2</option>
+				  <option value="h3">H3</option>
+				  <option value="h4" selected="selected">H4</option>
+				  <option value="hr1">HR1</option>
+				  <option value="hr2">HR2</option>
+				  <option value="hr3">HR3</option>
+				  <option value="hr4">HR4</option> 
+				</select>
+				</div>
+				<div class="col-4">
+					<input type="text" class="form-control wynik text-center" placeholder="0:0" id="d4wynik" name="d4[wynik]" required="" maxlength="3">
+				</div>
+			<div class="col-2">
+				<select class="form-select btn-warning" id="d4gosc1" name="d4[gosc1]">
+				  <option value="g1">G1</option>
+				  <option value="g2">G2</option>
+				  <option value="g3" selected="selected">G3</option>
+				  <option value="g4">G4</option>
+				  <option value="gr1">GR1</option>
+				  <option value="gr2">GR2</option>
+				  <option value="gr3">GR3</option>
+				  <option value="gr4">GR4</option> 
+				</select>
+				</div>
+				<div class="col-2">
+				<select class="form-select btn-warning" id="d4gosc2" name="d4[gosc2]">
+				  <option value="g1" selected="selected">G1</option>
+				  <option value="g2">G2</option>
+				  <option value="g3">G3</option>
+				  <option value="g4">G4</option>
+				  <option value="gr1">GR1</option>
+				  <option value="gr2">GR2</option>
+				  <option value="gr3">GR3</option>
+				  <option value="gr4">GR4</option> 
+				</select>
+				</div>
+	</div>
+	
+	
+<!-- //////////////////////////////////////////////////////////////////////////////////////	 -->
+	
+	
+	
+	<div class="row g-3 py-2">
+			<div class="col-4">
+				<select class="form-select btn-info" id="s5gospodarz" name="s5[gospodarz]">
+				  <option value="h1" selected="selected">H1</option>
+				  <option value="h2">H2</option>
+				  <option value="h3">H3</option>
+				  <option value="h4">H4</option>
+				  <option value="hr1">HR1</option>
+				  <option value="hr2">HR2</option>
+				  <option value="hr3">HR3</option>
+				  <option value="hr4">HR4</option> 
+				</select>
+				</div>
+				<div class="col-4">
+					<input type="text" class="form-control wynik text-center" placeholder="0:0" id="s5wynik" name="s5[wynik]" required="" maxlength="3">
+				</div>
+			<div class="col-4">
+				<select class="form-select btn-warning" id="s5gosc" name="s5[gosc]">
+				  <option value="g1">G1</option>
+				  <option value="g2" selected="selected">G2</option>
+				  <option value="g3">G3</option>
+				  <option value="g4">G4</option>
+				  <option value="gr1">GR1</option>
+				  <option value="gr2">GR2</option>
+				  <option value="gr3">GR3</option>
+				  <option value="gr4">GR4</option> 
+				</select>
+				</div>
+	</div>
+	<div class="row g-3 py-2">
+			<div class="col-4">
+				<select class="form-select btn-info" id="s6gospodarz" name="s6[gospodarz]">
+				  <option value="h1">H1</option>
+				  <option value="h2" selected="selected">H2</option>
+				  <option value="h3">H3</option>
+				  <option value="h4">H4</option>
+				  <option value="hr1">HR1</option>
+				  <option value="hr2">HR2</option>
+				  <option value="hr3">HR3</option>
+				  <option value="hr4">HR4</option> 
+
+				</select>
+				</div>
+				<div class="col-4">
+					<input type="text" class="form-control wynik text-center" placeholder="0:0" id="s6wynik" name="s6[wynik]" required="" maxlength="3">
+				</div>
+			<div class="col-4">
+				<select class="form-select btn-warning" id="s6gosc" name="s6[gosc]">
+				  <option value="g1" selected="selected">G1</option>
+				  <option value="g2">G2</option>
+				  <option value="g3">G3</option>
+				  <option value="g4">G4</option>
+				  <option value="gr1">GR1</option>
+				  <option value="gr2">GR2</option>
+				  <option value="gr3">GR3</option>
+				  <option value="gr4">GR4</option> 
+
+				</select>
+				</div>
+	</div>
+	<div class="row g-3 py-2">
+			<div class="col-4">
+				<select class="form-select btn-info" id="s7gospodarz" name="s7[gospodarz]">
+				  <option value="h1">H1</option>
+				  <option value="h2">H2</option>
+				  <option value="h3" selected="selected">H3</option>
+				  <option value="h4">H4</option>
+				  <option value="hr1">HR1</option>
+				  <option value="hr2">HR2</option>
+				  <option value="hr3">HR3</option>
+				  <option value="hr4">HR4</option> 
+
+				</select>
+				</div>
+				<div class="col-4">
+					<input type="text" class="form-control wynik text-center" placeholder="0:0" id="s7wynik" name="s7[wynik]" required="" maxlength="3">
+				</div>
+			<div class="col-4">
+				<select class="form-select btn-warning" id="s7gosc" name="s7[gosc]">
+				  <option value="g1">G1</option>
+				  <option value="g2">G2</option>
+				  <option value="g3" selected="selected">G3</option>
+				  <option value="g4">G4</option>
+				  <option value="gr1">GR1</option>
+				  <option value="gr2">GR2</option>
+				  <option value="gr3">GR3</option>
+				  <option value="gr4">GR4</option> 
+
+				</select>
+				</div>
+	</div>
+	<div class="row g-3 py-2">
+			<div class="col-4">
+				<select class="form-select btn-info" id="s8gospodarz" name="s8[gospodarz]">
+				  <option value="h1">H1</option>
+				  <option value="h2">H2</option>
+				  <option value="h3">H3</option>
+				  <option value="h4" selected="selected">H4</option>
+				  <option value="hr1">HR1</option>
+				  <option value="hr2">HR2</option>
+				  <option value="hr3">HR3</option>
+				  <option value="hr4">HR4</option> 
+
+				</select>
+				</div>
+				<div class="col-4">
+					<input type="text" class="form-control wynik text-center" placeholder="0:0" id="s8wynik" name="s8[wynik]" required="" maxlength="3">
+				</div>
+			<div class="col-4">
+				<select class="form-select btn-warning" id="s8gosc" name="s8[gosc]">
+				  <option value="g1">G1</option>
+				  <option value="g2">G2</option>
+				  <option value="g3">G3</option>
+				  <option value="g4" selected="selected">G4</option>
+				  <option value="gr1">GR1</option>
+				  <option value="gr2">GR2</option>
+				  <option value="gr3">GR3</option>
+				  <option value="gr4">GR4</option> 
+
+				</select>
+			</div>
+				
+	</div>
+	
+	<!-- //////////////////////////////////////////////////////////////////////////////////// -->
+         
+    <div class="row g-3 py-2">
+			<h4 class="mb-2 mt-5 btn btn-success text-white">Osiągnięcia:</h4>
+			<h4 class="mb-2 ">Najwyższe wyniki:</h4>
+	</div>
+	
+	
+	<div class="row g-3 py-2" id="inputFormRow">
+					<div class="col-5">
+						<input type="text" name="max_zawodnik[]" class="form-control" placeholder="zawodnik" autocomplete="off">
+					</div>
+					<div class="col-6">
+						<input type="text" name="max_wynik[]" class="form-control" placeholder="wynik" autocomplete="off">
+					</div>
+                    <div class="input-group-append col-1">                
+						<button id="addRow" type="button" class="btn btn-info">+</button>
+                    </div>
+	</div>			
+	<p id="newRow" class="m-0 p-0"></p>
+						
+	
+	<script type="text/javascript">
+		// add row
+		$("#addRow").click(function () {
+			var html = '';
+			
+			html += '<div class="row g-3 py-2" id="inputFormRow">';
+			html += '<div class="col-5">';
+			html += '<input type="text" name="max_zawodnik[]" class="form-control" placeholder="zawodnik" autocomplete="off">';
+			html += '</div>';
+			html += '<div class="col-6">';
+			html += '<input type="text" name="max_wynik[]" class="form-control" placeholder="wynik" autocomplete="off">';
+			html += '</div>';
+			html += '<div class="input-group-append col-1">';
+			html += '<button id="removeRow" type="button" class="btn btn-danger">--</button>';
+			html += '</div>';
+			html += '</div>';
+			
+
+			$('#newRow').append(html);
+		});
+
+		// remove row
+		$(document).on('click', '#removeRow', function () {
+			$(this).closest('#inputFormRow').remove();
+		});
+	</script>						
+							
+
+					
+	<div class="row g-3 py-2">				
+			<h4 class="mb-2">Najszybsze lotki:</h4>
+	</div>
+	<div class="row g-3 py-2" id="inputFormRow1">
+					<div class="col-5">
+						<input type="text" name="lotka_zawodnik[]" class="form-control" placeholder="zawodnik" autocomplete="off">
+					</div>
+					<div class="col-6">
+						<input type="text" name="lotka_wynik[]" class="form-control" placeholder="lotka" autocomplete="off">
+					</div>
+                    <div class="input-group-append col-1">                
+						<button id="addRow1" type="button" class="btn btn-info">+</button>
+                    </div>
+	</div>		
+	<p id="newRow1" class="m-0 p-0"></p>
+						
+	
+	<script type="text/javascript">
+		// add row
+		$("#addRow1").click(function () {
+			var html = '';
+			
+			html += '<div class="row g-3 py-2" id="inputFormRow1">';
+			html += '<div class="col-5">';
+			html += '<input type="text" name="lotka_zawodnik[]" class="form-control" placeholder="zawodnik" autocomplete="off">';
+			html += '</div>';
+			html += '<div class="col-6">';
+			html += '<input type="text" name="lotka_wynik[]" class="form-control" placeholder="lotka" autocomplete="off">';
+			html += '</div>';
+			html += '<div class="input-group-append col-1">';
+			html += '<button id="removeRow1" type="button" class="btn btn-danger">--</button>';
+			html += '</div>';
+			html += '</div>';
+			
+
+			$('#newRow1').append(html);
+		});
+
+		// remove row
+		$(document).on('click', '#removeRow1', function () {
+			$(this).closest('#inputFormRow1').remove();
+		});
+	</script>		
+			
+			
+			
+			
+			
+			
+			
+			
+			
+	<div class="row g-3 py-2">				
+			<h4 class="mb-2">Wysokie skończenia:</h4>
+	</div>
+	<div class="row g-3 py-2" id="inputFormRow2">
+					<div class="col-5">
+						<input type="text" name="skonczenie_zawodnik[]" class="form-control" placeholder="zawodnik" autocomplete="off">
+					</div>
+					<div class="col-6">
+						<input type="text" name="skonczenie_wynik[]" class="form-control" placeholder="skończenie" autocomplete="off">
+					</div>
+                    <div class="input-group-append col-1">                
+						<button id="addRow2" type="button" class="btn btn-info">+</button>
+                    </div>
+	</div>		
+	<p id="newRow2" class="m-0 p-0"></p>
+						
+	
+	<script type="text/javascript">
+		// add row
+		$("#addRow2").click(function () {
+			var html = '';
+			
+			html += '<div class="row g-3 py-2" id="inputFormRow2">';
+			html += '<div class="col-5">';
+			html += '<input type="text" name="skonczenie_zawodnik[]" class="form-control" placeholder="zawodnik" autocomplete="off">';
+			html += '</div>';
+			html += '<div class="col-6">';
+			html += '<input type="text" name="skonczenie_wynik[]" class="form-control" placeholder="skończenie" autocomplete="off">';
+			html += '</div>';
+			html += '<div class="input-group-append col-1">';
+			html += '<button id="removeRow2" type="button" class="btn btn-danger">--</button>';
+			html += '</div>';
+			html += '</div>';
+			
+
+			$('#newRow2').append(html);
+		});
+
+		// remove row
+		$(document).on('click', '#removeRow2', function () {
+			$(this).closest('#inputFormRow2').remove();
+		});
+	</script>
+
+<div class="row g-3 py-2">				
+			<h4 class="mb-2 mt-5 btn btn-success text-white">Adnotacje:</h4>
+	</div>
+	<div class="row g-3 py-2" id="inputFormRow1">
+					<textarea class="form-control" id="adnotacje" rows="3" name="adnotacje">Dzięki za fajny mecz!</textarea>
+	</div>		
+	<p id="newRow1" class="m-0 p-0"></p>	
+
+          <hr class="mb-2 mt-5">
+
+          <button class="w-100 btn btn-danger btn-lg" type="submit">Konwertuj &gt;&gt;</button>
+        </form>
+      </div>
+   </main></div>
+  
+
+  <footer class="text-muted text-center text-small">
+    <p class="mb-2 mt-4">© 2022 KPLD</p>
+  </footer>
+
+
+	
+        <script src="konwerter_pliki/bootstrap.bundle.min.js"></script>
+    <script src="konwerter_pliki/form-validation.js"></script>
+	<script src="konwerter_pliki/jquery.mask.min.js"></script>
+	
+  
+
+</body></html>

@@ -245,4 +245,7 @@ document.getElementById("dodajGoscRezerwowy").addEventListener("click", function
   return false
 })
 });
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes

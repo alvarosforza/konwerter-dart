@@ -247,6 +247,9 @@ document.getElementById("dodajGoscRezerwowy").addEventListener("click", function
 });
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes

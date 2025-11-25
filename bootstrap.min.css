@@ -2686,6 +2686,7 @@ fieldset:disabled .btn {
   color: #fff;
   background-color: #6c757d;
   border-color: #6c757d;
+  width: 100%;
 }
 .btn-secondary:hover {
   color: #fff;
@@ -9822,5 +9823,7 @@ fieldset:disabled .btn {
   .d-print-none {
     display: none !important;
   }
-}
+
+
 /*# sourceMappingURL=bootstrap.min.css.map */
+

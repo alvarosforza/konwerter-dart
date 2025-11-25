@@ -1,5 +1,3 @@
-<<<<<<< Updated upstream
-=======
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById("formKonwerter");
 
@@ -218,6 +216,7 @@ document.addEventListener('DOMContentLoaded', () => {
       
     });
   }
+
 let h = 1
 document.getElementById("dodajHostRezerwowy").addEventListener("click", function() {
   let divHost=document.getElementById("hosty")
@@ -245,10 +244,3 @@ document.getElementById("dodajGoscRezerwowy").addEventListener("click", function
   return false
 })
 });
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes

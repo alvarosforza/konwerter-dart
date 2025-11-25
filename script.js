@@ -216,4 +216,31 @@ document.addEventListener('DOMContentLoaded', () => {
       
     });
   }
+
+let h = 1
+document.getElementById("dodajHostRezerwowy").addEventListener("click", function() {
+  let divHost=document.getElementById("hosty")
+  if (h<=4) {
+  divHost.innerHTML +=`
+  <select type="text" class="form-control" id="hr${h}" name="hr${h}" required="">
+		<option value="Host rezerwowy ${h}" selected>hr${h}</option>
+	</select>&nbsp;
+  `
+  h++
+  }
+  return false
+})
+let g = 1
+document.getElementById("dodajGoscRezerwowy").addEventListener("click", function() {
+  let divGosc=document.getElementById("goscie")
+  if (g<=4) {
+  divGosc.innerHTML +=`
+  <select type="text" class="form-control" id="gr${g}" name="gr${g}" required="">
+		<option value="Gość rezerwowy ${g}" selected>gr${g}</option>
+	</select>&nbsp;
+  `
+  g++
+  }
+  return false
+})
 });

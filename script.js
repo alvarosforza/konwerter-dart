@@ -1,9 +1,16 @@
+const druzyny = [{nazwa: "sernik", zawodnicy:["A","B","C","D"], lokal:"lodówka"},
+   {nazwa: "roztocza" , zawodnicy:["E","F","G","H"], lokal:"dywan"}, 
+   {nazwa: "pliki" , zawodnicy:["I","J","K","L"], lokal:"folder"},
+   {nazwa: "switche" , zawodnicy:["M","N","O","P"], lokal:"klawiatura"}
+  ];
+
+
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById("formKonwerter");
 
   const gospodarz = document.getElementById("gospodarz");
   const gosc = document.getElementById("gosc");
-  const liga = document.getElementById("liga");
+  const lokalizacja = document.getElementById("lokalizacja");
 
   // helper: set option values from option text content
   const setOptionValues = (selectEl) => {
@@ -15,26 +22,11 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   };
-
-  gospodarz.innerHTML = `<option selected>Happy Angels Toruń</option>
-          <option>Point Dart Team</option>
-          <option>Bad Boys Merlin</option>
-          <option>Przepompownia 3</option>
-          <option>Kaper Bullies</option>
-          <option>Bad Company London Pub</option>
-          <option>NekroMafia Parnasik</option>
-          <option>Kaper</option>
-          <option>Bull's Eye Inowrocław</option>
-          `;
-  gosc.innerHTML = `<option>Happy Angels Toruń</option>
-  <option selected>Point Dart Team</option>
-  <option>Bad Boys Merlin</option>
-  <option>Przepompownia 3</option>
-  <option>Kaper Bullies</option>
-  <option>Bad Company London Pub</option>
-  <option>NekroMafia Parnasik</option>
-  <option>Kaper</option>
-  <option>Bull's Eye Inowrocław</option>`;
+  for (let index = 0; index < druzyny.length; index++) {
+    gospodarz.innerHTML+= `<option value="${druzyny[index].nazwa}">${druzyny[index].nazwa}</option>`;
+    gosc.innerHTML+= `<option value="${druzyny[index].nazwa}">${druzyny[index].nazwa}</option>`;
+  }
+  
 
   // assign values based on visible option text for initial lists
   setOptionValues(gospodarz);
@@ -98,122 +90,93 @@ document.addEventListener('DOMContentLoaded', () => {
   // initial sync for already-populated selects
   syncSelects(gospodarz, gosc);
   syncSelects(gosc, gospodarz);
+
+  gospodarz.addEventListener('change', (event)=>{
+    event.preventDefault();
+    console.log((druzyny.find(d => d.nazwa === gospodarz.value)).lokal)
+    lokalizacja.value=(druzyny.find(d => d.nazwa === gospodarz.value)).lokal;
+  })
+const meczeAll = document.getElementById("meczeAll");
+var skladGospodarz = (druzyny.find(d => d.nazwa === gospodarz.value)).zawodnicy;
+var skladGosc = (druzyny.find(d => d.nazwa === gosc.value)).zawodnicy;
+
+
+function single(numer) {
+  const mecz = document.createElement("div");
+  mecz.id=`mecz${numer}`;
+  mecz.className="row"
+  mecz.innerHTML=`
   
-  if (liga) {
-    liga.addEventListener('change', (event) => {
-      const value = event.target ? event.target.value : liga.value;
-      switch (value) {
-        case 'Ekstraklasa':  
-          gospodarz.innerHTML = `<option selected>Happy Angels Toruń</option>
-          <option>Point Dart Team</option>
-          <option>Bad Boys Merlin</option>
-          <option>Przepompownia 3</option>
-          <option>Kaper Bullies</option>
-          <option>Bad Company London Pub</option>
-          <option>NekroMafia Parnasik</option>
-          <option>Kaper</option>
-          <option>Bull's Eye Inowrocław</option>
-          `;
-          gosc.innerHTML = `<option>Happy Angels Toruń</option>
-          <option selected>Point Dart Team</option>
-          <option>Bad Boys Merlin</option>
-          <option>Przepompownia 3</option>
-          <option>Kaper Bullies</option>
-          <option>Bad Company London Pub</option>
-          <option>NekroMafia Parnasik</option>
-          <option>Kaper</option>
-          <option>Bull's Eye Inowrocław</option>`;
-
-          // ensure values are set after replacing innerHTML
-          setOptionValues(gospodarz);
-          setOptionValues(gosc);
-          break;
-          break;
-        case '1liga':  
-          gospodarz.innerHTML = `
-          <option selected>9Darters</option>
-          <option>London 2.1</option>
-          <option>Falcons Dart Team</option>
-          <option>Top Gun Botanic</option>
-          <option>Omega EPA</option>
-          <option>Squad</option>
-          <option>Hell's Merls</option>
-          <option>Titanic Botanic</option>
-          <option>Klub Piwnica Dart</option>
-          <option>Wariaty Antena</option>
-          <option>Point G</option>
-          <option>Capra</option>
-          <option>Crazy Irish</option>
-          `
-          gosc.innerHTML = `
-          <option>9Darters</option>
-          <option selected>London 2.1</option>
-          <option>Falcons Dart Team</option>
-          <option>Top Gun Botanic</option>
-          <option>Omega EPA</option>
-          <option>Squad</option>
-          <option>Hell's Merls</option>
-          <option>Titanic Botanic</option>
-          <option>Klub Piwnica Dart</option>
-          <option>Wariaty Antena</option>
-          <option>Point G</option>
-          <option>Capra</option>
-          <option>Crazy Irish</option>
-          `
-          break;
-        case '2liga':
-          gospodarz.innerHTML = `
-          <option selected>Lion Darts Unisław - Bydgoszcz</option>
-          <option>Pałuki Fajrant Pub</option>
-          <option>PrzyStań Murowaniec</option>
-          <option>Kaper Dart Team</option>
-          <option>Dart Max Toruń</option>
-          <option>Crew 26 Botanic</option>
-          <option>Sami Swoi</option>
-          <option>Dart Song</option>
-          <option>Egzotic Botanic</option>
-          <option>Osowa</option>
-          <option>Ananasy</option>
-          <option>180 Dream Team</option>
-          <option>Merlin Stars</option>
-          <option>Żnin Fajrant Pub</option>
-          <option>Pigeons Dart Team</option>
-          <option>Feniks London</option>
-          <option>Don't Push The Horses</option>
-          <option>Piękni i Bestie</option>
-          <option>Botanic Poza Zasięgiem</option>
-          `
-          gosc.innerHTML = `
-          <option>Lion Darts Unisław - Bydgoszcz</option>
-          <option selected>Pałuki Fajrant Pub</option>
-          <option>PrzyStań Murowaniec</option>
-          <option>Kaper Dart Team</option>
-          <option>Dart Max Toruń</option>
-          <option>Crew 26 Botanic</option>
-          <option>Sami Swoi</option>
-          <option>Dart Song</option>
-          <option>Egzotic Botanic</option>
-          <option>Osowa</option>
-          <option>Ananasy</option>
-          <option>180 Dream Team</option>
-          <option>Merlin Stars</option>
-          <option>Żnin Fajrant Pub</option>
-          <option>Pigeons Dart Team</option>
-          <option>Feniks London</option>
-          <option>Don't Push The Horses</option>
-          <option>Piękni i Bestie</option>
-          <option>Botanic Poza Zasięgięm</option>
-          `
-          break;
-      };
-    });
+  <div class="col-sm-6">
+  Mecz ${numer}:<br>
+  Zawodnik 1:
+  <select id="gracz1mecz${numer}" class="form-select">
+  </select>
+  </div>
+  <div class="col-sm-6"><br>
+  Zawodnik 2:
+  <select id="gracz2mecz${numer}" class="form-select">
+  </select>
+  <div id="mecz${numer}leg${numer}" class="col-12">
+  </div>
+  </div>
+  `;
+  meczeAll.appendChild(mecz)
+  for (let index = 0; index < skladGospodarz.length; index++) { // dodanie opcji kto grał mecz
+    console.log(skladGospodarz[index])
+    document.getElementById(`gracz1mecz${numer}`).innerHTML+= `<option value="${skladGospodarz[index]}">${skladGospodarz[index]}</option>`;
+    document.getElementById(`gracz2mecz${numer}`).innerHTML+= `<option value="${skladGosc[index]}">${skladGosc[index]}</option>`;
   }
+  let gracz1 = document.getElementById(`gracz1mecz${numer}`).value
+  let gracz2 = document.getElementById(`gracz2mecz${numer}`).value
+  // stworzenie lega
+  let leg = document.getElementById(`mecz${numer}leg${numer}`);
+  leg.innerHTML=`Leg ${numer}:<br>Kto wygrał leg? <select id="winnerMecz${numer}leg${numer}" class="form-select">
+  <option value="winner${gracz1}">${gracz1}</option>
+  <option value="winner${gracz2}">${gracz2}</option>
+  </select>
+  `;
+  // aktualizacje 
+  document.getElementById(`gracz1mecz${numer}`).addEventListener("change", (x) => {
+    x.preventDefault();
+    gracz1 = document.getElementById(`gracz1mecz${numer}`).value
+    leg.innerHTML=`Leg ${numer}:<br>Kto wygrał leg? <select id="winnerMecz${numer}leg${numer}" class="form-select">
+  <option value="winner${gracz1}">${gracz1}</option>
+  <option value="winner${gracz2}">${gracz2}</option>
+  </select>
+  `
+  })
+  document.getElementById(`gracz2mecz${numer}`).addEventListener("change", (x) => {
+    x.preventDefault();
+    gracz2 = document.getElementById(`gracz2mecz${numer}`).value
+    leg.innerHTML=`Leg${numer}:<br>Kto wygrał leg? <select id="winnerMecz${numer}leg${numer}" class="form-select">
+  <option value="winner${gracz1}">${gracz1}</option>
+  <option value="winner${gracz2}">${gracz2}</option>
+  </select>
+  `
+  })
+  
+  leg.innerHTML+=`<br>Którą lotką wygrano lega?
+  <input type="number" id="lotkaMecz${numer}Leg${numer}" min="9" step="1" required><br>
+  Ile pozostało punktów przeciwnikowi?
+  <input type="number" id="pozostaleMecz${numer}Leg${numer}" min="2" max="501" step="1" required>
+  `
+  let winner = document.getElementById(`mecz${numer}leg${numer}`).value
+  let lotka = document.getElementById(`lotkaMecz${numer}Leg${numer}`).value
+  let pozostale = document.getElementById(`pozostaleMecz${numer}Leg${numer}`).value
+  
+  meczeAll.appendChild(leg);
 
-  if ( form ) {
-    console.log("Form found");
-    form.addEventListener("submit", function(event) {
-      event.preventDefault();
-      
-    });
-  }
+}
+single(1);
+
+// function leg(numer) {
+
+// }
+
+
+form.addEventListener("submit", function(event) { // na podsumowanie
+event.preventDefault();
+
+});
 });

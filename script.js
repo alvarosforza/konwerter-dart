@@ -93,7 +93,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   gospodarz.addEventListener('change', (event)=>{
     event.preventDefault();
-    console.log((druzyny.find(d => d.nazwa === gospodarz.value)).lokal)
     lokalizacja.value=(druzyny.find(d => d.nazwa === gospodarz.value)).lokal;
   })
 const meczeAll = document.getElementById("meczeAll");
@@ -101,91 +100,194 @@ var skladGospodarz = (druzyny.find(d => d.nazwa === gospodarz.value)).zawodnicy;
 var skladGosc = (druzyny.find(d => d.nazwa === gosc.value)).zawodnicy;
 
 
-function single(numer) {
+function single(meczID) {
   const mecz = document.createElement("div");
-  mecz.id=`mecz${numer}`;
-  mecz.className="row"
-  mecz.innerHTML=`
-  
+  mecz.id = `mecz${meczID}`;
+  mecz.className = "row";
+  mecz.innerHTML = `
+  <div class="mb-3  mt-5 btn btn-mecz text-white">Mecz ${meczID}:
+  </div>
   <div class="col-sm-6">
-  Mecz ${numer}:<br>
   Zawodnik 1:
-  <select id="gracz1mecz${numer}" class="form-select">
+  <select id="gracz1mecz${meczID}" class="form-select">
   </select>
   </div>
-  <div class="col-sm-6"><br>
+  <div class="col-sm-6">
   Zawodnik 2:
-  <select id="gracz2mecz${numer}" class="form-select">
+  <select id="gracz2mecz${meczID}" class="form-select">
   </select>
-  <div id="mecz${numer}leg${numer}" class="col-12">
-  </div>
   </div>
   `;
-  meczeAll.appendChild(mecz)
+  meczeAll.appendChild(mecz);
+
+  let selectZawodnik1 = document.getElementById(`gracz1mecz${meczID}`);
+  let selectZawodnik2 = document.getElementById(`gracz2mecz${meczID}`);
   for (let index = 0; index < skladGospodarz.length; index++) { // dodanie opcji kto grał mecz
-    console.log(skladGospodarz[index])
-    document.getElementById(`gracz1mecz${numer}`).innerHTML+= `<option value="${skladGospodarz[index]}">${skladGospodarz[index]}</option>`;
-    document.getElementById(`gracz2mecz${numer}`).innerHTML+= `<option value="${skladGosc[index]}">${skladGosc[index]}</option>`;
+    selectZawodnik1.innerHTML += `<option value="${skladGospodarz[index]}">${skladGospodarz[index]}</option>`;
+    selectZawodnik2.innerHTML += `<option value="${skladGosc[index]}">${skladGosc[index]}</option>`;
   }
-  let gracz1 = document.getElementById(`gracz1mecz${numer}`).value
-  let gracz2 = document.getElementById(`gracz2mecz${numer}`).value
-  // stworzenie lega
-  let leg = document.getElementById(`mecz${numer}leg${numer}`);
-  leg.innerHTML=`Leg ${numer}:<br>Kto wygrał leg? <select id="winnerMecz${numer}leg${numer}" class="form-select">
-  <option value="winner${gracz1}">${gracz1}</option>
-  <option value="winner${gracz2}">${gracz2}</option>
-  </select>
-  `;
-  // aktualizacje 
-  document.getElementById(`gracz1mecz${numer}`).addEventListener("change", (x) => {
-    x.preventDefault();
-    gracz1 = document.getElementById(`gracz1mecz${numer}`).value
-    leg.innerHTML=`Leg ${numer}:<br>Kto wygrał leg? <select id="winnerMecz${numer}leg${numer}" class="form-select">
-  <option value="winner${gracz1}">${gracz1}</option>
-  <option value="winner${gracz2}">${gracz2}</option>
-  </select>
-  `
-  })
-  document.getElementById(`gracz2mecz${numer}`).addEventListener("change", (x) => {
-    x.preventDefault();
-    gracz2 = document.getElementById(`gracz2mecz${numer}`).value
-    leg.innerHTML=`Leg${numer}:<br>Kto wygrał leg? <select id="winnerMecz${numer}leg${numer}" class="form-select">
-  <option value="winner${gracz1}">${gracz1}</option>
-  <option value="winner${gracz2}">${gracz2}</option>
-  </select>
-  `
-  })
-  
-  leg.innerHTML+=`<br>Którą lotką wygrano lega?
-  <input type="number" id="lotkaMecz${numer}Leg${numer}" min="9" step="1" required><br>
-  Ile pozostało punktów przeciwnikowi?
-  <input type="number" id="pozostaleMecz${numer}Leg${numer}" min="2" max="501" step="1" required>
-  `
-  let winner = document.getElementById(`mecz${numer}leg${numer}`).value
-  let lotka = document.getElementById(`lotkaMecz${numer}Leg${numer}`).value
-  let pozostale = document.getElementById(`pozostaleMecz${numer}Leg${numer}`).value
-  
-  meczeAll.appendChild(leg);
 
-}
-single(1);
+  // create legs and keep their initial return values
+  let leg1Val = leg(meczID, 1); // initial captured values
+  let leg2Val = leg(meczID, 2);
+  let leg3Val; // created on demand
 
-// function leg(numer) {
+  // helper to read current values from DOM for a given leg number
+  const getLegValues = (n) => {
+    const wEl = document.getElementById(`winnerMecz${meczID}Leg${n}`);
+    const lEl = document.getElementById(`lotkaMecz${meczID}Leg${n}`);
+    const pEl = document.getElementById(`pozostaleMecz${meczID}Leg${n}`);
+    return [
+      wEl ? wEl.value : null,
+      lEl ? lEl.value : null,
+      pEl ? pEl.value : null
+    ];
+  };
 
-// }
+  // provide a function that always returns the current legs values (1..2 or 3 if exists)
+  const getAllLegs = () => {
+    const legs = [getLegValues(1), getLegValues(2)];
+    if (document.getElementById(`mecz${meczID}leg3`)) {
+      legs.push(getLegValues(3));
+    }
+    return legs;
+  };
 
+  // track match winner and update when players or winner selects change
+  let matchWinner = (document.getElementById(`winnerMecz${meczID}Leg1`) || {}).value || null;
+  const meczEl = document.getElementById(`mecz${meczID}`);
 
-form.addEventListener("submit", function(event) { // na podsumowanie
-event.preventDefault();
+  const updateMatchWinner = () => {
+    const w1El = document.getElementById(`winnerMecz${meczID}Leg1`);
+    const w2El = document.getElementById(`winnerMecz${meczID}Leg2`);
+    const w1 = w1El ? w1El.value : null;
+    const w2 = w2El ? w2El.value : null;
 
-});
-  if ( form ) {
-    console.log("Form found");
-    form.addEventListener("submit", function(event) {
-      event.preventDefault();
-      
+    if (!w1 || !w2) {
+      // can't decide yet
+      return;
+    }
+
+    // if legs 1 and 2 differ, ensure leg3 exists; otherwise remove it
+    if (w1 !== w2) {
+      if (!document.getElementById(`mecz${meczID}leg3`)) {
+        leg3Val = leg(meczID, 3); // capture new initial values and store into leg3Val
+      }
+    } else {
+      const leg3 = document.getElementById(`mecz${meczID}leg3`);
+      const leg3Name = document.getElementById(`mecz${meczID}leg3Name`);
+      if (leg3) leg3.remove();
+      if (leg3Name) leg3Name.remove();
+      leg3Val = undefined;
+    }
+
+    const w3El = document.getElementById(`winnerMecz${meczID}Leg3`);
+    matchWinner = w3El ? w3El.value : w1;
+    console.log('matchWinner', matchWinner);
+  };
+
+  // event delegation on the match element: watch player selects and winner selects
+  if (meczEl) {
+    meczEl.addEventListener('change', (ev) => {
+      const id = ev.target && ev.target.id;
+      if (!id) return;
+      const relevant =
+        id === `gracz1mecz${meczID}` ||
+        id === `gracz2mecz${meczID}` ||
+        id.startsWith(`winnerMecz${meczID}Leg`);
+      if (!relevant) return;
+      // If a player select changed, leg() has already replaced innerHTML for winners,
+      // so updateMatchWinner will handle creating/removing leg3 and recomputing matchWinner.
+      updateMatchWinner();
     });
   }
+
+  // initial check
+  updateMatchWinner();
+
+  // Return an API giving access to:
+  // - current values of legs via getAllLegs()
+  // - the initial captured-return-values from calls to leg() (could be used if you want the "initial-read")
+  return {
+    getLegs: getAllLegs,
+    getLeg: getLegValues,
+    initial: {
+      leg1: leg1Val,
+      leg2: leg2Val,
+      leg3: leg3Val
+    }
+  };
+}
+
+
+function leg(meczID, numer) {
+  let legDiv = document.createElement("div")
+  legDiv.id=`mecz${meczID}leg${numer}`
+  let legName = document.createElement("div")
+  legName.id=`mecz${meczID}leg${numer}Name`
+  legName.innerHTML=`Leg ${numer}:`
+  legName.className=`mb-3 mt-5 btn-leg text-white`
+
+  let selectZawodnik1 = document.getElementById(`gracz1mecz${meczID}`)
+  let selectZawodnik2 = document.getElementById(`gracz2mecz${meczID}`)
+  let g1 = selectZawodnik1.value
+  let g2 = selectZawodnik2.value
+  
+  // let leg = document.getElementById(`mecz${numer}leg${numer}`);
+  legDiv.innerHTML=`Kto wygrał leg? <select id="winnerMecz${meczID}Leg${numer}" class="form-select">
+  <option value="${g1}">${g1}</option>
+  <option value="${g2}">${g2}</option>
+  </select><br>Którą lotką wygrano lega?
+  <input type="number" id="lotkaMecz${meczID}Leg${numer}" min="9" step="1" required><br>
+  Ile pozostało punktów przeciwnikowi?
+  <input type="number" id="pozostaleMecz${meczID}Leg${numer}" min="2" max="501" step="1" required>
+  <br>
+  `;
+  // aktualizacje 
+  selectZawodnik1.addEventListener("change", (x) => {
+    x.preventDefault();
+    g1 = document.getElementById(`gracz1mecz${meczID}`).value
+    legDiv.innerHTML=`Kto wygrał leg? <select id="winnerMecz${meczID}Leg${numer}" class="form-select">
+      <option value="${g1}">${g1}</option>
+      <option value="${g2}">${g2}</option>
+      </select><br>Którą lotką wygrano lega?
+      <input type="number" id="lotkaMecz${meczID}Leg${numer}" min="9" step="1" required><br>
+      Ile pozostało punktów przeciwnikowi?
+      <input type="number" id="pozostaleMecz${meczID}Leg${numer}" min="2" max="501" step="1" required>
+      <br>
+      `
+  })
+  selectZawodnik2.addEventListener("change", (x) => {
+    x.preventDefault();
+    g2 = document.getElementById(`gracz2mecz${meczID}`).value
+    legDiv.innerHTML=`Kto wygrał leg? <select id="winnerMecz${meczID}Leg${numer}" class="form-select">
+      <option value="${g1}">${g1}</option>
+      <option value="${g2}">${g2}</option>
+      </select><br>Którą lotką wygrano lega?
+      <input type="number" id="lotkaMecz${meczID}Leg${numer}" min="9" step="1" required><br>
+      Ile pozostało punktów przeciwnikowi?
+      <input type="number" id="pozostaleMecz${meczID}Leg${numer}" min="2" max="501" step="1" required>
+      <br>
+      `
+  })
+
+  let mecz = document.getElementById(`mecz${meczID}`)
+  mecz.appendChild(legName)
+  mecz.appendChild(legDiv)
+  let winner = document.getElementById(`winnerMecz${meczID}Leg${numer}`).value
+  let lotka = document.getElementById(`lotkaMecz${meczID}Leg${numer}`).value
+  let pozostale = document.getElementById(`pozostaleMecz${meczID}Leg${numer}`).value
+  return [winner, lotka, pozostale]
+}
+
+single(1);
+single(2);
+single(3);
+single(4);
+
+
+
+
 
 let h = 1
 document.getElementById("dodajHostRezerwowy").addEventListener("click", function() {
@@ -213,5 +315,12 @@ document.getElementById("dodajGoscRezerwowy").addEventListener("click", function
   }
   return false
 })
-});
+if ( form ) {
+  form.addEventListener("submit", function(event) {
+    event.preventDefault();
+    
+  });
+}
 
+
+});

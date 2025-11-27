@@ -159,151 +159,55 @@
 			<h4 class="mb-2 mt-5 btn btn-success text-white">Osiągnięcia:</h4>
 			<h4 class="mb-2 ">Najwyższe wyniki:</h4>
 	</div>
-	
-	
-	<div class="row g-3 py-2" id="inputFormRow">
-					<div class="col-5">
-						<input type="text" name="max_zawodnik[]" class="form-control" placeholder="zawodnik" autocomplete="off">
-					</div>
-					<div class="col-6">
-						<input type="text" name="max_wynik[]" class="form-control" placeholder="wynik" autocomplete="off">
-					</div>
-                    <div class="input-group-append col-1">                
-						<button id="addRow" type="button" class="btn btn-info">+</button>
-                    </div>
+	<div class="row g-3 py-2" id="inputPlayerRow">
+		<div class="col-5">
+			<input type="text" name="max_zawodnik[]" class="form-control" placeholder="zawodnik" autocomplete="off">
+		</div>
+		<div class="col-6">
+			<input type="text" name="max_wynik[]" class="form-control" placeholder="wynik" autocomplete="off">
+		</div>
+        <div class="input-group-append col-1">                
+			<button id="addRow" type="button" class="btn btn-info">+</button>
+        </div>
 	</div>			
 	<p id="newRow" class="m-0 p-0"></p>
-						
-	
-	<script type="text/javascript">
-		// add row
-		$("#addRow").click(function () {
-			var html = '';
-			
-			html += '<div class="row g-3 py-2" id="inputFormRow">';
-			html += '<div class="col-5">';
-			html += '<input type="text" name="max_zawodnik[]" class="form-control" placeholder="zawodnik" autocomplete="off">';
-			html += '</div>';
-			html += '<div class="col-6">';
-			html += '<input type="text" name="max_wynik[]" class="form-control" placeholder="wynik" autocomplete="off">';
-			html += '</div>';
-			html += '<div class="input-group-append col-1">';
-			html += '<button id="removeRow" type="button" class="btn btn-danger">--</button>';
-			html += '</div>';
-			html += '</div>';
-			
 
-			$('#newRow').append(html);
-		});
-
-		// remove row
-		$(document).on('click', '#removeRow', function () {
-			$(this).closest('#inputFormRow').remove();
-		});
-	</script>						
-							
-
-					
 	<div class="row g-3 py-2">				
 			<h4 class="mb-2">Najszybsze lotki:</h4>
 	</div>
-	<div class="row g-3 py-2" id="inputFormRow1">
-					<div class="col-5">
-						<input type="text" name="lotka_zawodnik[]" class="form-control" placeholder="zawodnik" autocomplete="off">
-					</div>
-					<div class="col-6">
-						<input type="text" name="lotka_wynik[]" class="form-control" placeholder="lotka" autocomplete="off">
-					</div>
-                    <div class="input-group-append col-1">                
-						<button id="addRow1" type="button" class="btn btn-info">+</button>
-                    </div>
+	<div class="row g-3 py-2" id="inputDartRow">
+		<div class="col-5">
+			<input type="text" name="lotka_zawodnik[]" class="form-control" placeholder="zawodnik" autocomplete="off">
+		</div>
+		<div class="col-6">
+			<input type="text" name="lotka_wynik[]" class="form-control" placeholder="lotka" autocomplete="off">
+		</div>
+        <div class="input-group-append col-1">                
+			<button id="addRow1" type="button" class="btn btn-info">+</button>
+        </div>
 	</div>		
 	<p id="newRow1" class="m-0 p-0"></p>
-						
-	
-	<script type="text/javascript">
-		// add row
-		$("#addRow1").click(function () {
-			var html = '';
-			
-			html += '<div class="row g-3 py-2" id="inputFormRow1">';
-			html += '<div class="col-5">';
-			html += '<input type="text" name="lotka_zawodnik[]" class="form-control" placeholder="zawodnik" autocomplete="off">';
-			html += '</div>';
-			html += '<div class="col-6">';
-			html += '<input type="text" name="lotka_wynik[]" class="form-control" placeholder="lotka" autocomplete="off">';
-			html += '</div>';
-			html += '<div class="input-group-append col-1">';
-			html += '<button id="removeRow1" type="button" class="btn btn-danger">--</button>';
-			html += '</div>';
-			html += '</div>';
-			
-
-			$('#newRow1').append(html);
-		});
-
-		// remove row
-		$(document).on('click', '#removeRow1', function () {
-			$(this).closest('#inputFormRow1').remove();
-		});
-	</script>		
-			
-			
-			
-			
-			
-			
-			
-			
 			
 	<div class="row g-3 py-2">				
 			<h4 class="mb-2">Wysokie skończenia:</h4>
 	</div>
-	<div class="row g-3 py-2" id="inputFormRow2">
-					<div class="col-5">
-						<input type="text" name="skonczenie_zawodnik[]" class="form-control" placeholder="zawodnik" autocomplete="off">
-					</div>
-					<div class="col-6">
-						<input type="text" name="skonczenie_wynik[]" class="form-control" placeholder="skończenie" autocomplete="off">
-					</div>
-                    <div class="input-group-append col-1">                
-						<button id="addRow2" type="button" class="btn btn-info">+</button>
-                    </div>
+	<div class="row g-3 py-2" id="inputHighRow">
+		<div class="col-5">
+			<input type="text" name="skonczenie_zawodnik[]" class="form-control" placeholder="zawodnik" autocomplete="off">
+		</div>
+		<div class="col-6">
+			<input type="text" name="skonczenie_wynik[]" class="form-control" placeholder="skończenie" autocomplete="off">
+		</div>
+        <div class="input-group-append col-1">                
+			<button id="addRow2" type="button" class="btn btn-info">+</button>
+        </div>
 	</div>		
 	<p id="newRow2" class="m-0 p-0"></p>
-						
-	
-	<script type="text/javascript">
-		// add row
-		$("#addRow2").click(function () {
-			var html = '';
-			
-			html += '<div class="row g-3 py-2" id="inputFormRow2">';
-			html += '<div class="col-5">';
-			html += '<input type="text" name="skonczenie_zawodnik[]" class="form-control" placeholder="zawodnik" autocomplete="off">';
-			html += '</div>';
-			html += '<div class="col-6">';
-			html += '<input type="text" name="skonczenie_wynik[]" class="form-control" placeholder="skończenie" autocomplete="off">';
-			html += '</div>';
-			html += '<div class="input-group-append col-1">';
-			html += '<button id="removeRow2" type="button" class="btn btn-danger">--</button>';
-			html += '</div>';
-			html += '</div>';
-			
-
-			$('#newRow2').append(html);
-		});
-
-		// remove row
-		$(document).on('click', '#removeRow2', function () {
-			$(this).closest('#inputFormRow2').remove();
-		});
-	</script>
 
 <div class="row g-3 py-2">				
 			<h4 class="mb-2 mt-5 btn btn-success text-white">Adnotacje:</h4>
 	</div>
-	<div class="row g-3 py-2" id="inputFormRow1">
+	<div class="row g-3 py-2" id="inputFormRow">
 					<textarea class="form-control" id="adnotacje" rows="3" name="adnotacje">Dzięki za fajny mecz!</textarea>
 	</div>		
 	<p id="newRow1" class="m-0 p-0"></p>	
@@ -314,18 +218,14 @@
         </form>
       </div>
    </main></div>
-  
 
   <footer class="text-muted text-center text-small">
     <p class="mb-2 mt-4">© 2022 KPLD</p>
   </footer>
 
-
-	
-        <script src="bootstrap.bundle.min.js"></script>
+    <script src="bootstrap.bundle.min.js"></script>
     <script src="form-validation.js"></script>
 	<script src="jquery.mask.min.js"></script>
-	
-  
 
-</body></html>
+	</body>
+</html>

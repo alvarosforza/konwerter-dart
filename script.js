@@ -759,4 +759,120 @@ if ( form ) {
     document.body.innerHTML=raport
   });
 }
+//wynik
+    // utility to pick a recycled id or next counter
+    function getIdFromPool(pool, nextCounterRef, prefixCheckFn) {
+        // try recycled ids first (LIFO)
+        while (pool.length) {
+            const id = pool.pop();
+            // skip if still in DOM for some reason
+            if (!prefixCheckFn(id)) return id;
+        }
+        return nextCounterRef.value++;
+    }
+
+    let nextP = { value: 1 };
+    const recycledP = [];
+    const pBestRes = document.getElementById("newRow");
+    document.getElementById("addRow").addEventListener("click", function () {
+        const id = getIdFromPool(recycledP, nextP, (id) => !!document.getElementById(`inputPlayerRow${id}`));
+        const html = `
+            <div class="row g-3 py-2" id="inputPlayerRow${id}">
+                <div class="col-5">
+                    <input type="text" name="max_zawodnik[]" class="form-control" placeholder="zawodnik" autocomplete="off">
+                </div>
+                <div class="col-6">
+                    <input type="text" name="max_wynik[]" class="form-control" placeholder="wynik" autocomplete="off">
+                </div>
+                <div class="input-group-append col-1">
+                    <button id="removeRRow${id}" type="button" class="btn btn-danger">&ndash;</button>
+                </div>
+            </div>
+        `;
+        pBestRes.insertAdjacentHTML('beforeend', html);
+
+        const btn = document.getElementById(`removeRRow${id}`);
+        if (btn) btn.addEventListener("click", (e) => {
+            const row = e.currentTarget.closest('.row');
+            if (!row) return;
+            const rowId = row.id || '';
+            const match = rowId.match(/inputPlayerRow(\d+)$/);
+            if (match) {
+                const nid = Number(match[1]);
+                // avoid pushing same id multiple times
+                if (!recycledP.includes(nid)) recycledP.push(nid);
+            }
+            row.remove();
+        });
+    });
+
+    //lotki
+    let nextD = { value: 1 };
+    const recycledD = [];
+    const pBestDarts = document.getElementById("newRow1");
+    document.getElementById("addRow1").addEventListener("click", function () {
+        const id = getIdFromPool(recycledD, nextD, (id) => !!document.getElementById(`inputDartRow${id}`));
+        const html = `
+            <div class="row g-3 py-2" id="inputDartRow${id}">
+                <div class="col-5">
+                    <input type="text" name="lotka_zawodnik[]" class="form-control" placeholder="zawodnik" autocomplete="off">
+                </div>
+                <div class="col-6">
+                    <input type="text" name="lotka_wynik[]" class="form-control" placeholder="lotka" autocomplete="off">
+                </div>
+                <div class="input-group-append col-1">                
+                    <button id="removeDRow${id}" type="button" class="btn btn-danger">&ndash;</button>
+                </div>
+            </div>
+        `;
+        pBestDarts.insertAdjacentHTML('beforeend', html);
+
+        const btn = document.getElementById(`removeDRow${id}`);
+        if (btn) btn.addEventListener("click", (e) => {
+            const row = e.currentTarget.closest('.row');
+            if (!row) return;
+            const rowId = row.id || '';
+            const match = rowId.match(/inputDartRow(\d+)$/);
+            if (match) {
+                const nid = Number(match[1]);
+                if (!recycledD.includes(nid)) recycledD.push(nid);
+            }
+            row.remove();
+        });
+    });
+
+    //skonczenia
+    let nextH = { value: 1 };
+    const recycledH = [];
+    const pHighEnds = document.getElementById("newRow2");
+    document.getElementById("addRow2").addEventListener("click", function () {
+        const id = getIdFromPool(recycledH, nextH, (id) => !!document.getElementById(`inputHighRow${id}`));
+        const html = `
+            <div class="row g-3 py-2" id="inputHighRow${id}">
+                <div class="col-5">
+                    <input type="text" name="skonczenie_zawodnik[]" class="form-control" placeholder="zawodnik" autocomplete="off">
+                </div>
+                <div class="col-6">
+                    <input type="text" name="skonczenie_wynik[]" class="form-control" placeholder="skończenie" autocomplete="off">
+                </div>
+                <div class="input-group-append col-1">                
+                    <button id="removeHRow${id}" type="button" class="btn btn-danger">&ndash;</button>
+                </div>
+            </div>
+        `;
+        pHighEnds.insertAdjacentHTML('beforeend', html);
+
+        const btn = document.getElementById(`removeHRow${id}`);
+        if (btn) btn.addEventListener("click", (e) => {
+            const row = e.currentTarget.closest('.row');
+            if (!row) return;
+            const rowId = row.id || '';
+            const match = rowId.match(/inputHighRow(\d+)$/);
+            if (match) {
+                const nid = Number(match[1]);
+                if (!recycledH.includes(nid)) recycledH.push(nid);
+            }
+            row.remove();
+        });
+    });
 });

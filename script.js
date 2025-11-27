@@ -1,7 +1,7 @@
 const druzyny = [{nazwa: "sernik", zawodnicy:["A","B","C","D","A2","B2","C2","D2"], lokal:"lodówka"},
    {nazwa: "roztocza" , zawodnicy:["E","F","G","H","E2","F2","G2","H2"], lokal:"dywan"}, 
-   {nazwa: "pliki" , zawodnicy:["I","J","K","L"], lokal:"folder"},
-   {nazwa: "switche" , zawodnicy:["M","N","O","P"], lokal:"klawiatura"}
+   {nazwa: "pliki" , zawodnicy:["I","J","K","L","I2","J2","K2","L2"], lokal:"folder"},
+   {nazwa: "switche" , zawodnicy:["M","N","O","P","M2","N2","O2","P2"], lokal:"klawiatura"}
   ];
 
 
@@ -165,35 +165,25 @@ document.addEventListener('DOMContentLoaded', () => {
   observeSubs(document.getElementById('hosty'), 'host');
   observeSubs(document.getElementById('goscie'), 'guest');
 
-  // keep old variables for compatibility with existing code
-  const selectH1 = document.getElementById("h1");
-  const selectH2 = document.getElementById("h2");
-  const selectH3 = document.getElementById("h3");
-  const selectH4 = document.getElementById("h4");
-
-  const selectG1 = document.getElementById("g1");
-  const selectG2 = document.getElementById("g2");
-  const selectG3 = document.getElementById("g3");
-  const selectG4 = document.getElementById("g4");
-
   /////////////////////// jeszcze nie działa przy zmianie zawodnika w składzie, kiedy ten jest w meczu
 function single(meczID) {
   const mecz = document.createElement("div");
   mecz.id = `mecz${meczID}`;
   mecz.className = "row";
   mecz.innerHTML = `
-  <div class="mb-3  mt-5 btn btn-mecz text-white">Mecz ${meczID}:
+  <div class="mb-3  mt-5 btn btn-mecz text-white">Pojedynek ${meczID}:<br>typ: "Singiel"
   </div>
-  <div class="col-sm-6">
+  <div class="col-sm-4" style="margin:auto">
   Zawodnik 1:
   <select id="gracz1mecz${meczID}" class="form-select">
   </select>
   </div>
-  <div class="col-sm-6">
+  <div class="col-sm-4" style="margin:auto">
   Zawodnik 2:
   <select id="gracz2mecz${meczID}" class="form-select">
   </select>
   </div>
+  <div></div>
   `;
   meczeAll.appendChild(mecz);
 
@@ -349,8 +339,7 @@ function single(meczID) {
       leg3: leg3Val
     }
   };
-  }
-
+}
 
 function leg(meczID, numer) {
   let legDiv = document.createElement("div")
@@ -412,10 +401,294 @@ function leg(meczID, numer) {
   return [winner, lotka, pozostale]
 }
 
+function double(meczID) {
+  const mecz = document.createElement("div");
+  mecz.id = `mecz${meczID}`;
+  mecz.className = "row";
+  mecz.innerHTML = `
+  <div class="mb-3  mt-5 btn btn-mecz text-white">Pojedynek ${meczID}:<br>typ: "Pary - Liga"
+  </div>
+  <div class="col-sm-2" style="margin:auto">
+  Zawodnik 1:
+  <select id="gracz1mecz${meczID}" class="form-select">
+  </select>
+  </div>
+  <div class="col-sm-2" style="margin:auto">
+  Zawodnik 2:
+  <select id="gracz2mecz${meczID}" class="form-select">
+  </select>
+  </div>
+  <div class="col-sm-2" style="margin:auto">
+  Zawodnik 3:
+  <select id="gracz3mecz${meczID}" class="form-select">
+  </select>
+  </div>
+  <div class="col-sm-2" style="margin:auto">
+  Zawodnik 4:
+  <select id="gracz4mecz${meczID}" class="form-select">
+  </select>
+  </div>
+  <div></div>
+  `;
+  meczeAll.appendChild(mecz);
+
+  let selectZawodnik1 = document.getElementById(`gracz1mecz${meczID}`);
+  let selectZawodnik2 = document.getElementById(`gracz2mecz${meczID}`);
+  let selectZawodnik3 = document.getElementById(`gracz3mecz${meczID}`);
+  let selectZawodnik4 = document.getElementById(`gracz4mecz${meczID}`);
+
+  const updateMatchPlayerOptions = () => {
+    const hostChosen = getSelectsForSide('host').map(s => s.value).filter(Boolean);
+    const guestChosen = getSelectsForSide('guest').map(s => s.value).filter(Boolean);
+
+    const buildOptions = (selectEl, players, chosenList) => {
+      if (!selectEl) return;
+      const prev = selectEl.value;
+      selectEl.innerHTML = '';
+      players.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p;
+        opt.textContent = p;
+        if (!chosenList.includes(p)) opt.disabled = true;
+        if (prev && prev === p) opt.selected = true;
+        selectEl.appendChild(opt);
+      });
+      if (!selectEl.value) {
+        const firstEnabled = Array.from(selectEl.options).find(o => !o.disabled);
+        if (firstEnabled) selectEl.value = firstEnabled.value;
+      }
+    };
+
+    buildOptions(selectZawodnik1, Array.isArray(skladGospodarz) ? skladGospodarz : [], hostChosen);
+    buildOptions(selectZawodnik2, Array.isArray(skladGospodarz) ? skladGospodarz : [], hostChosen);
+    buildOptions(selectZawodnik3, Array.isArray(skladGosc) ? skladGosc : [], guestChosen);
+    buildOptions(selectZawodnik4, Array.isArray(skladGosc) ? skladGosc : [], guestChosen);
+  };
+
+  updateMatchPlayerOptions();
+
+  document.addEventListener('change', (ev) => {
+    const id = ev.target && ev.target.id;
+    if (!id) return;
+    if (/^(h|hr|g|gr)\d/.test(id) || id === 'gospodarz' || id === 'gosc') {
+      updateMatchPlayerOptions();
+    }
+  });
+
+  let leg1Val = legDouble(meczID, 1);
+  let leg2Val = legDouble(meczID, 2);
+  let leg3Val;
+
+  const getLegValues = (n) => {
+    const wEl = document.getElementById(`winnerMecz${meczID}Leg${n}`);
+    const lEl = document.getElementById(`lotkaMecz${meczID}Leg${n}`);
+    const pEl = document.getElementById(`pozostaleMecz${meczID}Leg${n}`);
+
+    const updateLegPlayerOptions = () => {
+      const hostSelects = getSelectsForSide('host');
+      const guestSelects = getSelectsForSide('guest');
+      const selectedHostPlayers = hostSelects.map(s => s.value).filter(v => v);
+      const selectedGuestPlayers = guestSelects.map(s => s.value).filter(v => v);
+
+      if (wEl) {
+        Array.from(wEl.options).forEach(opt => {
+          const val = opt.value;
+          if (Array.isArray(skladGospodarz) && skladGospodarz.includes(val)) {
+            opt.disabled = !selectedHostPlayers.includes(val);
+          } else if (Array.isArray(skladGosc) && skladGosc.includes(val)) {
+            opt.disabled = !selectedGuestPlayers.includes(val);
+          } else {
+            opt.disabled = false;
+          }
+        });
+      }
+    };
+
+    updateLegPlayerOptions();
+    return [
+      wEl ? wEl.value : null,
+      lEl ? lEl.value : null,
+      pEl ? pEl.value : null
+    ];
+  };
+
+  const getAllLegs = () => {
+    const legs = [getLegValues(1), getLegValues(2)];
+    if (document.getElementById(`mecz${meczID}leg3`)) {
+      legs.push(getLegValues(3));
+    }
+    return legs;
+  };
+
+  let matchWinner = (document.getElementById(`winnerMecz${meczID}Leg1`) || {}).value || null;
+  const meczEl = document.getElementById(`mecz${meczID}`);
+
+  const updateMatchWinner = () => {
+    const w1El = document.getElementById(`winnerMecz${meczID}Leg1`);
+    const w2El = document.getElementById(`winnerMecz${meczID}Leg2`);
+    const w1 = w1El ? w1El.value : null;
+    const w2 = w2El ? w2El.value : null;
+
+    if (!w1 || !w2) {
+      return;
+    }
+
+    if (w1 !== w2) {
+      if (!document.getElementById(`mecz${meczID}leg3`)) {
+        leg3Val = legDouble(meczID, 3);
+      }
+    } else {
+      const leg3 = document.getElementById(`mecz${meczID}leg3`);
+      const leg3Name = document.getElementById(`mecz${meczID}leg3Name`);
+      if (leg3) leg3.remove();
+      if (leg3Name) leg3Name.remove();
+      leg3Val = undefined;
+    }
+  };
+
+  if (meczEl) {
+    meczEl.addEventListener('change', (ev) => {
+      const id = ev.target && ev.target.id;
+      if (!id) return;
+      const relevant =
+        id === `gracz1mecz${meczID}` ||
+        id === `gracz2mecz${meczID}` ||
+        id === `gracz3mecz${meczID}` ||
+        id === `gracz4mecz${meczID}` ||
+        id.startsWith(`winnerMecz${meczID}Leg`);
+      if (!relevant) return;
+      if (typeof getAllLegs === 'function') getAllLegs();
+      updateMatchWinner();
+    });
+  }
+
+  updateMatchWinner();
+
+  return {
+    getLegs: getAllLegs,
+    getLeg: getLegValues,
+    initial: {
+      leg1: leg1Val,
+      leg2: leg2Val,
+      leg3: leg3Val
+    }
+  };
+}
+
+function legDouble(meczID, numer) {
+  let legDiv = document.createElement("div")
+  legDiv.id=`mecz${meczID}leg${numer}`
+  let legName = document.createElement("div")
+  legName.id=`mecz${meczID}leg${numer}Name`
+  legName.innerHTML=`Leg ${numer}:`
+  legName.className=`mb-3 mt-5 btn-leg text-white`
+
+  let selectZawodnik1 = document.getElementById(`gracz1mecz${meczID}`)
+  let selectZawodnik2 = document.getElementById(`gracz2mecz${meczID}`)
+  let selectZawodnik3 = document.getElementById(`gracz3mecz${meczID}`)
+  let selectZawodnik4 = document.getElementById(`gracz4mecz${meczID}`)
+  let g1 = selectZawodnik1.value
+  let g2 = selectZawodnik2.value
+  let g3 = selectZawodnik1.value
+  let g4 = selectZawodnik2.value
+  
+  // let leg = document.getElementById(`mecz${numer}leg${numer}`);
+  legDiv.innerHTML=`Kto wygrał leg? <select id="winnerMecz${meczID}Leg${numer}" class="form-select">
+  <option value="${g1}">${g1}</option>
+  <option value="${g2}">${g2}</option>
+  <option value="${g3}">${g3}</option>
+  <option value="${g4}">${g4}</option>
+  </select><br>Którą lotką wygrano lega?
+  <input type="number" id="lotkaMecz${meczID}Leg${numer}" min="9" step="1" required><br>
+  Ile pozostało punktów przeciwnikowi?
+  <input type="number" id="pozostaleMecz${meczID}Leg${numer}" min="2" max="501" step="1" required>
+  <br>
+  `;
+  // aktualizacje 
+  selectZawodnik1.addEventListener("change", (x) => {
+    x.preventDefault();
+    g1 = document.getElementById(`gracz1mecz${meczID}`).value
+    legDiv.innerHTML=`Kto wygrał leg? <select id="winnerMecz${meczID}Leg${numer}" class="form-select">
+      <option value="${g1}">${g1}</option>
+      <option value="${g2}">${g2}</option>
+      <option value="${g3}">${g3}</option>
+      <option value="${g4}">${g4}</option>
+      </select><br>Którą lotką wygrano lega?
+      <input type="number" id="lotkaMecz${meczID}Leg${numer}" min="9" step="1" required><br>
+      Ile pozostało punktów przeciwnikowi?
+      <input type="number" id="pozostaleMecz${meczID}Leg${numer}" min="2" max="501" step="1" required>
+      <br>
+      `
+  })
+  selectZawodnik2.addEventListener("change", (x) => {
+    x.preventDefault();
+    g2 = document.getElementById(`gracz2mecz${meczID}`).value
+    legDiv.innerHTML=`Kto wygrał leg? <select id="winnerMecz${meczID}Leg${numer}" class="form-select">
+      <option value="${g1}">${g1}</option>
+      <option value="${g2}">${g2}</option>
+      <option value="${g3}">${g3}</option>
+      <option value="${g4}">${g4}</option>
+      </select><br>Którą lotką wygrano lega?
+      <input type="number" id="lotkaMecz${meczID}Leg${numer}" min="9" step="1" required><br>
+      Ile pozostało punktów przeciwnikowi?
+      <input type="number" id="pozostaleMecz${meczID}Leg${numer}" min="2" max="501" step="1" required>
+      <br>
+      `
+  })
+  selectZawodnik3.addEventListener("change", (x) => {
+    x.preventDefault();
+    g3 = document.getElementById(`gracz3mecz${meczID}`).value
+    legDiv.innerHTML=`Kto wygrał leg? <select id="winnerMecz${meczID}Leg${numer}" class="form-select">
+      <option value="${g1}">${g1}</option>
+      <option value="${g2}">${g2}</option>
+      <option value="${g3}">${g3}</option>
+      <option value="${g4}">${g4}</option>
+      </select><br>Którą lotką wygrano lega?
+      <input type="number" id="lotkaMecz${meczID}Leg${numer}" min="9" step="1" required><br>
+      Ile pozostało punktów przeciwnikowi?
+      <input type="number" id="pozostaleMecz${meczID}Leg${numer}" min="2" max="501" step="1" required>
+      <br>
+      `
+  })
+  selectZawodnik4.addEventListener("change", (x) => {
+    x.preventDefault();
+    g4 = document.getElementById(`gracz4mecz${meczID}`).value
+    legDiv.innerHTML=`Kto wygrał leg? <select id="winnerMecz${meczID}Leg${numer}" class="form-select">
+      <option value="${g1}">${g1}</option>
+      <option value="${g2}">${g2}</option>
+      <option value="${g3}">${g3}</option>
+      <option value="${g4}">${g4}</option>
+      </select><br>Którą lotką wygrano lega?
+      <input type="number" id="lotkaMecz${meczID}Leg${numer}" min="9" step="1" required><br>
+      Ile pozostało punktów przeciwnikowi?
+      <input type="number" id="pozostaleMecz${meczID}Leg${numer}" min="2" max="501" step="1" required>
+      <br>
+      `
+  })
+
+  let mecz = document.getElementById(`mecz${meczID}`)
+  mecz.appendChild(legName)
+  mecz.appendChild(legDiv)
+  let winner = document.getElementById(`winnerMecz${meczID}Leg${numer}`).value
+  let lotka = document.getElementById(`lotkaMecz${meczID}Leg${numer}`).value
+  let pozostale = document.getElementById(`pozostaleMecz${meczID}Leg${numer}`).value
+  return [winner, lotka, pozostale]
+}
+
 single(1);
 single(2);
 single(3);
 single(4);
+
+double(5)
+double(6)
+double(7)
+double(8)
+
+single(9);
+single(10);
+single(11);
+single(12);
 
 
 
@@ -482,9 +755,8 @@ document.getElementById("dodajGoscRezerwowy").addEventListener("click", function
 if ( form ) {
   form.addEventListener("submit", function(event) {
     event.preventDefault();
-    
+    let raport = ``
+    document.body.innerHTML=raport
   });
 }
-
-
 });

@@ -2731,12 +2731,12 @@ fieldset:disabled .btn {
   color: #fff;
   background-color: #238ab9;
   border-color: #238ab9;
+  margin: auto;
 }
 .btn-leg {
   color: #fff;
   background-color: #23a2b9;
   border-color: #23a2b9;
-  display: inline-block;
   width: fit-content;
   font-weight: 400;
   line-height: 1.5;
@@ -2751,6 +2751,17 @@ fieldset:disabled .btn {
   border-radius: 0.25rem;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
     border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+.rowLeg {
+  margin: auto;
+  font-weight: 400;
+  line-height: 1.5;
+  text-align: left;
+  text-decoration: none;
+  vertical-align: middle;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
 }
 .btn-success:hover {
   color: #fff;

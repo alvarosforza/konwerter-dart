@@ -11,6 +11,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const gospodarz = document.getElementById("gospodarz");
   const gosc = document.getElementById("gosc");
   const lokalizacja = document.getElementById("lokalizacja");
+  var sumLegHost = 0
+  var sumLegGuest = 0
   
 
   // helper: set option values from option text content
@@ -305,9 +307,17 @@ function single(meczID) {
     } else {
       const leg3 = document.getElementById(`mecz${meczID}leg3`);
       const leg3Name = document.getElementById(`mecz${meczID}leg3Name`);
+      if (document.getElementById(`winnerMecz${meczID}Leg3`)) {
+        const leg3winner = document.getElementById(`winnerMecz${meczID}Leg3`).value;
+        if (skladGospodarz.find(e => e==leg3winner)) sumLegHost--
+        if (skladGosc.find(e => e==leg3winner)) sumLegGuest--
+        console.log(sumLegHost);
+        console.log(sumLegGuest);
+      }
       if (leg3) leg3.remove();
       if (leg3Name) leg3Name.remove();
       leg3Val = undefined;
+      // przy usuwaniu trzeba dekrementować wybraną opcję
     }
   };
 
@@ -355,50 +365,95 @@ function leg(meczID, numer) {
   let g2 = selectZawodnik2.value
   
   // let leg = document.getElementById(`mecz${numer}leg${numer}`);
-  legDiv.innerHTML=`Kto wygrał leg? <select id="winnerMecz${meczID}Leg${numer}" class="form-select">
+  legDiv.innerHTML=`Kto wygrał leg? <select id="winnerMecz${meczID}Leg${numer}" class="form-select" style="width:fit-content;">
   <option value="${g1}">${g1}</option>
   <option value="${g2}">${g2}</option>
-  </select><br>Którą lotką wygrano lega?
+  </select><br>`
+  if (numer==3) 
+      legDiv.innerHTML+=`Kto zaczął lega? 
+    <select id="whoStartedLeg3Mecz${meczID}" class="form-select" style="width:fit-content;">
+    <option value="${g1}">${g1}</option>
+    <option value="${g2}">${g2}</option>
+    </select><br>`
+  legDiv.innerHTML+=`
+  Którą lotką wygrano lega?
   <input type="number" id="lotkaMecz${meczID}Leg${numer}" min="9" step="1" required><br>
-  Ile pozostało punktów przeciwnikowi?
+  Ile lotek rzucił przegrany?
+  <input type="number" id="lotkaPrzegranyMecz${meczID}Leg${numer}" min="1" step="1" required><br>
+  Ile pozostało punktów przegranemu?
   <input type="number" id="pozostaleMecz${meczID}Leg${numer}" min="2" max="501" step="1" required>
-  <br>
-  `;
+  <br>`;
   // aktualizacje 
   selectZawodnik1.addEventListener("change", (x) => {
     x.preventDefault();
     g1 = document.getElementById(`gracz1mecz${meczID}`).value
-    legDiv.innerHTML=`Kto wygrał leg? <select id="winnerMecz${meczID}Leg${numer}" class="form-select">
+    legDiv.innerHTML=`Kto wygrał leg? <select id="winnerMecz${meczID}Leg${numer}" class="form-select" style="width:fit-content;">
       <option value="${g1}">${g1}</option>
       <option value="${g2}">${g2}</option>
-      </select><br>Którą lotką wygrano lega?
+      </select><br>
+      `
+    if (numer==3) 
+      legDiv.innerHTML+=`Kto zaczął lega? 
+    <select id="whoStartedLeg3Mecz${meczID}" class="form-select" style="width:fit-content;">
+    <option value="${g1}">${g1}</option>
+    <option value="${g2}">${g2}</option>
+    </select><br>`
+
+    legDiv.innerHTML+=`Którą lotką wygrano lega?
       <input type="number" id="lotkaMecz${meczID}Leg${numer}" min="9" step="1" required><br>
+      Ile lotek rzucił przegrany?
+      <input type="number" id="lotkaPrzegranyMecz${meczID}Leg${numer}" min="1" step="1" required><br>
       Ile pozostało punktów przeciwnikowi?
       <input type="number" id="pozostaleMecz${meczID}Leg${numer}" min="2" max="501" step="1" required>
-      <br>
-      `
+      <br>`
   })
   selectZawodnik2.addEventListener("change", (x) => {
     x.preventDefault();
     g2 = document.getElementById(`gracz2mecz${meczID}`).value
-    legDiv.innerHTML=`Kto wygrał leg? <select id="winnerMecz${meczID}Leg${numer}" class="form-select">
+    legDiv.innerHTML=`Kto wygrał leg? <select id="winnerMecz${meczID}Leg${numer}" class="form-select" style="width:fit-content;">
       <option value="${g1}">${g1}</option>
       <option value="${g2}">${g2}</option>
-      </select><br>Którą lotką wygrano lega?
+      </select><br>
+      `
+    if (numer==3) 
+      legDiv.innerHTML+=`Kto zaczął lega? 
+    <select id="whoStartedLeg3Mecz${meczID}" class="form-select" style="width:fit-content;">
+    <option value="${g1}">${g1}</option>
+    <option value="${g2}">${g2}</option>
+    </select><br>`
+
+    legDiv.innerHTML+=`Którą lotką wygrano lega?
       <input type="number" id="lotkaMecz${meczID}Leg${numer}" min="9" step="1" required><br>
+      Ile lotek rzucił przegrany?
+      <input type="number" id="lotkaPrzegranyMecz${meczID}Leg${numer}" min="1" step="1" required><br>
       Ile pozostało punktów przeciwnikowi?
       <input type="number" id="pozostaleMecz${meczID}Leg${numer}" min="2" max="501" step="1" required>
-      <br>
-      `
+      <br>`
   })
 
   let mecz = document.getElementById(`mecz${meczID}`)
   mecz.appendChild(legName)
   mecz.appendChild(legDiv)
   let winner = document.getElementById(`winnerMecz${meczID}Leg${numer}`).value
+  sumLegHost++
+  document.getElementById(`winnerMecz${meczID}Leg${numer}`).addEventListener("change", (x) => {
+    x.preventDefault()
+    let winner = (document.getElementById(`winnerMecz${meczID}Leg${numer}`) || {}).value
+    if (skladGospodarz.find((e) => e===winner)) { //nie działa ale pomysł jest dobry
+      sumLegHost++; 
+      sumLegGuest--;
+    }
+    if (skladGosc.find((e) => e===winner)) {
+      sumLegGuest++; 
+      sumLegHost--;
+    }
+    console.log(sumLegHost);
+    console.log(sumLegGuest);
+  })
   let lotka = document.getElementById(`lotkaMecz${meczID}Leg${numer}`).value
+  let lotkaPrzegrany = document.getElementById(`lotkaPrzegranyMecz${meczID}Leg${numer}`).value
   let pozostale = document.getElementById(`pozostaleMecz${meczID}Leg${numer}`).value
-  return [winner, lotka, pozostale]
+  return [winner, lotka, lotkaPrzegrany, pozostale]
 }
 
 function double(meczID) {
@@ -441,16 +496,22 @@ function double(meczID) {
     const hostChosen = getSelectsForSide('host').map(s => s.value).filter(Boolean);
     const guestChosen = getSelectsForSide('guest').map(s => s.value).filter(Boolean);
 
-    const buildOptions = (selectEl, players, chosenList) => {
+    const buildOptions = (selectEl, players, chosenList, selectIndex) => {
       if (!selectEl) return;
       const prev = selectEl.value;
       selectEl.innerHTML = '';
-      players.forEach(p => {
+      const defaultPlayer = selectIndex < players.length ? players[selectIndex] : players[0];
+      players.forEach((p, i) => {
         const opt = document.createElement('option');
         opt.value = p;
         opt.textContent = p;
+        // disable players not currently chosen in team selects
         if (!chosenList.includes(p)) opt.disabled = true;
-        if (prev && prev === p) opt.selected = true;
+        if (prev && prev === p) {
+          opt.selected = true;
+        } else if (!prev && i === selectIndex && selectIndex < players.length && chosenList.includes(p)) {
+          opt.selected = true;
+        }
         selectEl.appendChild(opt);
       });
       if (!selectEl.value) {
@@ -459,10 +520,60 @@ function double(meczID) {
       }
     };
 
-    buildOptions(selectZawodnik1, Array.isArray(skladGospodarz) ? skladGospodarz : [], hostChosen);
-    buildOptions(selectZawodnik2, Array.isArray(skladGospodarz) ? skladGospodarz : [], hostChosen);
-    buildOptions(selectZawodnik3, Array.isArray(skladGosc) ? skladGosc : [], guestChosen);
-    buildOptions(selectZawodnik4, Array.isArray(skladGosc) ? skladGosc : [], guestChosen);
+    buildOptions(selectZawodnik1, Array.isArray(skladGospodarz) ? skladGospodarz : [], hostChosen, 0);
+    buildOptions(selectZawodnik2, Array.isArray(skladGospodarz) ? skladGospodarz : [], hostChosen, 1);
+    buildOptions(selectZawodnik3, Array.isArray(skladGosc) ? skladGosc : [], guestChosen, 0);
+    buildOptions(selectZawodnik4, Array.isArray(skladGosc) ? skladGosc : [], guestChosen, 1);
+
+    // ensure players selected within the two selects of the same team are unique (disable duplicates)
+    const syncTeamPlayers = (selects) => {
+      selects.forEach(s => Array.from(s.options).forEach(o => {
+        // keep disabled state from teamChosen check but re-evaluate duplicates
+        o._origDisabled = o.disabled;
+        o.disabled = o._origDisabled;
+      }));
+      const chosen = selects.map(s => s.value).filter(v => v);
+      chosen.forEach(val => {
+        selects.forEach(s => {
+          if (s.value === val) return;
+          const opt = Array.from(s.options).find(o => o.value === val);
+          if (opt) opt.disabled = true;
+        });
+      });
+    };
+
+    syncTeamPlayers([selectZawodnik1, selectZawodnik2]);
+    syncTeamPlayers([selectZawodnik3, selectZawodnik4]);
+
+    // also update any winner selects built for legs so they reflect currently chosen players
+    // disable winner options that are no longer selected in team selects
+    const updateWinnerOptionsForMatch = () => {
+      const winnerSelectors = Array.from(document.querySelectorAll(`#mecz${meczID} select[id^="winnerMecz${meczID}Leg"]`));
+      winnerSelectors.forEach(wEl => {
+        const prev = wEl.value;
+        Array.from(wEl.options).forEach(opt => {
+          const val = opt.value;
+          if (skladGospodarz && skladGospodarz.includes(val)) {
+            opt.disabled = !hostChosen.includes(val);
+          } else if (skladGosc && skladGosc.includes(val)) {
+            opt.disabled = !guestChosen.includes(val);
+          } else {
+            opt.disabled = false;
+          }
+        });
+        if (wEl.options.length && wEl.selectedOptions.length === 0) {
+          const firstEnabled = Array.from(wEl.options).find(o => !o.disabled);
+          if (firstEnabled) wEl.value = firstEnabled.value;
+        }
+        // if previously selected option became disabled, pick another
+        if (prev && Array.from(wEl.options).every(o => o.value !== prev || o.disabled)) {
+          const firstEnabled = Array.from(wEl.options).find(o => !o.disabled);
+          if (firstEnabled) wEl.value = firstEnabled.value;
+        }
+      });
+    };
+
+    updateWinnerOptionsForMatch();
   };
 
   updateMatchPlayerOptions();
@@ -501,6 +612,11 @@ function double(meczID) {
             opt.disabled = false;
           }
         });
+        // if selected winner became disabled, pick first enabled
+        if (wEl.selectedOptions.length && Array.from(wEl.selectedOptions).some(o => o.disabled)) {
+          const firstEnabled = Array.from(wEl.options).find(o => !o.disabled);
+          if (firstEnabled) wEl.value = firstEnabled.value;
+        }
       }
     };
 
@@ -520,30 +636,68 @@ function double(meczID) {
     return legs;
   };
 
-  let matchWinner = (document.getElementById(`winnerMecz${meczID}Leg1`) || {}).value || null;
+  const getMatchWinner = () => {
+    const legs = getAllLegs();
+    if (legs.length < 2) return null;
+
+    const leg1Winner = legs[0][0];
+    const leg2Winner = legs[1][0];
+
+    if (!leg1Winner || !leg2Winner) return null;
+
+    const hostPlayers = skladGospodarz || [];
+    const leg1IsHost = hostPlayers.includes(leg1Winner);
+    const leg2IsHost = hostPlayers.includes(leg2Winner);
+
+    if (leg1IsHost && leg2IsHost) return 'host';
+    if (!leg1IsHost && !leg2IsHost) return 'guest';
+
+    if (legs.length > 2) {
+      const leg3Winner = legs[2][0];
+      if (!leg3Winner) return null;
+      return (hostPlayers.includes(leg3Winner)) ? 'host' : 'guest';
+    }
+
+    return null;
+  };
+
+  let matchWinner = getMatchWinner();
   const meczEl = document.getElementById(`mecz${meczID}`);
 
   const updateMatchWinner = () => {
-    const w1El = document.getElementById(`winnerMecz${meczID}Leg1`);
-    const w2El = document.getElementById(`winnerMecz${meczID}Leg2`);
-    const w1 = w1El ? w1El.value : null;
-    const w2 = w2El ? w2El.value : null;
+    const legs = getAllLegs();
 
-    if (!w1 || !w2) {
+    if (legs.length < 2 || !legs[0][0] || !legs[1][0]) {
       return;
     }
 
-    if (w1 !== w2) {
+    const leg1Winner = legs[0][0];
+    const leg2Winner = legs[1][0];
+    const hostPlayers = skladGospodarz || [];
+
+    const leg1IsHost = hostPlayers.includes(leg1Winner);
+    const leg2IsHost = hostPlayers.includes(leg2Winner);
+
+    if (leg1IsHost !== leg2IsHost) {
       if (!document.getElementById(`mecz${meczID}leg3`)) {
         leg3Val = legDouble(meczID, 3);
       }
     } else {
       const leg3 = document.getElementById(`mecz${meczID}leg3`);
       const leg3Name = document.getElementById(`mecz${meczID}leg3Name`);
+      if (document.getElementById(`winnerMecz${meczID}Leg3`)) {
+        const leg3winner = document.getElementById(`winnerMecz${meczID}Leg3`).value;
+        if (skladGospodarz.find(e => e==leg3winner)) sumLegHost--
+        if (skladGosc.find(e => e==leg3winner)) sumLegGuest--
+        console.log(sumLegHost);
+        console.log(sumLegGuest);
+      }
       if (leg3) leg3.remove();
       if (leg3Name) leg3Name.remove();
       leg3Val = undefined;
     }
+
+    matchWinner = getMatchWinner();
   };
 
   if (meczEl) {
@@ -567,6 +721,7 @@ function double(meczID) {
   return {
     getLegs: getAllLegs,
     getLeg: getLegValues,
+    getMatchWinner: getMatchWinner,
     initial: {
       leg1: leg1Val,
       leg2: leg2Val,
@@ -577,101 +732,204 @@ function double(meczID) {
 
 function legDouble(meczID, numer) {
   let legDiv = document.createElement("div")
-  legDiv.id=`mecz${meczID}leg${numer}`
+  legDiv.id = `mecz${meczID}leg${numer}`
   let legName = document.createElement("div")
-  legName.id=`mecz${meczID}leg${numer}Name`
-  legName.innerHTML=`Leg ${numer}:`
-  legName.className=`mb-3 mt-5 btn-leg text-white`
+  legName.id = `mecz${meczID}leg${numer}Name`
+  legName.innerHTML = `Leg ${numer}:`
+  legName.className = `mb-3 mt-5 btn-leg text-white`
 
   let selectZawodnik1 = document.getElementById(`gracz1mecz${meczID}`)
   let selectZawodnik2 = document.getElementById(`gracz2mecz${meczID}`)
   let selectZawodnik3 = document.getElementById(`gracz3mecz${meczID}`)
   let selectZawodnik4 = document.getElementById(`gracz4mecz${meczID}`)
-  let g1 = selectZawodnik1.value
-  let g2 = selectZawodnik2.value
-  let g3 = selectZawodnik1.value
-  let g4 = selectZawodnik2.value
-  
-  // let leg = document.getElementById(`mecz${numer}leg${numer}`);
-  legDiv.innerHTML=`Kto wygrał leg? <select id="winnerMecz${meczID}Leg${numer}" class="form-select">
-  <option value="${g1}">${g1}</option>
-  <option value="${g2}">${g2}</option>
-  <option value="${g3}">${g3}</option>
-  <option value="${g4}">${g4}</option>
-  </select><br>Którą lotką wygrano lega?
-  <input type="number" id="lotkaMecz${meczID}Leg${numer}" min="9" step="1" required><br>
-  Ile pozostało punktów przeciwnikowi?
-  <input type="number" id="pozostaleMecz${meczID}Leg${numer}" min="2" max="501" step="1" required>
-  <br>
+  let g1 = selectZawodnik1 ? selectZawodnik1.value : ''
+  let g2 = selectZawodnik2 ? selectZawodnik2.value : ''
+  let g3 = selectZawodnik3 ? selectZawodnik3.value : ''
+  let g4 = selectZawodnik4 ? selectZawodnik4.value : ''
+
+  legDiv.innerHTML = `
+    Kto wygrał leg?
+    <select id="winnerMecz${meczID}Leg${numer}" class="form-select">
+      <option value="${g1}">${g1}</option>
+      <option value="${g2}">${g2}</option>
+      <option value="${g3}">${g3}</option>
+      <option value="${g4}">${g4}</option>
+    </select>
+    <br>
+    <div id="playerInputsMecz${meczID}Leg${numer}">
+      <div class="player-block" data-idx="1">
+        <label>${g1}</label>
+        rzucone lotki: <input type="number" min="1" id="lotkaMecz${meczID}Leg${numer}P1" class="form-control player-lotka" />
+        Pozostało punktów: <input type="number" min="0" max="501" id="pozostaleMecz${meczID}Leg${numer}P1" class="form-control player-pozostale" />
+      </div>
+      <div class="player-block" data-idx="2">
+        <label>${g2}</label>
+        rzucone lotki: <input type="number" min="1" id="lotkaMecz${meczID}Leg${numer}P2" class="form-control player-lotka" />
+        Pozostało punktów: <input type="number" min="0" max="501" id="pozostaleMecz${meczID}Leg${numer}P2" class="form-control player-pozostale" />
+      </div>
+      <div class="player-block" data-idx="3">
+        <label>${g3}</label>
+        rzucone lotki: <input type="number" min="1" id="lotkaMecz${meczID}Leg${numer}P3" class="form-control player-lotka" />
+        Pozostało punktów: <input type="number" min="0" max="501" id="pozostaleMecz${meczID}Leg${numer}P3" class="form-control player-pozostale" />
+      </div>
+      <div class="player-block" data-idx="4">
+        <label>${g4}</label>
+        rzucone lotki: <input type="number" min="1" id="lotkaMecz${meczID}Leg${numer}P4" class="form-control player-lotka" />
+        Pozostało punktów: <input type="number" min="0" max="501" id="pozostaleMecz${meczID}Leg${numer}P4" class="form-control player-pozostale" />
+      </div>
+    </div>
+    <input type="hidden" id="lotkaMecz${meczID}Leg${numer}" />
+    <input type="hidden" id="pozostaleMecz${meczID}Leg${numer}" />
   `;
-  // aktualizacje 
-  selectZawodnik1.addEventListener("change", (x) => {
-    x.preventDefault();
-    g1 = document.getElementById(`gracz1mecz${meczID}`).value
-    legDiv.innerHTML=`Kto wygrał leg? <select id="winnerMecz${meczID}Leg${numer}" class="form-select">
-      <option value="${g1}">${g1}</option>
-      <option value="${g2}">${g2}</option>
-      <option value="${g3}">${g3}</option>
-      <option value="${g4}">${g4}</option>
-      </select><br>Którą lotką wygrano lega?
-      <input type="number" id="lotkaMecz${meczID}Leg${numer}" min="9" step="1" required><br>
-      Ile pozostało punktów przeciwnikowi?
-      <input type="number" id="pozostaleMecz${meczID}Leg${numer}" min="2" max="501" step="1" required>
-      <br>
-      `
-  })
-  selectZawodnik2.addEventListener("change", (x) => {
-    x.preventDefault();
-    g2 = document.getElementById(`gracz2mecz${meczID}`).value
-    legDiv.innerHTML=`Kto wygrał leg? <select id="winnerMecz${meczID}Leg${numer}" class="form-select">
-      <option value="${g1}">${g1}</option>
-      <option value="${g2}">${g2}</option>
-      <option value="${g3}">${g3}</option>
-      <option value="${g4}">${g4}</option>
-      </select><br>Którą lotką wygrano lega?
-      <input type="number" id="lotkaMecz${meczID}Leg${numer}" min="9" step="1" required><br>
-      Ile pozostało punktów przeciwnikowi?
-      <input type="number" id="pozostaleMecz${meczID}Leg${numer}" min="2" max="501" step="1" required>
-      <br>
-      `
-  })
-  selectZawodnik3.addEventListener("change", (x) => {
-    x.preventDefault();
-    g3 = document.getElementById(`gracz3mecz${meczID}`).value
-    legDiv.innerHTML=`Kto wygrał leg? <select id="winnerMecz${meczID}Leg${numer}" class="form-select">
-      <option value="${g1}">${g1}</option>
-      <option value="${g2}">${g2}</option>
-      <option value="${g3}">${g3}</option>
-      <option value="${g4}">${g4}</option>
-      </select><br>Którą lotką wygrano lega?
-      <input type="number" id="lotkaMecz${meczID}Leg${numer}" min="9" step="1" required><br>
-      Ile pozostało punktów przeciwnikowi?
-      <input type="number" id="pozostaleMecz${meczID}Leg${numer}" min="2" max="501" step="1" required>
-      <br>
-      `
-  })
-  selectZawodnik4.addEventListener("change", (x) => {
-    x.preventDefault();
-    g4 = document.getElementById(`gracz4mecz${meczID}`).value
-    legDiv.innerHTML=`Kto wygrał leg? <select id="winnerMecz${meczID}Leg${numer}" class="form-select">
-      <option value="${g1}">${g1}</option>
-      <option value="${g2}">${g2}</option>
-      <option value="${g3}">${g3}</option>
-      <option value="${g4}">${g4}</option>
-      </select><br>Którą lotką wygrano lega?
-      <input type="number" id="lotkaMecz${meczID}Leg${numer}" min="9" step="1" required><br>
-      Ile pozostało punktów przeciwnikowi?
-      <input type="number" id="pozostaleMecz${meczID}Leg${numer}" min="2" max="501" step="1" required>
-      <br>
-      `
-  })
+
+  const getPlayerInputs = (idx) => {
+    return {
+      lotka: document.getElementById(`lotkaMecz${meczID}Leg${numer}P${idx}`),
+      pozostale: document.getElementById(`pozostaleMecz${meczID}Leg${numer}P${idx}`)
+    }
+  }
+  const globalLotka = document.getElementById(`lotkaMecz${meczID}Leg${numer}`)
+  const globalPozostale = document.getElementById(`pozostaleMecz${meczID}Leg${numer}`)
+  const winnerSelect = document.getElementById(`winnerMecz${meczID}Leg${numer}`)
+
+  const refreshPlayerBlocks = () => {
+    g1 = selectZawodnik1 ? selectZawodnik1.value : ''
+    g2 = selectZawodnik2 ? selectZawodnik2.value : ''
+    g3 = selectZawodnik3 ? selectZawodnik3.value : ''
+    g4 = selectZawodnik4 ? selectZawodnik4.value : ''
+    const container = document.getElementById(`playerInputsMecz${meczID}Leg${numer}`)
+    if (!container) return
+    const blocks = container.querySelectorAll('.player-block')
+    blocks.forEach(block => {
+      const idx = block.getAttribute('data-idx')
+      const lbl = block.querySelector('label')
+      if (idx === '1') lbl.textContent = g1
+      if (idx === '2') lbl.textContent = g2
+      if (idx === '3') lbl.textContent = g3
+      if (idx === '4') lbl.textContent = g4
+    })
+
+    if (winnerSelect) {
+      const prev = winnerSelect.value
+      winnerSelect.innerHTML = ''
+      [g1, g2, g3, g4].forEach(name => {
+        const opt = document.createElement('option')
+        opt.value = name
+        opt.textContent = name
+        winnerSelect.appendChild(opt)
+      })
+
+      // disable winner options not currently chosen in team selects
+      const hostChosen = getSelectsForSide('host').map(s => s.value).filter(Boolean);
+      const guestChosen = getSelectsForSide('guest').map(s => s.value).filter(Boolean);
+      Array.from(winnerSelect.options).forEach(opt => {
+        const val = opt.value;
+        if (skladGospodarz && skladGospodarz.includes(val)) {
+          opt.disabled = !hostChosen.includes(val);
+        } else if (skladGosc && skladGosc.includes(val)) {
+          opt.disabled = !guestChosen.includes(val);
+        } else {
+          opt.disabled = false;
+        }
+      });
+
+      if (prev && Array.from(winnerSelect.options).some(o => o.value === prev && !o.disabled)) {
+        winnerSelect.value = prev
+      } else {
+        const first = Array.from(winnerSelect.options).find(o => o.value && !o.disabled)
+        if (first) winnerSelect.value = first.value
+      }
+    }
+
+    syncGlobalWithWinner()
+  }
+
+  const syncGlobalWithWinner = () => {
+    if (!winnerSelect) return
+    const winner = winnerSelect.value
+    const players = [g1, g2, g3, g4]
+    const idx = players.indexOf(winner) + 1
+    if (idx >= 1 && idx <= 4) {
+      const p = getPlayerInputs(idx)
+      if (p.lotka && p.pozostale) {
+        globalLotka.value = p.lotka.value || ''
+        globalPozostale.value = p.pozostale.value || ''
+      } else {
+        globalLotka.value = ''
+        globalPozostale.value = ''
+      }
+    } else {
+      globalLotka.value = ''
+      globalPozostale.value = ''
+    }
+  }
+
+  if (winnerSelect) {
+    winnerSelect.addEventListener('change', (e) => {
+      syncGlobalWithWinner()
+    })
+  }
+
+  const setupPerPlayerListeners = () => {
+    for (let i = 1; i <= 4; i++) {
+      const p = getPlayerInputs(i)
+      if (!p.lotka || !p.pozostale) continue
+      const handler = () => {
+        const currentWinner = winnerSelect ? winnerSelect.value : null
+        const players = [g1, g2, g3, g4]
+        const name = players[i - 1]
+        if (name && currentWinner === name) {
+          globalLotka.value = p.lotka.value || ''
+          globalPozostale.value = p.pozostale.value || ''
+        }
+      }
+      p.lotka.addEventListener('input', handler)
+      p.pozostale.addEventListener('input', handler)
+    }
+  }
+
+  const updateLegOptions = () => {
+    g1 = selectZawodnik1 ? selectZawodnik1.value : ''
+    g2 = selectZawodnik2 ? selectZawodnik2.value : ''
+    g3 = selectZawodnik3 ? selectZawodnik3.value : ''
+    g4 = selectZawodnik4 ? selectZawodnik4.value : ''
+    refreshPlayerBlocks()
+  }
+
+  if (selectZawodnik1) selectZawodnik1.addEventListener('change', updateLegOptions)
+  if (selectZawodnik2) selectZawodnik2.addEventListener('change', updateLegOptions)
+  if (selectZawodnik3) selectZawodnik3.addEventListener('change', updateLegOptions)
+  if (selectZawodnik4) selectZawodnik4.addEventListener('change', updateLegOptions)
 
   let mecz = document.getElementById(`mecz${meczID}`)
   mecz.appendChild(legName)
   mecz.appendChild(legDiv)
-  let winner = document.getElementById(`winnerMecz${meczID}Leg${numer}`).value
-  let lotka = document.getElementById(`lotkaMecz${meczID}Leg${numer}`).value
-  let pozostale = document.getElementById(`pozostaleMecz${meczID}Leg${numer}`).value
+
+  setupPerPlayerListeners()
+  // initial sync and enforce disabling based on current team selections
+  setTimeout(() => {
+    refreshPlayerBlocks()
+    syncGlobalWithWinner()
+  }, 0)
+
+  let winner = (document.getElementById(`winnerMecz${meczID}Leg${numer}`) || {}).value
+  sumLegHost++
+  document.getElementById(`winnerMecz${meczID}Leg${numer}`).addEventListener("change", (x) => {
+    x.preventDefault()
+    let winner = (document.getElementById(`winnerMecz${meczID}Leg${numer}`) || {}).value
+    if (skladGospodarz.find((e) => e==winner)) { //nie działa ale pomysł jest dobry
+      sumLegHost++; 
+      sumLegGuest--;
+    }
+    if (skladGosc.find((e) => e==winner)) {
+      sumLegGuest++; 
+      sumLegHost--;
+    }
+    console.log(sumLegHost);
+    console.log(sumLegGuest);
+  })
+  let lotka = (document.getElementById(`lotkaMecz${meczID}Leg${numer}`) || {}).value
+  let pozostale = (document.getElementById(`pozostaleMecz${meczID}Leg${numer}`) || {}).value
   return [winner, lotka, pozostale]
 }
 
@@ -680,17 +938,18 @@ single(2);
 single(3);
 single(4);
 
-double(5)
-double(6)
-double(7)
-double(8)
+double(5);
+double(6);
+double(7);
+double(8);
 
 single(9);
 single(10);
 single(11);
 single(12);
 
-
+console.log(sumLegHost);
+console.log(sumLegGuest);
 
 
 
@@ -752,13 +1011,7 @@ document.getElementById("dodajGoscRezerwowy").addEventListener("click", function
   }
   return false
 })
-if ( form ) {
-  form.addEventListener("submit", function(event) {
-    event.preventDefault();
-    let raport = ``
-    document.body.innerHTML=raport
-  });
-}
+
 //wynik
     // utility to pick a recycled id or next counter
     function getIdFromPool(pool, nextCounterRef, prefixCheckFn) {
@@ -875,4 +1128,95 @@ if ( form ) {
             row.remove();
         });
     });
+    console.log(document.getElementById(`gospodarz`).value[0])
+    function srednia(val) {
+    return (501/val).toFixed(2)
+    }
+    function sredniaRemain(remain, val) {
+    return ((501-remain)/val).toFixed(2)
+    }
+    if ( form ) {
+  form.addEventListener("submit", function(event) {
+    event.preventDefault();
+    // trzeba dodawanie legów w pętli zrobić
+    // zlicznie legów w zespołach musi być po kolei do dodawania z każdym legiem 
+    // zmiana drużyn znowu jest rozwalona
+    let raport = `
+    ${document.getElementById(`kolejka`).value} Kolejka - ${document.getElementById(`date`).value}<br>
+    ${document.getElementById(`gospodarz`).value} - ${document.getElementById(`gosc`).value}  ${sumLegHost} - ${sumLegGuest}<br>
+    H1: ${document.getElementById(`gospodarz`).value[0]} //wygrane-przegrane łącznie / ??? (w/l single, w/l deble) // z wybranych graczy<br>
+    // wrzucić osiągnięcia dla gracza<br>
+    H2:<br>
+    H3:<br>
+    H4:<br>
+    // rezerwowi jak byli <br>
+
+    ${document.getElementById(`gosc`)}:<br>
+    G1: ${document.getElementById(`gosc`).value[0]} // wywala literkę<br>
+    G2:<br>
+    G3:<br>
+    G4:<br>
+    //rezerwowi jak byli<br>
+    Przebieg meczu szczegóły:<br>
+    `
+    for (let index = 1; index <= 4; index++) {
+      const winner1 = document.getElementById(`winnerMecz${index}Leg1`).value;
+      const loser1 = Array.from(document.getElementById(`winnerMecz${index}Leg1`).options)
+        .find(opt => opt.value !== winner1)?.value || 'unknown';
+      const winner2 = document.getElementById(`winnerMecz${index}Leg2`).value;
+      const loser2 = Array.from(document.getElementById(`winnerMecz${index}Leg2`).options)
+        .find(opt => opt.value !== winner2)?.value || 'unknown';
+      
+      raport += `
+      ${document.getElementById(`gracz1mecz${index}`).value} - ${document.getElementById(`gracz2mecz${index}`).value}(wygrane legi gracza 1:wygrane legi gracza 2) ---- sumaryczny wynik obu zespołów<br>
+      - Leg1: Wygrał: ${winner1} (${document.getElementById(`lotkaMecz${index}Leg1`).value}) średnia (${srednia(document.getElementById(`lotkaMecz${index}Leg1`).value)}) | Przegrał: ${loser1} (pozostało punktów ${document.getElementById(`pozostaleMecz${index}Leg1`).value}) średnia (${sredniaRemain(document.getElementById(`pozostaleMecz${index}Leg1`).value, document.getElementById(`lotkaPrzegranyMecz${index}Leg1`).value)}) <br>
+      - Leg2: Wygrał: ${winner2} (${document.getElementById(`lotkaMecz${index}Leg2`).value}) średnia (${srednia(document.getElementById(`lotkaMecz${index}Leg2`).value)}) | Przegrał: ${loser2} (pozostało punktów ${document.getElementById(`pozostaleMecz${index}Leg2`).value}) średnia (${sredniaRemain(document.getElementById(`pozostaleMecz${index}Leg2`).value, document.getElementById(`lotkaPrzegranyMecz${index}Leg2`).value)})<br>
+      `
+      if (document.getElementById(`mecz${index}leg3`)) {
+      const winner3 = document.getElementById(`winnerMecz${index}Leg3`).value;
+      const loser3 = Array.from(document.getElementById(`winnerMecz${index}Leg3`).options)
+        .find(opt => opt.value !== winner3)?.value || 'unknown';
+      raport += `- Zaczął: ${document.getElementById(`whoStartedLeg3${index}`).value} Wygrał: ${winner3} (${document.getElementById(`lotkaMecz${index}Leg3`).value}) średnia (${srednia(document.getElementById(`lotkaMecz${index}Leg3`).value)}) | Przegrał: ${loser3} (pozostało punktów ${document.getElementById(`pozostaleMecz${index}Leg3`).value}) średnia (${sredniaRemain(document.getElementById(`pozostaleMecz${index}Leg3`).value, document.getElementById(`lotkaPrzegranyMecz${index}Leg3`).value)}) <br>`
+      }
+    }
+
+    for (let index = 5; index <= 8; index++) {      
+      raport += `
+      ${document.getElementById(`gracz1mecz${index}`).value}, ${document.getElementById(`gracz2mecz${index}`).value} - ${document.getElementById(`gracz3mecz${index}`).value}, ${document.getElementById(`gracz4mecz${index}`).value}<br>
+      - Leg1: Wygrał: ${document.getElementById(`winnerMecz${index}Leg1`).value} (${document.getElementById(`lotkaMecz${index}Leg1`).value} lotek) średnia ${srednia(document.getElementById(`lotkaMecz${index}Leg1`).value)}<br>
+      - Leg2: Wygrał: ${document.getElementById(`winnerMecz${index}Leg2`).value} (${document.getElementById(`lotkaMecz${index}Leg2`).value} lotek) średnia ${srednia(document.getElementById(`lotkaMecz${index}Leg2`).value)}<br>
+      `;
+    if (document.getElementById(`mecz${index}leg3`)) {
+      raport+=`
+      Leg3: Rozpoczął Marcin Marcinkowski<br>
+      Wygrali: Arkadiusz Arkowy (26 lotka) średnia 57,80 | Marcin Marcinkowski (pozostało punktów 46) średnia 50,55<br>
+      Przegrali: Wojciech Skoncentrowany (pozostało punktów 73) średnia 47,55 | Paweł Pawliczek (pozostało punktów 20) średnia 60,13<br>
+        `
+    } 
+    }
+
+    for (let index = 9; index <= 12; index++) {
+      const winner1 = document.getElementById(`winnerMecz${index}Leg1`).value;
+      const loser1 = Array.from(document.getElementById(`winnerMecz${index}Leg1`).options)
+        .find(opt => opt.value !== winner1)?.value || 'unknown';
+      const winner2 = document.getElementById(`winnerMecz${index}Leg2`).value;
+      const loser2 = Array.from(document.getElementById(`winnerMecz${index}Leg2`).options)
+        .find(opt => opt.value !== winner2)?.value || 'unknown';
+      
+      raport += `
+      ${document.getElementById(`gracz1mecz${index}`).value} - ${document.getElementById(`gracz2mecz${index}`).value} (wygrane legi gracza 1:wygrane legi gracza 2) ---- sumaryczny wynik obu zespołów<br>
+      - Leg1: Wygrał: ${winner1} (${document.getElementById(`lotkaMecz${index}Leg1`).value}) średnia (${srednia(document.getElementById(`lotkaMecz${index}Leg1`).value)}) | Przegrał: ${loser1} (pozostało punktów ${document.getElementById(`pozostaleMecz${index}Leg1`).value}) średnia (${sredniaRemain(document.getElementById(`pozostaleMecz${index}Leg1`).value, document.getElementById(`lotkaPrzegranyMecz${index}Leg1`).value)}) <br>
+      - Leg2: Wygrał: ${winner2} (${document.getElementById(`lotkaMecz${index}Leg2`).value}) średnia (${srednia(document.getElementById(`lotkaMecz${index}Leg2`).value)}) | Przegrał: ${loser2} (pozostało punktów ${document.getElementById(`pozostaleMecz${index}Leg2`).value}) średnia (${sredniaRemain(document.getElementById(`pozostaleMecz${index}Leg2`).value, document.getElementById(`lotkaPrzegranyMecz${index}Leg2`).value)})<br>
+      `
+      if (document.getElementById(`mecz${index}leg3`)) {
+      const winner3 = document.getElementById(`winnerMecz${index}Leg3`).value;
+      const loser3 = Array.from(document.getElementById(`winnerMecz${index}Leg3`).options)
+        .find(opt => opt.value !== winner3)?.value || 'unknown';
+      raport += `- Zaczął: ${document.getElementById(`whoStartedLeg3${index}`).value} Wygrał: ${winner3} (${document.getElementById(`lotkaMecz${index}Leg3`).value}) średnia (${srednia(document.getElementById(`lotkaMecz${index}Leg3`).value)}) | Przegrał: ${loser3} (pozostało punktów ${document.getElementById(`pozostaleMecz${index}Leg3`).value}) średnia (${sredniaRemain(document.getElementById(`pozostaleMecz${index}Leg3`).value, document.getElementById(`lotkaPrzegranyMecz${index}Leg3`).value)}) <br>`
+      }
+    }
+    raport += `Dzięki za mecz!`    
+    document.body.innerHTML=raport
+  });
+}
 });

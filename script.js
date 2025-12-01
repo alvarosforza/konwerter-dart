@@ -572,7 +572,6 @@ function double(meczID) {
         }
       });
     };
-
     updateWinnerOptionsForMatch();
   };
 
@@ -585,11 +584,6 @@ function double(meczID) {
       updateMatchPlayerOptions();
     }
   });
-
-  let leg1Val = legDouble(meczID, 1);
-  let leg2Val = legDouble(meczID, 2);
-  let leg3Val;
-
   const getLegValues = (n) => {
     const wEl = document.getElementById(`winnerMecz${meczID}Leg${n}`);
     const lEl = document.getElementById(`lotkaMecz${meczID}Leg${n}`);
@@ -661,7 +655,6 @@ function double(meczID) {
     return null;
   };
 
-  let matchWinner = getMatchWinner();
   const meczEl = document.getElementById(`mecz${meczID}`);
 
   const updateMatchWinner = () => {
@@ -696,10 +689,8 @@ function double(meczID) {
       if (leg3Name) leg3Name.remove();
       leg3Val = undefined;
     }
-
     matchWinner = getMatchWinner();
   };
-
   if (meczEl) {
     meczEl.addEventListener('change', (ev) => {
       const id = ev.target && ev.target.id;
@@ -715,19 +706,7 @@ function double(meczID) {
       updateMatchWinner();
     });
   }
-
   updateMatchWinner();
-
-  return {
-    getLegs: getAllLegs,
-    getLeg: getLegValues,
-    getMatchWinner: getMatchWinner,
-    initial: {
-      leg1: leg1Val,
-      leg2: leg2Val,
-      leg3: leg3Val
-    }
-  };
 }
 
 function legDouble(meczID, numer) {
@@ -840,7 +819,6 @@ function legDouble(meczID, numer) {
         if (first) winnerSelect.value = first.value
       }
     }
-
     syncGlobalWithWinner()
   }
 
@@ -865,7 +843,7 @@ function legDouble(meczID, numer) {
   }
 
   if (winnerSelect) {
-    winnerSelect.addEventListener('change', (e) => {
+    winnerSelect.addEventListener('change', () => {
       syncGlobalWithWinner()
     })
   }
@@ -928,9 +906,6 @@ function legDouble(meczID, numer) {
     console.log(sumLegHost);
     console.log(sumLegGuest);
   })
-  let lotka = (document.getElementById(`lotkaMecz${meczID}Leg${numer}`) || {}).value
-  let pozostale = (document.getElementById(`pozostaleMecz${meczID}Leg${numer}`) || {}).value
-  return [winner, lotka, pozostale]
 }
 
 single(1);
@@ -1135,9 +1110,12 @@ document.getElementById("dodajGoscRezerwowy").addEventListener("click", function
     function sredniaRemain(remain, val) {
     return ((501-remain)/val).toFixed(2)
     }
-    if ( form ) {
+    
+if ( form ) {
   form.addEventListener("submit", function(event) {
     event.preventDefault();
+    let hostTotalPoints = 0
+    let guestTotalPoints = 0
     // trzeba dodawanie legów w pętli zrobić
     // zlicznie legów w zespołach musi być po kolei do dodawania z każdym legiem 
     // zmiana drużyn znowu jest rozwalona
@@ -1160,15 +1138,32 @@ document.getElementById("dodajGoscRezerwowy").addEventListener("click", function
     Przebieg meczu szczegóły:<br>
     `
     for (let index = 1; index <= 4; index++) {
+      let hostPoints = 0
+      let guestPoints = 0
       const winner1 = document.getElementById(`winnerMecz${index}Leg1`).value;
       const loser1 = Array.from(document.getElementById(`winnerMecz${index}Leg1`).options)
         .find(opt => opt.value !== winner1)?.value || 'unknown';
       const winner2 = document.getElementById(`winnerMecz${index}Leg2`).value;
       const loser2 = Array.from(document.getElementById(`winnerMecz${index}Leg2`).options)
         .find(opt => opt.value !== winner2)?.value || 'unknown';
-      
+      if (skladGospodarz.find((e) => e==winner1)) {
+        hostTotalPoints+=1
+        hostPoints+=1
+      }
+      if (skladGospodarz.find((e) => e==winner2)) {
+        hostTotalPoints+=1
+        hostPoints+=1
+      }
+      if (skladGosc.find((e) => e==winner1)) {
+        guestTotalPoints+=1
+        guestPoints+=1
+      }
+      if (skladGosc.find((e) => e==winner2)) {
+        guestTotalPoints+=1
+        guestPoints+=1
+      }
       raport += `
-      ${document.getElementById(`gracz1mecz${index}`).value} - ${document.getElementById(`gracz2mecz${index}`).value}(wygrane legi gracza 1:wygrane legi gracza 2) ---- sumaryczny wynik obu zespołów<br>
+      ${document.getElementById(`gracz1mecz${index}`).value} - ${document.getElementById(`gracz2mecz${index}`).value} (${hostPoints}:${guestPoints}) ---- ${hostTotalPoints}:${guestTotalPoints}<br>
       - Leg1: Wygrał: ${winner1} (${document.getElementById(`lotkaMecz${index}Leg1`).value}) średnia (${srednia(document.getElementById(`lotkaMecz${index}Leg1`).value)}) | Przegrał: ${loser1} (pozostało punktów ${document.getElementById(`pozostaleMecz${index}Leg1`).value}) średnia (${sredniaRemain(document.getElementById(`pozostaleMecz${index}Leg1`).value, document.getElementById(`lotkaPrzegranyMecz${index}Leg1`).value)}) <br>
       - Leg2: Wygrał: ${winner2} (${document.getElementById(`lotkaMecz${index}Leg2`).value}) średnia (${srednia(document.getElementById(`lotkaMecz${index}Leg2`).value)}) | Przegrał: ${loser2} (pozostało punktów ${document.getElementById(`pozostaleMecz${index}Leg2`).value}) średnia (${sredniaRemain(document.getElementById(`pozostaleMecz${index}Leg2`).value, document.getElementById(`lotkaPrzegranyMecz${index}Leg2`).value)})<br>
       `
@@ -1176,35 +1171,73 @@ document.getElementById("dodajGoscRezerwowy").addEventListener("click", function
       const winner3 = document.getElementById(`winnerMecz${index}Leg3`).value;
       const loser3 = Array.from(document.getElementById(`winnerMecz${index}Leg3`).options)
         .find(opt => opt.value !== winner3)?.value || 'unknown';
-      raport += `- Zaczął: ${document.getElementById(`whoStartedLeg3${index}`).value} Wygrał: ${winner3} (${document.getElementById(`lotkaMecz${index}Leg3`).value}) średnia (${srednia(document.getElementById(`lotkaMecz${index}Leg3`).value)}) | Przegrał: ${loser3} (pozostało punktów ${document.getElementById(`pozostaleMecz${index}Leg3`).value}) średnia (${sredniaRemain(document.getElementById(`pozostaleMecz${index}Leg3`).value, document.getElementById(`lotkaPrzegranyMecz${index}Leg3`).value)}) <br>`
+      raport += `- Zaczął: ${document.getElementById(`whoStartedLeg3Mecz${index}`).value} Wygrał: ${winner3} (${document.getElementById(`lotkaMecz${index}Leg3`).value}) średnia (${srednia(document.getElementById(`lotkaMecz${index}Leg3`).value)}) | Przegrał: ${loser3} (pozostało punktów ${document.getElementById(`pozostaleMecz${index}Leg3`).value}) średnia (${sredniaRemain(document.getElementById(`pozostaleMecz${index}Leg3`).value, document.getElementById(`lotkaPrzegranyMecz${index}Leg3`).value)}) <br>`
       }
     }
-
+      ///////////////////////////////////////////////////////////////////////
     for (let index = 5; index <= 8; index++) {      
+      let hostPoints = 0
+      let guestPoints = 0
+      const winner1 = document.getElementById(`winnerMecz${index}Leg1`).value;
+      const winner2 = document.getElementById(`winnerMecz${index}Leg2`).value;
+      if (skladGospodarz.find((e) => e==winner1)) {
+        hostTotalPoints+=1
+        hostPoints+=1
+      }
+      if (skladGospodarz.find((e) => e==winner2)) {
+        hostTotalPoints+=1
+        hostPoints+=1
+      }
+      if (skladGosc.find((e) => e==winner1)) {
+        guestTotalPoints+=1
+        guestPoints+=1
+      }
+      if (skladGosc.find((e) => e==winner2)) {
+        guestTotalPoints+=1
+        guestPoints+=1
+      }
       raport += `
-      ${document.getElementById(`gracz1mecz${index}`).value}, ${document.getElementById(`gracz2mecz${index}`).value} - ${document.getElementById(`gracz3mecz${index}`).value}, ${document.getElementById(`gracz4mecz${index}`).value}<br>
+      ${document.getElementById(`gracz1mecz${index}`).value}, ${document.getElementById(`gracz2mecz${index}`).value} - ${document.getElementById(`gracz3mecz${index}`).value}, ${document.getElementById(`gracz4mecz${index}`).value} (${hostPoints}:${guestPoints}) ---- ${hostTotalPoints}:${guestTotalPoints}<br>
       - Leg1: Wygrał: ${document.getElementById(`winnerMecz${index}Leg1`).value} (${document.getElementById(`lotkaMecz${index}Leg1`).value} lotek) średnia ${srednia(document.getElementById(`lotkaMecz${index}Leg1`).value)}<br>
       - Leg2: Wygrał: ${document.getElementById(`winnerMecz${index}Leg2`).value} (${document.getElementById(`lotkaMecz${index}Leg2`).value} lotek) średnia ${srednia(document.getElementById(`lotkaMecz${index}Leg2`).value)}<br>
       `;
     if (document.getElementById(`mecz${index}leg3`)) {
+      
       raport+=`
-      Leg3: Rozpoczął Marcin Marcinkowski<br>
-      Wygrali: Arkadiusz Arkowy (26 lotka) średnia 57,80 | Marcin Marcinkowski (pozostało punktów 46) średnia 50,55<br>
+      Leg3: Rozpoczął Marcin Marcinkowski<br> // 
+      Wygrali: ${document.getElementById(`winnerMecz${index}Leg3`).value} (${document.getElementById(`lotkaMecz${index}Leg3`).value} lotek) średnia ${srednia(document.getElementById(`lotkaMecz${index}Leg3`).value)} | Marcin Marcinkowski (pozostało punktów 46) średnia 50,55<br> // winner + winner's teammate
       Przegrali: Wojciech Skoncentrowany (pozostało punktów 73) średnia 47,55 | Paweł Pawliczek (pozostało punktów 20) średnia 60,13<br>
         `
     } 
     }
-
+      ///////////////////////////////////////////////////////////////////////
     for (let index = 9; index <= 12; index++) {
+      let hostPoints = 0
+      let guestPoints = 0
       const winner1 = document.getElementById(`winnerMecz${index}Leg1`).value;
       const loser1 = Array.from(document.getElementById(`winnerMecz${index}Leg1`).options)
         .find(opt => opt.value !== winner1)?.value || 'unknown';
       const winner2 = document.getElementById(`winnerMecz${index}Leg2`).value;
       const loser2 = Array.from(document.getElementById(`winnerMecz${index}Leg2`).options)
         .find(opt => opt.value !== winner2)?.value || 'unknown';
-      
+      if (skladGospodarz.find((e) => e==winner1)) {
+        hostTotalPoints+=1
+        hostPoints+=1
+      }
+      if (skladGospodarz.find((e) => e==winner2)) {
+        hostTotalPoints+=1
+        hostPoints+=1
+      }
+      if (skladGosc.find((e) => e==winner1)) {
+        guestTotalPoints+=1
+        guestPoints+=1
+      }
+      if (skladGosc.find((e) => e==winner2)) {
+        guestTotalPoints+=1
+        guestPoints+=1
+      }
       raport += `
-      ${document.getElementById(`gracz1mecz${index}`).value} - ${document.getElementById(`gracz2mecz${index}`).value} (wygrane legi gracza 1:wygrane legi gracza 2) ---- sumaryczny wynik obu zespołów<br>
+      ${document.getElementById(`gracz1mecz${index}`).value} - ${document.getElementById(`gracz2mecz${index}`).value} (${hostPoints}:${guestPoints}) ---- ${hostTotalPoints}:${guestTotalPoints}<br>
       - Leg1: Wygrał: ${winner1} (${document.getElementById(`lotkaMecz${index}Leg1`).value}) średnia (${srednia(document.getElementById(`lotkaMecz${index}Leg1`).value)}) | Przegrał: ${loser1} (pozostało punktów ${document.getElementById(`pozostaleMecz${index}Leg1`).value}) średnia (${sredniaRemain(document.getElementById(`pozostaleMecz${index}Leg1`).value, document.getElementById(`lotkaPrzegranyMecz${index}Leg1`).value)}) <br>
       - Leg2: Wygrał: ${winner2} (${document.getElementById(`lotkaMecz${index}Leg2`).value}) średnia (${srednia(document.getElementById(`lotkaMecz${index}Leg2`).value)}) | Przegrał: ${loser2} (pozostało punktów ${document.getElementById(`pozostaleMecz${index}Leg2`).value}) średnia (${sredniaRemain(document.getElementById(`pozostaleMecz${index}Leg2`).value, document.getElementById(`lotkaPrzegranyMecz${index}Leg2`).value)})<br>
       `
@@ -1212,7 +1245,7 @@ document.getElementById("dodajGoscRezerwowy").addEventListener("click", function
       const winner3 = document.getElementById(`winnerMecz${index}Leg3`).value;
       const loser3 = Array.from(document.getElementById(`winnerMecz${index}Leg3`).options)
         .find(opt => opt.value !== winner3)?.value || 'unknown';
-      raport += `- Zaczął: ${document.getElementById(`whoStartedLeg3${index}`).value} Wygrał: ${winner3} (${document.getElementById(`lotkaMecz${index}Leg3`).value}) średnia (${srednia(document.getElementById(`lotkaMecz${index}Leg3`).value)}) | Przegrał: ${loser3} (pozostało punktów ${document.getElementById(`pozostaleMecz${index}Leg3`).value}) średnia (${sredniaRemain(document.getElementById(`pozostaleMecz${index}Leg3`).value, document.getElementById(`lotkaPrzegranyMecz${index}Leg3`).value)}) <br>`
+      raport += `- Zaczął: ${document.getElementById(`whoStartedLeg3Mecz${index}`).value} Wygrał: ${winner3} (${document.getElementById(`lotkaMecz${index}Leg3`).value}) średnia (${srednia(document.getElementById(`lotkaMecz${index}Leg3`).value)}) | Przegrał: ${loser3} (pozostało punktów ${document.getElementById(`pozostaleMecz${index}Leg3`).value}) średnia (${sredniaRemain(document.getElementById(`pozostaleMecz${index}Leg3`).value, document.getElementById(`lotkaPrzegranyMecz${index}Leg3`).value)}) <br>`
       }
     }
     raport += `Dzięki za mecz!`    

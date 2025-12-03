@@ -27,7 +27,6 @@
 	<link href="bootstrap.min.css" rel="stylesheet">
 	
 	<script src="jquery-3.6.0.min.js"></script>
-	
     <!-- <style>
       .bd-placeholder-img {
         font-size: 1.125rem;
@@ -65,7 +64,7 @@
 		  <div class="row g-3">
 		  <div class="col-4">
               <h4 class="mb-3">Kolejka:</h4>
-              <input type="text" class="form-control" id="kolejka" name="kolejka" required="">
+              <input type="text" class="form-control" id="kolejka" name="kolejka" value="1" required="">
               <div class="invalid-feedback">
                 Pole wymagane.
               </div>
@@ -104,8 +103,8 @@
 				<input type="text" class="form-control" value="lodówka" id="lokalizacja" name="lokalizacja" disabled>
 			  
 			</div>
-			
-			<h4 class="mb-3  mt-5 btn btn-success text-white">Składy:</h4>
+			<p id="zawodnicy"> 
+				<h4 class="mb-3  mt-5 btn btn-success text-white">Składy:</h4>
 				<div class="col-6" id="hosty">
 					Hosty:
 					<select type="text" class="form-control" id="h1" name="h1" required="">
@@ -136,22 +135,24 @@
 						<option value="Guest 4" selected>g4</option>
 					</select>&nbsp;
 				</div>
+			</p>
+			
 			<div class="col-6">
 				<input type="button" value="Dodaj rezerwowego hosta" class="btn btn-secondary" id="dodajHostRezerwowy">
 			</div>
 			<div class="col-6">
 				<input type="button" value="Dodaj rezerwowego gościa" class="btn btn-secondary" id="dodajGoscRezerwowy">
 			</div>
-					
-
-					
-			<h4 class="mb-3  mt-5 btn btn-success text-white">Przebieg meczu:</h4>		
+			<div class="col-12">
+				<input type="button" value="Wyłącz zmiany składów i danych meczu (zalecane po wyborze)" class="w-100 btn btn-danger btn-lg" id="zatwierdzSklady">
+			</div> <!-- istnieje tylko po to żeby nie pierdolić się ze wszystkimi przypadkami zmiany składów-->
+			<h4 class="mb-3 mt-5 btn btn-success text-white">Przebieg meczu:</h4>		
 
     </div>
 	
 	<!-- ///////////////////////////// przebieg meczu  /////////////////////////////////////////// -->
 	<div id="meczeAll" style="width:80%; margin: auto;">
-
+			
 	</div>
 	
          
@@ -161,10 +162,10 @@
 	</div>
 	<div class="row g-3 py-2" id="inputPlayerRow">
 		<div class="col-5">
-			<input type="text" name="max_zawodnik[]" class="form-control" placeholder="zawodnik" autocomplete="off">
+			<select id="zawodnikWynik0" name="max_zawodnik[]" class="form-control" placeholder="zawodnik" autocomplete="off"></select>
 		</div>
 		<div class="col-6">
-			<input type="text" name="max_wynik[]" class="form-control" placeholder="wynik" autocomplete="off">
+			<input type="number" id="wynik0" class="form-control" placeholder="wynik" autocomplete="off">
 		</div>
         <div class="input-group-append col-1">                
 			<button id="addRow" type="button" class="btn btn-info">+</button>
@@ -177,10 +178,10 @@
 	</div>
 	<div class="row g-3 py-2" id="inputDartRow">
 		<div class="col-5">
-			<input type="text" name="lotka_zawodnik[]" class="form-control" placeholder="zawodnik" autocomplete="off">
+			<select id="zawodnikLotka0" name="zawodnikLotka0" class="form-control" placeholder="zawodnik" autocomplete="off"></select>
 		</div>
 		<div class="col-6">
-			<input type="text" name="lotka_wynik[]" class="form-control" placeholder="lotka" autocomplete="off">
+			<input type="number" name="lotka0" class="form-control" placeholder="lotka" autocomplete="off">
 		</div>
         <div class="input-group-append col-1">                
 			<button id="addRow1" type="button" class="btn btn-info">+</button>
@@ -193,10 +194,10 @@
 	</div>
 	<div class="row g-3 py-2" id="inputHighRow">
 		<div class="col-5">
-			<input type="text" name="skonczenie_zawodnik[]" class="form-control" placeholder="zawodnik" autocomplete="off">
+			<select id="zawodnikSkonczenie0" class="form-control" placeholder="zawodnik" autocomplete="off"></select>
 		</div>
 		<div class="col-6">
-			<input type="text" name="skonczenie_wynik[]" class="form-control" placeholder="skończenie" autocomplete="off">
+			<input type="number" id="skonczenie0" class="form-control" placeholder="skończenie" autocomplete="off">
 		</div>
         <div class="input-group-append col-1">                
 			<button id="addRow2" type="button" class="btn btn-info">+</button>

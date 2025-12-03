@@ -21,6 +21,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById(`liga`).setAttribute("disabled", "")
     document.getElementById(`gospodarz`).setAttribute("disabled", "")
     document.getElementById(`gosc`).setAttribute("disabled", "")
+    document.getElementById(`dodajHostRezerwowy`).disabled=true;
+    document.getElementById(`dodajGoscRezerwowy`).disabled=true;
     for (let index = 1; index <= 4; index++) {
       document.getElementById(`h${index}`).setAttribute("disabled", "")
       document.getElementById(`g${index}`).setAttribute("disabled", "")

@@ -13,7 +13,21 @@ document.addEventListener('DOMContentLoaded', () => {
   const lokalizacja = document.getElementById("lokalizacja");
   var sumLegHost = 0
   var sumLegGuest = 0
-  
+  document.getElementById(`date`).valueAsDate = new Date();
+  document.getElementById(`zatwierdzSklady`).addEventListener("click", (x) => {
+    x.preventDefault()
+    document.getElementById(`kolejka`).setAttribute("disabled", "")
+    document.getElementById(`date`).setAttribute("disabled", "")
+    document.getElementById(`liga`).setAttribute("disabled", "")
+    document.getElementById(`gospodarz`).setAttribute("disabled", "")
+    document.getElementById(`gosc`).setAttribute("disabled", "")
+    for (let index = 1; index <= 4; index++) {
+      document.getElementById(`h${index}`).setAttribute("disabled", "")
+      document.getElementById(`g${index}`).setAttribute("disabled", "")
+      if (document.getElementById(`hr${index}`)) document.getElementById(`hr${index}`).setAttribute("disabled", "")
+      if (document.getElementById(`gr${index}`)) document.getElementById(`gr${index}`).setAttribute("disabled", "")
+    }
+  })
 
   // helper: set option values from option text content
   const setOptionValues = (selectEl) => {
@@ -67,6 +81,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const dyn = container ? Array.from(container.querySelectorAll('select')) : [];
     return base.concat(dyn);
   };
+
+  const getAllSelects = () => {
+    const baseIds =  ['h1', 'h2', 'h3', 'h4', 'g1', 'g2', 'g3', 'g4'];
+    const base = baseIds.map(id => document.getElementById(id)).filter(Boolean);
+    const container = document.getElementById('zawodnicy') 
+    const dyn = container ? Array.from(container.querySelectorAll('select')) : [];
+    return base.concat(dyn);
+  }
 
   const syncPlayerGroup = (selects) => {
     if (!selects || selects.length === 0) return;
@@ -584,11 +606,14 @@ function double(meczID) {
       updateMatchPlayerOptions();
     }
   });
+  let leg1Val = legDouble(meczID, 1);
+  let leg2Val = legDouble(meczID, 2);
+  let leg3Val;
+
   const getLegValues = (n) => {
     const wEl = document.getElementById(`winnerMecz${meczID}Leg${n}`);
     const lEl = document.getElementById(`lotkaMecz${meczID}Leg${n}`);
     const pEl = document.getElementById(`pozostaleMecz${meczID}Leg${n}`);
-
     const updateLegPlayerOptions = () => {
       const hostSelects = getSelectsForSide('host');
       const guestSelects = getSelectsForSide('guest');
@@ -707,6 +732,17 @@ function double(meczID) {
     });
   }
   updateMatchWinner();
+
+  return {
+    getLegs: getAllLegs,
+    getLeg: getLegValues,
+    getMatchWinner: getMatchWinner,
+    initial: {
+      leg1: leg1Val,
+      leg2: leg2Val,
+      leg3: leg3Val
+    }
+  };
 }
 
 function legDouble(meczID, numer) {
@@ -727,40 +763,50 @@ function legDouble(meczID, numer) {
   let g4 = selectZawodnik4 ? selectZawodnik4.value : ''
 
   legDiv.innerHTML = `
-    Kto wygrał leg?
-    <select id="winnerMecz${meczID}Leg${numer}" class="form-select">
-      <option value="${g1}">${g1}</option>
-      <option value="${g2}">${g2}</option>
-      <option value="${g3}">${g3}</option>
-      <option value="${g4}">${g4}</option>
-    </select>
-    <br>
+      Kto wygrał leg?
+      <select id="winnerMecz${meczID}Leg${numer}" class="form-select">
+        <option value="${g1}">${g1}</option>
+        <option value="${g2}">${g2}</option>
+        <option value="${g3}">${g3}</option>
+        <option value="${g4}">${g4}</option>
+      </select><br>`
+  if (numer==3) {
+    legDiv.innerHTML+=`
+    Kto zaczął lega?
+    <select id="whoStartedLeg3Mecz${meczID}" class="form-select">
+        <option value="${g1}">${g1}</option>
+        <option value="${g2}">${g2}</option>
+        <option value="${g3}">${g3}</option>
+        <option value="${g4}">${g4}</option>
+      </select><br>
+    `
+  }
+  legDiv.innerHTML+=`
     <div id="playerInputsMecz${meczID}Leg${numer}">
       <div class="player-block" data-idx="1">
         <label>${g1}</label>
-        rzucone lotki: <input type="number" min="1" id="lotkaMecz${meczID}Leg${numer}P1" class="form-control player-lotka" />
-        Pozostało punktów: <input type="number" min="0" max="501" id="pozostaleMecz${meczID}Leg${numer}P1" class="form-control player-pozostale" />
+        rzucone lotki: <input type="number" min="1" id="lotkaMecz${meczID}Leg${numer}P1" class="form-control player-lotka" required/>
+        Pozostało punktów: <input type="number" min="0" max="501" id="pozostaleMecz${meczID}Leg${numer}P1" class="form-control player-pozostale" disabled/>
       </div>
       <div class="player-block" data-idx="2">
         <label>${g2}</label>
-        rzucone lotki: <input type="number" min="1" id="lotkaMecz${meczID}Leg${numer}P2" class="form-control player-lotka" />
-        Pozostało punktów: <input type="number" min="0" max="501" id="pozostaleMecz${meczID}Leg${numer}P2" class="form-control player-pozostale" />
+        rzucone lotki: <input type="number" min="1" id="lotkaMecz${meczID}Leg${numer}P2" class="form-control player-lotka" required/>
+        Pozostało punktów: <input type="number" min="0" max="501" id="pozostaleMecz${meczID}Leg${numer}P2" class="form-control player-pozostale" required/>
       </div>
       <div class="player-block" data-idx="3">
         <label>${g3}</label>
-        rzucone lotki: <input type="number" min="1" id="lotkaMecz${meczID}Leg${numer}P3" class="form-control player-lotka" />
-        Pozostało punktów: <input type="number" min="0" max="501" id="pozostaleMecz${meczID}Leg${numer}P3" class="form-control player-pozostale" />
+        rzucone lotki: <input type="number" min="1" id="lotkaMecz${meczID}Leg${numer}P3" class="form-control player-lotka" required/>
+        Pozostało punktów: <input type="number" min="0" max="501" id="pozostaleMecz${meczID}Leg${numer}P3" class="form-control player-pozostale" required/>
       </div>
       <div class="player-block" data-idx="4">
         <label>${g4}</label>
-        rzucone lotki: <input type="number" min="1" id="lotkaMecz${meczID}Leg${numer}P4" class="form-control player-lotka" />
-        Pozostało punktów: <input type="number" min="0" max="501" id="pozostaleMecz${meczID}Leg${numer}P4" class="form-control player-pozostale" />
+        rzucone lotki: <input type="number" min="1" id="lotkaMecz${meczID}Leg${numer}P4" class="form-control player-lotka" required/>
+        Pozostało punktów: <input type="number" min="0" max="501" id="pozostaleMecz${meczID}Leg${numer}P4" class="form-control player-pozostale" required/>
       </div>
     </div>
     <input type="hidden" id="lotkaMecz${meczID}Leg${numer}" />
     <input type="hidden" id="pozostaleMecz${meczID}Leg${numer}" />
   `;
-
   const getPlayerInputs = (idx) => {
     return {
       lotka: document.getElementById(`lotkaMecz${meczID}Leg${numer}P${idx}`),
@@ -843,7 +889,7 @@ function legDouble(meczID, numer) {
   }
 
   if (winnerSelect) {
-    winnerSelect.addEventListener('change', () => {
+    winnerSelect.addEventListener('change', (e) => {
       syncGlobalWithWinner()
     })
   }
@@ -894,7 +940,50 @@ function legDouble(meczID, numer) {
   sumLegHost++
   document.getElementById(`winnerMecz${meczID}Leg${numer}`).addEventListener("change", (x) => {
     x.preventDefault()
-    let winner = (document.getElementById(`winnerMecz${meczID}Leg${numer}`) || {}).value
+    winner = (document.getElementById(`winnerMecz${meczID}Leg${numer}`) || {}).value
+    let p1 = document.getElementById(`pozostaleMecz${meczID}Leg${numer}P1`)
+    let p2 = document.getElementById(`pozostaleMecz${meczID}Leg${numer}P2`)
+    let p3 = document.getElementById(`pozostaleMecz${meczID}Leg${numer}P3`)
+    let p4 = document.getElementById(`pozostaleMecz${meczID}Leg${numer}P4`)
+    switch (winner) {
+      case g1:
+        p1.setAttribute("disabled", "")
+        p2.removeAttribute("disabled")
+        p2.setAttribute("required", "")
+        p3.removeAttribute("disabled")
+        p3.setAttribute("required", "")
+        p4.removeAttribute("disabled")
+        p4.setAttribute("required", "")
+        break;
+      case g2:
+        p1.removeAttribute("disabled")
+        p1.setAttribute("required", "")
+        p2.setAttribute("disabled", "")
+        p3.removeAttribute("disabled")
+        p3.setAttribute("required", "")
+        p4.removeAttribute("disabled")
+        p4.setAttribute("required", "")
+        break;
+      case g3:
+        p1.removeAttribute("disabled")
+        p1.setAttribute("required", "")
+        p2.removeAttribute("disabled")
+        p2.setAttribute("required", "")
+        p3.setAttribute("disabled", "")
+        p4.removeAttribute("disabled")
+        p4.setAttribute("required", "")
+        break;
+      case g4:
+        p1.removeAttribute("disabled")
+        p1.setAttribute("required", "")
+        p2.removeAttribute("disabled")
+        p2.setAttribute("required", "")
+        p3.removeAttribute("disabled")
+        p3.setAttribute("required", "")
+        p4.setAttribute("disabled", "")
+        break;
+    }
+
     if (skladGospodarz.find((e) => e==winner)) { //nie działa ale pomysł jest dobry
       sumLegHost++; 
       sumLegGuest--;
@@ -906,6 +995,9 @@ function legDouble(meczID, numer) {
     console.log(sumLegHost);
     console.log(sumLegGuest);
   })
+  let lotka = (document.getElementById(`lotkaMecz${meczID}Leg${numer}`) || {}).value
+  let pozostale = (document.getElementById(`pozostaleMecz${meczID}Leg${numer}`) || {}).value
+  return [winner, lotka, pozostale]
 }
 
 single(1);
@@ -987,6 +1079,38 @@ document.getElementById("dodajGoscRezerwowy").addEventListener("click", function
   return false
 })
 
+
+let zawodnicy = skladGospodarz.concat(skladGosc) // teraz tak po prostu nie działa
+
+// get currently chosen players in host and guest player selects
+const chosen = getAllSelects().map(s => s.value).filter(Boolean);
+
+// helper to (re)build options for a select from players array, disabling those not chosen
+const buildOptionsAll = (selectEl, players, chosenList) => {
+  if (!selectEl) return;
+  const prev = selectEl.value;
+  selectEl.innerHTML = '';
+  players.forEach(p => {
+    const opt = document.createElement('option');
+    opt.value = p;
+    opt.textContent = p;
+    // disable option when player is not currently selected in the corresponding team selects
+    if (!chosenList.includes(p)) opt.disabled = true;
+    if (prev && prev === p) opt.selected = true;
+    selectEl.appendChild(opt);
+  });
+  // if nothing is selected and there is an enabled option, pick the first enabled one
+  if (!selectEl.value) {
+    const firstEnabled = Array.from(selectEl.options).find(o => !o.disabled);
+    if (firstEnabled) selectEl.value = firstEnabled.value;
+  }
+};
+buildOptionsAll(document.getElementById(`zawodnikWynik0`), zawodnicy, chosen);
+buildOptionsAll(document.getElementById(`zawodnikLotka0`), zawodnicy, chosen);
+buildOptionsAll(document.getElementById(`zawodnikSkonczenie0`), zawodnicy, chosen);
+
+
+
 //wynik
     // utility to pick a recycled id or next counter
     function getIdFromPool(pool, nextCounterRef, prefixCheckFn) {
@@ -1007,10 +1131,10 @@ document.getElementById("dodajGoscRezerwowy").addEventListener("click", function
         const html = `
             <div class="row g-3 py-2" id="inputPlayerRow${id}">
                 <div class="col-5">
-                    <input type="text" name="max_zawodnik[]" class="form-control" placeholder="zawodnik" autocomplete="off">
+                    <select id="zawodnikWynik${id}" class="form-control" placeholder="zawodnik" autocomplete="off"></select>
                 </div>
                 <div class="col-6">
-                    <input type="text" name="max_wynik[]" class="form-control" placeholder="wynik" autocomplete="off">
+                    <input type="number" id="wynik${id}" class="form-control" placeholder="wynik" autocomplete="off">
                 </div>
                 <div class="input-group-append col-1">
                     <button id="removeRRow${id}" type="button" class="btn btn-danger">&ndash;</button>
@@ -1018,7 +1142,7 @@ document.getElementById("dodajGoscRezerwowy").addEventListener("click", function
             </div>
         `;
         pBestRes.insertAdjacentHTML('beforeend', html);
-
+        buildOptionsAll(document.getElementById(`zawodnikWynik${id}`), zawodnicy, chosen);
         const btn = document.getElementById(`removeRRow${id}`);
         if (btn) btn.addEventListener("click", (e) => {
             const row = e.currentTarget.closest('.row');
@@ -1043,10 +1167,10 @@ document.getElementById("dodajGoscRezerwowy").addEventListener("click", function
         const html = `
             <div class="row g-3 py-2" id="inputDartRow${id}">
                 <div class="col-5">
-                    <input type="text" name="lotka_zawodnik[]" class="form-control" placeholder="zawodnik" autocomplete="off">
+                    <select id="zawodnikLotka${id}" class="form-control" placeholder="zawodnik" autocomplete="off"></select>
                 </div>
                 <div class="col-6">
-                    <input type="text" name="lotka_wynik[]" class="form-control" placeholder="lotka" autocomplete="off">
+                    <input type="number" id="lotka${id}" class="form-control" placeholder="lotka" autocomplete="off">
                 </div>
                 <div class="input-group-append col-1">                
                     <button id="removeDRow${id}" type="button" class="btn btn-danger">&ndash;</button>
@@ -1054,7 +1178,7 @@ document.getElementById("dodajGoscRezerwowy").addEventListener("click", function
             </div>
         `;
         pBestDarts.insertAdjacentHTML('beforeend', html);
-
+        buildOptionsAll(document.getElementById(`zawodnikLotka${id}`), zawodnicy, chosen);
         const btn = document.getElementById(`removeDRow${id}`);
         if (btn) btn.addEventListener("click", (e) => {
             const row = e.currentTarget.closest('.row');
@@ -1078,18 +1202,19 @@ document.getElementById("dodajGoscRezerwowy").addEventListener("click", function
         const html = `
             <div class="row g-3 py-2" id="inputHighRow${id}">
                 <div class="col-5">
-                    <input type="text" name="skonczenie_zawodnik[]" class="form-control" placeholder="zawodnik" autocomplete="off">
+                    <select id="zawodnikSkonczenie${id}" name="skonczenie_zawodnik[]" class="form-control" placeholder="zawodnik" autocomplete="off"></select>
                 </div>
                 <div class="col-6">
-                    <input type="text" name="skonczenie_wynik[]" class="form-control" placeholder="skończenie" autocomplete="off">
+                    <input type="number" id="skonczenie${id}" name="skonczenie_wynik[]" class="form-control" placeholder="skończenie" autocomplete="off">
                 </div>
                 <div class="input-group-append col-1">                
                     <button id="removeHRow${id}" type="button" class="btn btn-danger">&ndash;</button>
                 </div>
             </div>
         `;
+        
         pHighEnds.insertAdjacentHTML('beforeend', html);
-
+        buildOptionsAll(document.getElementById(`zawodnikSkonczenie${id}`), zawodnicy, chosen);
         const btn = document.getElementById(`removeHRow${id}`);
         if (btn) btn.addEventListener("click", (e) => {
             const row = e.currentTarget.closest('.row');
@@ -1103,40 +1228,48 @@ document.getElementById("dodajGoscRezerwowy").addEventListener("click", function
             row.remove();
         });
     });
-    console.log(document.getElementById(`gospodarz`).value[0])
+if ( form ) {
+  form.addEventListener("submit", function(event) {
+    event.preventDefault();
+    console.log(`${document.getElementById(`hr1`).value}`)
     function srednia(val) {
     return (501/val).toFixed(2)
     }
     function sredniaRemain(remain, val) {
     return ((501-remain)/val).toFixed(2)
     }
-    
-if ( form ) {
-  form.addEventListener("submit", function(event) {
-    event.preventDefault();
     let hostTotalPoints = 0
     let guestTotalPoints = 0
     // trzeba dodawanie legów w pętli zrobić
     // zlicznie legów w zespołach musi być po kolei do dodawania z każdym legiem 
     // zmiana drużyn znowu jest rozwalona
+    // if pozostale == null to nie zwracac
     let raport = `
     ${document.getElementById(`kolejka`).value} Kolejka - ${document.getElementById(`date`).value}<br>
     ${document.getElementById(`gospodarz`).value} - ${document.getElementById(`gosc`).value}  ${sumLegHost} - ${sumLegGuest}<br>
-    H1: ${document.getElementById(`gospodarz`).value[0]} //wygrane-przegrane łącznie / ??? (w/l single, w/l deble) // z wybranych graczy<br>
+    ${skladGospodarz[0]}: //wygrane-przegrane łącznie / ??? (w/l single, w/l deble) // z wybranych graczy<br>
     // wrzucić osiągnięcia dla gracza<br>
-    H2:<br>
-    H3:<br>
-    H4:<br>
-    // rezerwowi jak byli <br>
-
-    ${document.getElementById(`gosc`)}:<br>
-    G1: ${document.getElementById(`gosc`).value[0]} // wywala literkę<br>
-    G2:<br>
-    G3:<br>
-    G4:<br>
-    //rezerwowi jak byli<br>
-    Przebieg meczu szczegóły:<br>
+    ${skladGospodarz[1]}:<br>
+    ${skladGospodarz[2]}:<br>
+    ${skladGospodarz[3]}:<br>`
+    for (let index = 1; index <= 4; index++) {
+      if (document.getElementById(`hr${index}`)) {
+        raport+=`${document.getElementById(`hr${index}`).value}:<br>`
+      }
+    }
+    raport+=`
+    ${document.getElementById(`gosc`).value}:<br>
+    ${skladGosc[0]}:<br>
+    ${skladGosc[1]}:<br>
+    ${skladGosc[2]}:<br>
+    ${skladGosc[3]}:<br>
     `
+    for (let index = 1; index <= 4; index++) {
+      if (document.getElementById(`gr${index}`)) {
+        raport+=`${document.getElementById(`gr${index}`).value}:<br>`
+      }
+    }
+    raport+=`Przebieg meczu szczegóły:<br>`
     for (let index = 1; index <= 4; index++) {
       let hostPoints = 0
       let guestPoints = 0
@@ -1146,6 +1279,7 @@ if ( form ) {
       const winner2 = document.getElementById(`winnerMecz${index}Leg2`).value;
       const loser2 = Array.from(document.getElementById(`winnerMecz${index}Leg2`).options)
         .find(opt => opt.value !== winner2)?.value || 'unknown';
+
       if (skladGospodarz.find((e) => e==winner1)) {
         hostTotalPoints+=1
         hostPoints+=1
@@ -1171,6 +1305,14 @@ if ( form ) {
       const winner3 = document.getElementById(`winnerMecz${index}Leg3`).value;
       const loser3 = Array.from(document.getElementById(`winnerMecz${index}Leg3`).options)
         .find(opt => opt.value !== winner3)?.value || 'unknown';
+      if (skladGospodarz.find((e) => e==winner3)) {
+        hostTotalPoints+=1
+        hostPoints+=1
+      }
+      if (skladGosc.find((e) => e==winner3)) {
+        guestTotalPoints+=1
+        guestPoints+=1
+      }
       raport += `- Zaczął: ${document.getElementById(`whoStartedLeg3Mecz${index}`).value} Wygrał: ${winner3} (${document.getElementById(`lotkaMecz${index}Leg3`).value}) średnia (${srednia(document.getElementById(`lotkaMecz${index}Leg3`).value)}) | Przegrał: ${loser3} (pozostało punktów ${document.getElementById(`pozostaleMecz${index}Leg3`).value}) średnia (${sredniaRemain(document.getElementById(`pozostaleMecz${index}Leg3`).value, document.getElementById(`lotkaPrzegranyMecz${index}Leg3`).value)}) <br>`
       }
     }
@@ -1198,14 +1340,24 @@ if ( form ) {
       }
       raport += `
       ${document.getElementById(`gracz1mecz${index}`).value}, ${document.getElementById(`gracz2mecz${index}`).value} - ${document.getElementById(`gracz3mecz${index}`).value}, ${document.getElementById(`gracz4mecz${index}`).value} (${hostPoints}:${guestPoints}) ---- ${hostTotalPoints}:${guestTotalPoints}<br>
-      - Leg1: Wygrał: ${document.getElementById(`winnerMecz${index}Leg1`).value} (${document.getElementById(`lotkaMecz${index}Leg1`).value} lotek) średnia ${srednia(document.getElementById(`lotkaMecz${index}Leg1`).value)}<br>
-      - Leg2: Wygrał: ${document.getElementById(`winnerMecz${index}Leg2`).value} (${document.getElementById(`lotkaMecz${index}Leg2`).value} lotek) średnia ${srednia(document.getElementById(`lotkaMecz${index}Leg2`).value)}<br>
+      - Leg1: Wygrał: ${winner1} (${document.getElementById(`lotkaMecz${index}Leg1`).value} lotek) średnia ${srednia(document.getElementById(`lotkaMecz${index}Leg1`).value)}<br>
+      - Leg2: Wygrał: ${winner2} (${document.getElementById(`lotkaMecz${index}Leg2`).value} lotek) średnia ${srednia(document.getElementById(`lotkaMecz${index}Leg2`).value)}<br>
       `;
     if (document.getElementById(`mecz${index}leg3`)) {
-      
+      const winner3 = document.getElementById(`winnerMecz${index}Leg3`).value;
+      // const loser3 = Array.from(document.getElementById(`winnerMecz${index}Leg3`).options)
+      //  .find(opt => opt.value !== winner3)?.value || 'unknown';
+      if (skladGospodarz.find((e) => e==winner3)) {
+        hostTotalPoints+=1
+        hostPoints+=1
+      }
+      if (skladGosc.find((e) => e==winner3)) {
+        guestTotalPoints+=1
+        guestPoints+=1
+      }
       raport+=`
-      Leg3: Rozpoczął Marcin Marcinkowski<br> // 
-      Wygrali: ${document.getElementById(`winnerMecz${index}Leg3`).value} (${document.getElementById(`lotkaMecz${index}Leg3`).value} lotek) średnia ${srednia(document.getElementById(`lotkaMecz${index}Leg3`).value)} | Marcin Marcinkowski (pozostało punktów 46) średnia 50,55<br> // winner + winner's teammate
+      Leg3: Rozpoczął ${document.getElementById(`whoStartedLeg3Mecz${index}`)}<br> // 
+      Wygrali: ${winner3} (${document.getElementById(`lotkaMecz${index}Leg3`).value} lotek) średnia ${srednia(document.getElementById(`lotkaMecz${index}Leg3`).value)} | Marcin Marcinkowski (pozostało punktów 46) średnia 50,55<br> // winner + winner's teammate
       Przegrali: Wojciech Skoncentrowany (pozostało punktów 73) średnia 47,55 | Paweł Pawliczek (pozostało punktów 20) średnia 60,13<br>
         `
     } 
@@ -1245,10 +1397,18 @@ if ( form ) {
       const winner3 = document.getElementById(`winnerMecz${index}Leg3`).value;
       const loser3 = Array.from(document.getElementById(`winnerMecz${index}Leg3`).options)
         .find(opt => opt.value !== winner3)?.value || 'unknown';
+      if (skladGospodarz.find((e) => e==winner3)) {
+        hostTotalPoints+=1
+        hostPoints+=1
+      }
+      if (skladGosc.find((e) => e==winner3)) {
+        guestTotalPoints+=1
+        guestPoints+=1
+      }
       raport += `- Zaczął: ${document.getElementById(`whoStartedLeg3Mecz${index}`).value} Wygrał: ${winner3} (${document.getElementById(`lotkaMecz${index}Leg3`).value}) średnia (${srednia(document.getElementById(`lotkaMecz${index}Leg3`).value)}) | Przegrał: ${loser3} (pozostało punktów ${document.getElementById(`pozostaleMecz${index}Leg3`).value}) średnia (${sredniaRemain(document.getElementById(`pozostaleMecz${index}Leg3`).value, document.getElementById(`lotkaPrzegranyMecz${index}Leg3`).value)}) <br>`
       }
-    }
-    raport += `Dzięki za mecz!`    
+      raport+=`${document.getElementById(`adnotacje`).innerText}`
+    } 
     document.body.innerHTML=raport
   });
 }

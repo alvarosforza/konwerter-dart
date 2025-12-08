@@ -1,10 +1,17 @@
-//jeśli ktokolwiek będzie tu zaglądał proszę wyjebać nazewnictwo zmiennych do kosza bo sam nie wiem co jest czym
-const druzyny = [{nazwa: "sernik", zawodnicy:["A","B","C","D","A2","B2","C2","D2"], lokal:"lodówka"},
-   {nazwa: "roztocza" , zawodnicy:["E","F","G","H","E2","F2","G2","H2"], lokal:"dywan"}, 
-   {nazwa: "pliki" , zawodnicy:["I","J","K","L","I2","J2","K2","L2"], lokal:"folder"},
-   {nazwa: "switche" , zawodnicy:["M","N","O","P","M2","N2","O2","P2"], lokal:"klawiatura"}
-  ];
-
+//DISCLAIMER: jeśli ktokolwiek będzie tu zaglądał proszę wyjebać nazewnictwo zmiennych do kosza bo sam nie wiem co jest czym
+const ligi = JSON.parse(`[{"liga": "ekstraklasa",
+"druzyny":
+[{"nazwa": "sernik", "kapitan":"A", "zawodnicy":["A","B","C","D","A2","B2","C2","D2"], "lokal":"lodówka", "adres":"kuchnia", "sponsorzy":""},
+{"nazwa": "roztocza" , "kapitan":"E", "zawodnicy":["E","F","G","H","E2","F2","G2","H2"], "lokal":"dywan", "adres":"podłoga", "sponsorzy":""}, 
+{"nazwa": "pliki" , "kapitan":"I", "zawodnicy":["I","J","K","L","I2","J2","K2","L2"], "lokal":"folder", "adres":"dysk", "sponsorzy":""},
+{"nazwa": "switche" , "kapitan":"M", "zawodnicy":["M","N","O","P","M2","N2","O2","P2"], "lokal":"klawiatura", "adres":"biurko", "sponsorzy":""}
+]},
+{"liga": "1 liga",
+"druzyny":
+[{"nazwa": "SERNIK", "kapitan":"A", "zawodnicy":["A","B","C","D","A2","B2","C2","D2"], "lokal":"lodówka", "adres":"kuchnia", "sponsorzy":""},
+{"nazwa": "roztocza" , "kapitan":"E", "zawodnicy":["E","F","G","H","E2","F2","G2","H2"], "lokal":"dywan", "adres":"podłoga", "sponsorzy":""}, 
+{"nazwa": "pliki" , "kapitan":"I", "zawodnicy":["I","J","K","L","I2","J2","K2","L2"], "lokal":"folder", "adres":"dysk", "sponsorzy":""},
+{"nazwa": "switche" , "kapitan":"M", "zawodnicy":["M","N","O","P","M2","N2","O2","P2"], "lokal":"klawiatura", "adres":"biurko", "sponsorzy":""}]}]`)
 
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById("formKonwerter");
@@ -12,6 +19,18 @@ document.addEventListener('DOMContentLoaded', () => {
   const gospodarz = document.getElementById("gospodarz");
   const gosc = document.getElementById("gosc");
   const lokalizacja = document.getElementById("lokalizacja");
+
+  const ligaSelect = document.getElementById(`liga`)
+  for (let index = 0; index < ligi.length; index++) {
+    ligaSelect.innerHTML += `<option value="${index}">${ligi[index].liga}</option>`;
+  }
+  var ligaVal = ligaSelect.value 
+  ligaSelect.addEventListener("change", (x) => {
+    x.preventDefault()
+    ligaVal = ligaSelect.value 
+    
+  }) // event listener na zmiane ligi
+
   var sumLegHost = 0
   var sumLegGuest = 0
   document.getElementById(`date`).valueAsDate = new Date();
@@ -23,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById(`gospodarz`).setAttribute("disabled", "")
     document.getElementById(`gosc`).setAttribute("disabled", "")
     document.getElementById(`dodajHostRezerwowy`).disabled=true;
-    document.getElementById(`dodajGosc Rezerwowy`).disabled=true;
+    document.getElementById(`dodajGoscRezerwowy`).disabled=true;
     for (let index = 1; index <= 4; index++) {
       document.getElementById(`h${index}`).setAttribute("disabled", "")
       document.getElementById(`g${index}`).setAttribute("disabled", "")
@@ -44,9 +63,9 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   // populate team selects
-  for (let index = 0; index < druzyny.length; index++) {
-    gospodarz.innerHTML += `<option value="${druzyny[index].nazwa}">${druzyny[index].nazwa}</option>`;
-    gosc.innerHTML += `<option value="${druzyny[index].nazwa}">${druzyny[index].nazwa}</option>`;
+  for (let index = 0; index < ligi[ligaVal].druzyny.length; index++) {
+    gospodarz.innerHTML += `<option value="${ligi[ligaVal].druzyny[index].nazwa}">${ligi[ligaVal].druzyny[index].nazwa}</option>`;
+    gosc.innerHTML += `<option value="${ligi[ligaVal].druzyny[index].nazwa}">${ligi[ligaVal].druzyny[index].nazwa}</option>`;
   }
   setOptionValues(gospodarz);
   setOptionValues(gosc);
@@ -162,8 +181,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // update team players and repopulate player selects
   const updateTeamsAndPlayers = () => {
-    const hostTeam = druzyny.find(d => d.nazwa === gospodarz.value);
-    const guestTeam = druzyny.find(d => d.nazwa === gosc.value);
+    const hostTeam = ligi[ligaVal].druzyny.find(d => d.nazwa === gospodarz.value);
+    const guestTeam = ligi[ligaVal].druzyny.find(d => d.nazwa === gosc.value);
     skladGospodarz = hostTeam ? hostTeam.zawodnicy.slice() : [];
     skladGosc = guestTeam ? guestTeam.zawodnicy.slice() : [];
     populatePlayerSelects('host', skladGospodarz);
@@ -174,7 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
   gospodarz.addEventListener('change', (event) => {
     event.preventDefault();
     syncSelects(gospodarz, gosc);
-    lokalizacja.value = (druzyny.find(d => d.nazwa === gospodarz.value) || {}).lokal || '';
+    lokalizacja.value = (ligi[ligaVal].druzyny.find(d => d.nazwa === gospodarz.value) || {}).lokal || '';
     updateTeamsAndPlayers();
   });
 
@@ -216,7 +235,6 @@ function single(meczID) {
 
   let selectZawodnik1 = document.getElementById(`gracz1mecz${meczID}`);
   let selectZawodnik2 = document.getElementById(`gracz2mecz${meczID}`);
-
   const updateMatchPlayerOptions = () => {
     // get currently chosen players in host and guest player selects
     const hostChosen = getSelectsForSide('host').map(s => s.value).filter(Boolean);
@@ -336,8 +354,6 @@ function single(meczID) {
         const leg3winner = document.getElementById(`winnerMecz${meczID}Leg3`).value;
         if (skladGospodarz.find(e => e==leg3winner)) sumLegHost--
         if (skladGosc.find(e => e==leg3winner)) sumLegGuest--
-        console.log(sumLegHost);
-        console.log(sumLegGuest);
       }
       if (leg3) leg3.remove();
       if (leg3Name) leg3Name.remove();
@@ -394,19 +410,20 @@ function leg(meczID, numer) {
   <option value="${g1}">${g1}</option>
   <option value="${g2}">${g2}</option>
   </select><br>`
-  if (numer==3) 
-      legDiv.innerHTML+=`Kto zaczął lega? 
+  if (numer==3) {
+    legDiv.innerHTML+=`Kto zaczął lega? 
     <select id="whoStartedLeg3Mecz${meczID}" class="form-select" style="width:fit-content;">
     <option value="${g1}">${g1}</option>
     <option value="${g2}">${g2}</option>
     </select><br>`
+  }
   legDiv.innerHTML+=`
   Którą lotką wygrano lega?
-  <input type="number" id="lotkaMecz${meczID}Leg${numer}" value="0" min="9" step="1" required><br>
+  <input type="number" id="lotkaMecz${meczID}Leg${numer}" class="form-control" value="9" min="9" step="1" required><br>
   Ile lotek rzucił przegrany?
-  <input type="number" id="lotkaPrzegranyMecz${meczID}Leg${numer}" value="0" min="1" step="1" required><br>
+  <input type="number" id="lotkaPrzegranyMecz${meczID}Leg${numer}" class="form-control" value="9" min="9" step="1" required><br>
   Ile pozostało punktów przegranemu?
-  <input type="number" id="pozostaleMecz${meczID}Leg${numer}" value="501" min="2" max="501" step="1" required>
+  <input type="number" id="pozostaleMecz${meczID}Leg${numer}" class="form-control" value="501" min="2" max="501" step="1" required>
   <br>`;
   // aktualizacje 
   selectZawodnik1.addEventListener("change", (x) => {
@@ -425,11 +442,11 @@ function leg(meczID, numer) {
     </select><br>`
     }
     legDiv.innerHTML+=`Którą lotką wygrano lega?
-      <input type="number" id="lotkaMecz${meczID}Leg${numer}" value="0" min="9" step="1" required><br>
+      <input type="number" id="lotkaMecz${meczID}Leg${numer}" class="form-control" value="9" min="9" step="1" required><br>
       Ile lotek rzucił przegrany?
-      <input type="number" id="lotkaPrzegranyMecz${meczID}Leg${numer}" value="0" min="1" step="1" required><br>
+      <input type="number" id="lotkaPrzegranyMecz${meczID}Leg${numer}" class="form-control" value="9" min="1" step="1" required><br>
       Ile pozostało punktów przeciwnikowi?
-      <input type="number" id="pozostaleMecz${meczID}Leg${numer}" value="501" min="2" max="501" step="1" required>
+      <input type="number" id="pozostaleMecz${meczID}Leg${numer}" class="form-control" value="501" min="2" max="501" step="1" required>
       <br>`
   })
   selectZawodnik2.addEventListener("change", (x) => {
@@ -440,17 +457,17 @@ function leg(meczID, numer) {
       <option value="${g2}">${g2}</option>
       </select><br>
       `
-    if (numer==3) 
+    if (numer==3) {
       legDiv.innerHTML+=`Kto zaczął lega? 
     <select id="whoStartedLeg3Mecz${meczID}" class="form-select" style="width:fit-content;">
     <option value="${g1}">${g1}</option>
     <option value="${g2}">${g2}</option>
     </select><br>`
-
+    }
     legDiv.innerHTML+=`Którą lotką wygrano lega?
       <input type="number" id="lotkaMecz${meczID}Leg${numer}" min="9" step="1" required><br>
       Ile lotek rzucił przegrany?
-      <input type="number" id="lotkaPrzegranyMecz${meczID}Leg${numer}" min="1" step="1" required><br>
+      <input type="number" id="lotkaPrzegranyMecz${meczID}Leg${numer}" min="9" step="1" required><br>
       Ile pozostało punktów przeciwnikowi?
       <input type="number" id="pozostaleMecz${meczID}Leg${numer}" min="2" max="501" step="1" required>
       <br>`
@@ -459,12 +476,11 @@ function leg(meczID, numer) {
   let mecz = document.getElementById(`mecz${meczID}`)
   mecz.appendChild(legName)
   mecz.appendChild(legDiv)
-  let winner = document.getElementById(`winnerMecz${meczID}Leg${numer}`).value
   sumLegHost++
   document.getElementById(`winnerMecz${meczID}Leg${numer}`).addEventListener("change", (x) => {
     x.preventDefault()
     let winner = (document.getElementById(`winnerMecz${meczID}Leg${numer}`) || {}).value
-    if (skladGospodarz.find((e) => e===winner)) { //nie działa ale pomysł jest dobry
+    if (skladGospodarz.find((e) => e===winner)) { 
       sumLegHost++; 
       sumLegGuest--;
     }
@@ -472,13 +488,7 @@ function leg(meczID, numer) {
       sumLegGuest++; 
       sumLegHost--;
     }
-    console.log(sumLegHost);
-    console.log(sumLegGuest);
   })
-  let lotka = document.getElementById(`lotkaMecz${meczID}Leg${numer}`).value
-  let lotkaPrzegrany = document.getElementById(`lotkaPrzegranyMecz${meczID}Leg${numer}`).value
-  let pozostale = document.getElementById(`pozostaleMecz${meczID}Leg${numer}`).value
-  return [winner, lotka, lotkaPrzegrany, pozostale]
 }
 
 function double(meczID) {
@@ -710,8 +720,6 @@ function double(meczID) {
         const leg3winner = document.getElementById(`winnerMecz${meczID}Leg3`).value;
         if (skladGospodarz.find(e => e==leg3winner)) sumLegHost--
         if (skladGosc.find(e => e==leg3winner)) sumLegGuest--
-        console.log(sumLegHost);
-        console.log(sumLegGuest);
       }
       if (leg3) leg3.remove();
       if (leg3Name) leg3Name.remove();
@@ -788,22 +796,22 @@ function legDouble(meczID, numer) {
     <div id="playerInputsMecz${meczID}Leg${numer}">
       <div class="player-block" data-idx="1">
         <label>${g1}</label>
-        rzucone lotki: <input type="number" value="0" min="1" id="lotkaMecz${meczID}Leg${numer}P1" class="form-control player-lotka" required/>
+        rzucone lotki: <input type="number" value="9" min="1" id="lotkaMecz${meczID}Leg${numer}P1" class="form-control player-lotka" required/>
         Pozostało punktów: <input type="number" value="0" min="0" max="501" id="pozostaleMecz${meczID}Leg${numer}P1" class="form-control player-pozostale" disabled/>
       </div>
       <div class="player-block" data-idx="2">
         <label>${g2}</label>
-        rzucone lotki: <input type="number" value="0" min="1" id="lotkaMecz${meczID}Leg${numer}P2" class="form-control player-lotka" required/>
+        rzucone lotki: <input type="number" value="9" min="1" id="lotkaMecz${meczID}Leg${numer}P2" class="form-control player-lotka" required/>
         Pozostało punktów: <input type="number" value="501" min="0" max="501" id="pozostaleMecz${meczID}Leg${numer}P2" class="form-control player-pozostale" required/>
       </div>
       <div class="player-block" data-idx="3">
         <label>${g3}</label>
-        rzucone lotki: <input type="number" value="0" min="1" id="lotkaMecz${meczID}Leg${numer}P3" class="form-control player-lotka" required/>
+        rzucone lotki: <input type="number" value="9" min="1" id="lotkaMecz${meczID}Leg${numer}P3" class="form-control player-lotka" required/>
         Pozostało punktów: <input type="number" value="501" min="0" max="501" id="pozostaleMecz${meczID}Leg${numer}P3" class="form-control player-pozostale" required/>
       </div>
       <div class="player-block" data-idx="4">
         <label>${g4}</label>
-        rzucone lotki: <input type="number" value="0" min="1" id="lotkaMecz${meczID}Leg${numer}P4" class="form-control player-lotka" required/>
+        rzucone lotki: <input type="number" value="9" min="1" id="lotkaMecz${meczID}Leg${numer}P4" class="form-control player-lotka" required/>
         Pozostało punktów: <input type="number" value="501" min="0" max="501" id="pozostaleMecz${meczID}Leg${numer}P4" class="form-control player-pozostale" required/>
       </div>
     </div>
@@ -1116,10 +1124,7 @@ function legDouble(meczID, numer) {
         sumLegHost--;
       }
     }
-    
     winner=winnerChanged
-    console.log(sumLegHost);
-    console.log(sumLegGuest);
   })
   let lotka = (document.getElementById(`lotkaMecz${meczID}Leg${numer}`) || {}).value
   let pozostale = (document.getElementById(`pozostaleMecz${meczID}Leg${numer}`) || {}).value
@@ -1140,9 +1145,6 @@ single(9);
 single(10);
 single(11);
 single(12);
-
-console.log(sumLegHost);
-console.log(sumLegGuest);
 
 
 
@@ -1353,15 +1355,15 @@ buildOptionsAll(document.getElementById(`zawodnikSkonczenie0`), zawodnicy, chose
             row.remove();
         });
     });
-if ( form ) {
+
   form.addEventListener("submit", function(event) {
     event.preventDefault();
     function srednia(valInt) {
-      if (valInt==0) return 0
+      if (valInt<=0) return 0
     return (501/valInt).toFixed(2)
     }
     function sredniaRemain(remainInt, valInt) {
-      if (valInt==0) return 0
+      if (valInt<=0) return 0
     return ((501-remainInt)/valInt).toFixed(2)
     }
     var zawodnicyWyniki = []
@@ -1372,11 +1374,11 @@ if ( form ) {
           wonSingle:0,
           lostSingle:0,
           wonDouble:0,
-          lostDouble:0
+          lostDouble:0,
+          matchesPlayed:0
         }
       )
     }
-    console.log(zawodnicyWyniki)
     var wyniki = []
     var lotki = []
     var skonczenia = []
@@ -1415,43 +1417,40 @@ if ( form ) {
           skonczenia.push(obj)
         }
     }}
-    console.log(zawodnicy)
     let hostTotalPoints = 0
     let guestTotalPoints = 0
-    // trzeba dodawanie legów w pętli zrobić
-    // if pozostale == null to nie zwracac
     let raport = `
     ${document.getElementById(`kolejka`).value} Kolejka - ${document.getElementById(`date`).value}<br>
-    ${document.getElementById(`gospodarz`).value} - ${document.getElementById(`gosc`).value}  ${sumLegHost} - ${sumLegGuest}<br>     <!-- !!!!!!!!!!!!!!!!! -->
+    ${document.getElementById(`gospodarz`).value} - ${document.getElementById(`gosc`).value}  ${sumLegHost} - ${sumLegGuest}<br>
     ${document.getElementById(`gospodarz`).value}:<br>
-    H1: ${skladGospodarz[0]} // <span id="wonTotal${skladGospodarz[0]}"></span>-<span id="lostTotal${skladGospodarz[0]}"></span> //// wygraneMecze ///// (<span id="wonSingle${skladGospodarz[0]}"></span>/<span id="lostSingle${skladGospodarz[0]}"></span> single, <span id="wonDouble${skladGospodarz[0]}"></span>/<span id="lostDouble${skladGospodarz[0]}"></span> deble)<br>
-    <span id="${skladGospodarz[0]}"></span>
-    H2: ${skladGospodarz[1]} // <span id="wonTotal${skladGospodarz[1]}"></span>-<span id="lostTotal${skladGospodarz[1]}"></span> //// wygraneMecze ///// (<span id="wonSingle${skladGospodarz[1]}"></span>/<span id="lostSingle${skladGospodarz[1]}"></span> single, <span id="wonDouble${skladGospodarz[1]}"></span>/<span id="lostDouble${skladGospodarz[1]}"></span> deble)<br>
-    <span id="${skladGospodarz[1]}"></span>
-    H3: ${skladGospodarz[2]} // <span id="wonTotal${skladGospodarz[2]}"></span>-<span id="lostTotal${skladGospodarz[2]}"></span> //// wygraneMecze ///// (<span id="wonSingle${skladGospodarz[2]}"></span>/<span id="lostSingle${skladGospodarz[2]}"></span> single, <span id="wonDouble${skladGospodarz[2]}"></span>/<span id="lostDouble${skladGospodarz[2]}"></span> deble)<br>
-    <span id="${skladGospodarz[2]}"></span>
-    H4: ${skladGospodarz[3]} // <span id="wonTotal${skladGospodarz[3]}"></span>-<span id="lostTotal${skladGospodarz[3]}"></span> //// wygraneMecze ///// (<span id="wonSingle${skladGospodarz[3]}"></span>/<span id="lostSingle${skladGospodarz[3]}"></span> single, <span id="wonDouble${skladGospodarz[3]}"></span>/<span id="lostDouble${skladGospodarz[3]}"></span> deble)<br>
-    <span id="${skladGospodarz[3]}"></span>`
+    H1: ${document.getElementById("h1").value} // <span id="wonTotal${document.getElementById("h1").value}"></span>-<span id="lostTotal${document.getElementById("h1").value}"></span> / <span id="matchesPlayed${document.getElementById("h1").value}"></span> (<span id="wonSingle${document.getElementById("h1").value}"></span>/<span id="lostSingle${document.getElementById("h1").value}"></span> single, <span id="wonDouble${document.getElementById("h1").value}"></span>/<span id="lostDouble${document.getElementById("h1").value}"></span> deble)<br>
+    <span id="${document.getElementById("h1").value}"></span>
+    H2: ${document.getElementById("h2").value} // <span id="wonTotal${document.getElementById("h2").value}"></span>-<span id="lostTotal${document.getElementById("h2").value}"></span> / <span id="matchesPlayed${document.getElementById("h2").value}"></span> (<span id="wonSingle${document.getElementById("h2").value}"></span>/<span id="lostSingle${document.getElementById("h2").value}"></span> single, <span id="wonDouble${document.getElementById("h2").value}"></span>/<span id="lostDouble${document.getElementById("h2").value}"></span> deble)<br>
+    <span id="${document.getElementById("h2").value}"></span>
+    H3: ${document.getElementById("h3").value} // <span id="wonTotal${document.getElementById("h3").value}"></span>-<span id="lostTotal${document.getElementById("h3").value}"></span> / <span id="matchesPlayed${document.getElementById("h3").value}"></span> (<span id="wonSingle${document.getElementById("h3").value}"></span>/<span id="lostSingle${document.getElementById("h3").value}"></span> single, <span id="wonDouble${document.getElementById("h3").value}"></span>/<span id="lostDouble${document.getElementById("h3").value}"></span> deble)<br>
+    <span id="${document.getElementById("h3").value}"></span>
+    H4: ${document.getElementById("h4").value} // <span id="wonTotal${document.getElementById("h4").value}"></span>-<span id="lostTotal${document.getElementById("h4").value}"></span> / <span id="matchesPlayed${document.getElementById("h4").value}"></span> (<span id="wonSingle${document.getElementById("h4").value}"></span>/<span id="lostSingle${document.getElementById("h4").value}"></span> single, <span id="wonDouble${document.getElementById("h4").value}"></span>/<span id="lostDouble${document.getElementById("h4").value}"></span> deble)<br>
+    <span id="${document.getElementById("h4").value}"></span>`
     for (let index = 1; index <= 4; index++) {
       if (document.getElementById(`hr${index}`)) {
-        raport+=`HR${index}: ${document.getElementById(`hr${index}`).value} // <span id="wonTotal${document.getElementById(`hr${index}`).value}"></span>-<span id="lostTotal${document.getElementById(`hr${index}`).value}"></span> //// wygraneMecze ///// (<span id="wonSingle${document.getElementById(`hr${index}`).value}"></span>/<span id="lostSingle${document.getElementById(`hr${index}`).value}"></span> single, <span id="wonDouble${document.getElementById(`hr${index}`).value}"></span>/<span id="lostDouble${document.getElementById(`hr${index}`).value}"></span> deble)<br>
+        raport+=`HR${index}: ${document.getElementById(`hr${index}`).value} // <span id="wonTotal${document.getElementById(`hr${index}`).value}"></span>-<span id="lostTotal${document.getElementById(`hr${index}`).value}"></span> / <span id="matchesPlayed${document.getElementById(`hr${index}`).value}"></span> (<span id="wonSingle${document.getElementById(`hr${index}`).value}"></span>/<span id="lostSingle${document.getElementById(`hr${index}`).value}"></span> single, <span id="wonDouble${document.getElementById(`hr${index}`).value}"></span>/<span id="lostDouble${document.getElementById(`hr${index}`).value}"></span> deble)<br>
         <span id="${document.getElementById(`hr${index}`).value}"></span>`
       }
     }
     raport+=`
     ${document.getElementById(`gosc`).value}:<br>
-    G1: ${skladGosc[0]} // <span id="wonTotal${skladGosc[0]}"></span>-<span id="lostTotal${skladGosc[0]}"></span> //// wygraneMecze ///// (<span id="wonSingle${skladGosc[0]}"></span>/<span id="lostSingle${skladGosc[0]}"></span> single, <span id="wonDouble${skladGosc[0]}"></span>/<span id="lostDouble${skladGosc[0]}"></span> deble)<br>
-    <span id="${skladGosc[0]}"></span>
-    G2: ${skladGosc[1]} // <span id="wonTotal${skladGosc[1]}"></span>-<span id="lostTotal${skladGosc[1]}"></span> //// wygraneMecze ///// (<span id="wonSingle${skladGosc[1]}"></span>/<span id="lostSingle${skladGosc[1]}"></span> single, <span id="wonDouble${skladGosc[1]}"></span>/<span id="lostDouble${skladGosc[1]}"></span> deble)<br>
-    <span id="${skladGosc[1]}"></span>
-    G3: ${skladGosc[2]} // <span id="wonTotal${skladGosc[2]}"></span>-<span id="lostTotal${skladGosc[2]}"></span> //// wygraneMecze ///// (<span id="wonSingle${skladGosc[2]}"></span>/<span id="lostSingle${skladGosc[2]}"></span> single, <span id="wonDouble${skladGosc[2]}"></span>/<span id="lostDouble${skladGosc[2]}"></span> deble)<br>
-    <span id="${skladGosc[2]}"></span>
-    G4: ${skladGosc[3]} // <span id="wonTotal${skladGosc[3]}"></span>-<span id="lostTotal${skladGosc[3]}"></span> //// wygraneMecze ///// (<span id="wonSingle${skladGosc[3]}"></span>/<span id="lostSingle${skladGosc[3]}"></span> single, <span id="wonDouble${skladGosc[3]}"></span>/<span id="lostDouble${skladGosc[3]}"></span> deble)<br>
-    <span id="${skladGosc[3]}"></span>
+    G1: ${document.getElementById("g1").value} // <span id="wonTotal${document.getElementById("g1").value}"></span>-<span id="lostTotal${document.getElementById("g1").value}"></span> / <span id="matchesPlayed${document.getElementById("g1").value}"></span> (<span id="wonSingle${document.getElementById("g1").value}"></span>/<span id="lostSingle${document.getElementById("g1").value}"></span> single, <span id="wonDouble${document.getElementById("g1").value}"></span>/<span id="lostDouble${document.getElementById("g1").value}"></span> deble)<br>
+    <span id="${document.getElementById("g1").value}"></span>
+    G2: ${document.getElementById("g2").value} // <span id="wonTotal${document.getElementById("g2").value}"></span>-<span id="lostTotal${document.getElementById("g2").value}"></span> / <span id="matchesPlayed${document.getElementById("g2").value}"></span> (<span id="wonSingle${document.getElementById("g2").value}"></span>/<span id="lostSingle${document.getElementById("g2").value}"></span> single, <span id="wonDouble${document.getElementById("g2").value}"></span>/<span id="lostDouble${document.getElementById("g2").value}"></span> deble)<br>
+    <span id="${document.getElementById("g2").value}"></span>
+    G3: ${document.getElementById("g3").value} // <span id="wonTotal${document.getElementById("g3").value}"></span>-<span id="lostTotal${document.getElementById("g3").value}"></span> / <span id="matchesPlayed${document.getElementById("g3").value}"></span> (<span id="wonSingle${document.getElementById("g3").value}"></span>/<span id="lostSingle${document.getElementById("g3").value}"></span> single, <span id="wonDouble${document.getElementById("g3").value}"></span>/<span id="lostDouble${document.getElementById("g3").value}"></span> deble)<br>
+    <span id="${document.getElementById("g3").value}"></span>
+    G4: ${document.getElementById("g4").value} // <span id="wonTotal${document.getElementById("g4").value}"></span>-<span id="lostTotal${document.getElementById("g4").value}"></span> / <span id="matchesPlayed${document.getElementById("g4").value}"></span> (<span id="wonSingle${document.getElementById("g4").value}"></span>/<span id="lostSingle${document.getElementById("g4").value}"></span> single, <span id="wonDouble${document.getElementById("g4").value}"></span>/<span id="lostDouble${document.getElementById("g4").value}"></span> deble)<br>
+    <span id="${document.getElementById("g4").value}"></span>
     `
     for (let index = 1; index <= 4; index++) {
       if (document.getElementById(`gr${index}`)) {
-        raport+=`GR${index}: ${document.getElementById(`gr${index}`).value} // <span id="wonTotal${document.getElementById(`gr${index}`).value}"></span>-<span id="lostTotal${document.getElementById(`gr${index}`).value}"></span> //// wygraneMecze ///// (<span id="wonSingle${document.getElementById(`gr${index}`).value}"></span>/<span id="lostSingle${document.getElementById(`gr${index}`).value}"></span> single, <span id="wonDouble${document.getElementById(`gr${index}`).value}"></span>/<span id="lostDouble${document.getElementById(`gr${index}`).value}"></span> deble)<br>
+        raport+=`GR${index}: ${document.getElementById(`gr${index}`).value} // <span id="wonTotal${document.getElementById(`gr${index}`).value}"></span>-<span id="lostTotal${document.getElementById(`gr${index}`).value}"></span> / <span id="matchesPlayed${document.getElementById(`gr${index}`).value}"></span> (<span id="wonSingle${document.getElementById(`gr${index}`).value}"></span>/<span id="lostSingle${document.getElementById(`gr${index}`).value}"></span> single, <span id="wonDouble${document.getElementById(`gr${index}`).value}"></span>/<span id="lostDouble${document.getElementById(`gr${index}`).value}"></span> deble)<br>
         <span id="${document.getElementById(`gr${index}`).value}"></span>`
       }
     }
@@ -1482,11 +1481,31 @@ if ( form ) {
         guestTotalPoints+=1
         guestPoints+=1
       }
+      if (parseInt(document.getElementById(`lotkaMecz${index}Leg1`).value) < 9) document.getElementById(`lotkaMecz${index}Leg1`).value = 0
+      if (parseInt(document.getElementById(`lotkaMecz${index}Leg2`).value) < 9) document.getElementById(`lotkaMecz${index}Leg2`).value = 0
+      if (parseInt(document.getElementById(`pozostaleMecz${index}Leg1`).value) < 2 || document.getElementById(`pozostaleMecz${index}Leg1`).value > 501) document.getElementById(`pozostaleMecz${index}Leg1`).value = 501
+      if (parseInt(document.getElementById(`pozostaleMecz${index}Leg2`).value) < 2 || document.getElementById(`pozostaleMecz${index}Leg2`).value > 501) document.getElementById(`pozostaleMecz${index}Leg2`).value = 501 
+        if (parseInt(document.getElementById(`lotkaPrzegranyMecz${index}Leg1`).value) < 2) document.getElementById(`lotkaPrzegranyMecz${index}Leg1`).value = 0
+        if (parseInt(document.getElementById(`lotkaPrzegranyMecz${index}Leg2`).value) < 2) document.getElementById(`lotkaPrzegranyMecz${index}Leg2`).value = 0
       raport += `
       ${document.getElementById(`gracz1mecz${index}`).value} - ${document.getElementById(`gracz2mecz${index}`).value} (${hostPoints}:${guestPoints}) ---- ${hostTotalPoints}:${guestTotalPoints}<br>
-      - Leg1: Wygrał: ${winner1} (${document.getElementById(`lotkaMecz${index}Leg1`).value}) średnia (${srednia(document.getElementById(`lotkaMecz${index}Leg1`).value)}) | Przegrał: ${loser1} (pozostało punktów ${document.getElementById(`pozostaleMecz${index}Leg1`).value}) średnia (${sredniaRemain(document.getElementById(`pozostaleMecz${index}Leg1`).value, document.getElementById(`lotkaPrzegranyMecz${index}Leg1`).value)}) <br>
-      - Leg2: Wygrał: ${winner2} (${document.getElementById(`lotkaMecz${index}Leg2`).value}) średnia (${srednia(document.getElementById(`lotkaMecz${index}Leg2`).value)}) | Przegrał: ${loser2} (pozostało punktów ${document.getElementById(`pozostaleMecz${index}Leg2`).value}) średnia (${sredniaRemain(document.getElementById(`pozostaleMecz${index}Leg2`).value, document.getElementById(`lotkaPrzegranyMecz${index}Leg2`).value)})<br>
+      - Leg1: Wygrał: ${winner1} (${document.getElementById(`lotkaMecz${index}Leg1`).value} lotka) średnia (${srednia(document.getElementById(`lotkaMecz${index}Leg1`).value)}) | Przegrał: ${loser1} (pozostało punktów ${document.getElementById(`pozostaleMecz${index}Leg1`).value}) średnia (${sredniaRemain(document.getElementById(`pozostaleMecz${index}Leg1`).value, document.getElementById(`lotkaPrzegranyMecz${index}Leg1`).value)}) <br>
+      - Leg2: Wygrał: ${winner2} (${document.getElementById(`lotkaMecz${index}Leg2`).value} lotka) średnia (${srednia(document.getElementById(`lotkaMecz${index}Leg2`).value)}) | Przegrał: ${loser2} (pozostało punktów ${document.getElementById(`pozostaleMecz${index}Leg2`).value}) średnia (${sredniaRemain(document.getElementById(`pozostaleMecz${index}Leg2`).value, document.getElementById(`lotkaPrzegranyMecz${index}Leg2`).value)})<br>
       `
+      if (parseInt(document.getElementById(`lotkaMecz${index}Leg1`).value) >= 9 && parseInt(document.getElementById(`lotkaMecz${index}Leg1`).value) <= 18) {
+        let obj = {
+          zawodnik: winner1,
+          lotka: parseInt(document.getElementById(`lotkaMecz${index}Leg1`).value)
+        }
+        lotki.push(obj)
+      }
+      if (parseInt(document.getElementById(`lotkaMecz${index}Leg2`).value) >= 9 && parseInt(document.getElementById(`lotkaMecz${index}Leg2`).value) <= 18) {
+        let obj = {
+          zawodnik: winner2,
+          lotka: parseInt(document.getElementById(`lotkaMecz${index}Leg2`).value)
+        }
+        lotki.push(obj)
+      }
       if (document.getElementById(`mecz${index}leg3`)) {
       const winner3 = document.getElementById(`winnerMecz${index}Leg3`).value;
       const loser3 = Array.from(document.getElementById(`winnerMecz${index}Leg3`).options)
@@ -1499,20 +1518,30 @@ if ( form ) {
           guestTotalPoints+=1
           guestPoints+=1
         }
-        raport += `- Zaczął: ${document.getElementById(`whoStartedLeg3Mecz${index}`).value} Wygrał: ${winner3} (${document.getElementById(`lotkaMecz${index}Leg3`).value}) średnia (${srednia(document.getElementById(`lotkaMecz${index}Leg3`).value)}) | Przegrał: ${loser3} (pozostało punktów ${document.getElementById(`pozostaleMecz${index}Leg3`).value}) średnia (${sredniaRemain(document.getElementById(`pozostaleMecz${index}Leg3`).value, document.getElementById(`lotkaPrzegranyMecz${index}Leg3`).value)}) <br>`
+          
+        if (parseInt(document.getElementById(`lotkaMecz${index}Leg3`).value) < 9) document.getElementById(`lotkaMecz${index}Leg3`).value = 0;
+        if (parseInt(document.getElementById(`lotkaPrzegranyMecz${index}Leg3`).value) < 0) document.getElementById(`lotkaPrzegranyMecz${index}Leg3`).value = 0;
+        if (parseInt(document.getElementById(`pozostaleMecz${index}Leg3`).value) < 2 || document.getElementById(`pozostaleMecz${index}Leg3`).value > 501) document.getElementById(`pozostaleMecz${index}Leg3`).value = 501
+
+        raport += `- Leg 3: Zaczął: ${document.getElementById(`whoStartedLeg3Mecz${index}`).value} Wygrał: ${winner3} (${document.getElementById(`lotkaMecz${index}Leg3`).value}) średnia (${srednia(document.getElementById(`lotkaMecz${index}Leg3`).value)}) | Przegrał: ${loser3} (pozostało punktów ${document.getElementById(`pozostaleMecz${index}Leg3`).value}) średnia (${sredniaRemain(document.getElementById(`pozostaleMecz${index}Leg3`).value, document.getElementById(`lotkaPrzegranyMecz${index}Leg3`).value)}) <br>`
         for (let index = 0; index < zawodnicyWyniki.length; index++) {
           if (zawodnicyWyniki[index].name == winner3) zawodnicyWyniki[index].wonSingle++; 
           if (zawodnicyWyniki[index].name == loser3) zawodnicyWyniki[index].lostSingle++; 
         }  
-      }
+        if (parseInt(document.getElementById(`lotkaMecz${index}Leg3`).value) >= 9 && parseInt(document.getElementById(`lotkaMecz${index}Leg3`).value) <= 18) {
+        let obj = {
+          zawodnik: winner3,
+          lotka: parseInt(document.getElementById(`lotkaMecz${index}Leg3`).value)
+        }
+        lotki.push(obj)
+        }
+      } 
       for (let index = 0; index < zawodnicyWyniki.length; index++) {
-        if (zawodnicyWyniki[index].name == winner1) zawodnicyWyniki[index].wonSingle++; 
-        if (zawodnicyWyniki[index].name == loser1) zawodnicyWyniki[index].lostSingle++; 
+        if (zawodnicyWyniki[index].name == winner1) {zawodnicyWyniki[index].wonSingle++; zawodnicyWyniki[index].matchesPlayed++}
+        if (zawodnicyWyniki[index].name == loser1) {zawodnicyWyniki[index].lostSingle++; zawodnicyWyniki[index].matchesPlayed++}
         if (zawodnicyWyniki[index].name == winner2) zawodnicyWyniki[index].wonSingle++; 
         if (zawodnicyWyniki[index].name == loser2) zawodnicyWyniki[index].lostSingle++; 
       }
-
-      
     }
       ///////////////////////////////////////////////////////////////////////
     for (let index = 5; index <= 8; index++) {      
@@ -1542,17 +1571,42 @@ if ( form ) {
         guestTotalPoints+=1
         guestPoints+=1
       }
-      console.log(document.getElementById(`winnerLotka${index}Leg1`).value)
-      // queryselector na nie disabled???
+      /// do poprawienia
+        if (parseInt(document.getElementById(`winnerLotka${index}Leg1`).value) < 9) document.getElementById(`winnerLotka${index}Leg1`).value = 0;
+        if (parseInt(document.getElementById(`winnerLotka${index}Leg2`).value) < 9) document.getElementById(`winnerLotka${index}Leg2`).value = 0;
+        if (parseInt(document.getElementById(`winnerTeammateLotka${index}Leg1`).value) < 9) document.getElementById(`winnerTeammateLotka${index}Leg1`).value = 0;
+        if (parseInt(document.getElementById(`winnerTeammateLotka${index}Leg2`).value) < 9) document.getElementById(`winnerTeammateLotka${index}Leg2`).value = 0;
+        if (parseInt(document.getElementById(`loserLotka${index}Leg1`).value) < 9) document.getElementById(`loserLotka${index}Leg1`).value = 0;
+        if (parseInt(document.getElementById(`loserLotka${index}Leg2`).value) < 9) document.getElementById(`loserLotka${index}Leg2`).value = 0;
+        if (parseInt(document.getElementById(`loserTeammateLotka${index}Leg1`).value) < 9) document.getElementById(`loserTeammateLotka${index}Leg1`).value = 0;
+        if (parseInt(document.getElementById(`loserTeammateLotka${index}Leg2`).value) < 9) document.getElementById(`loserTeammateLotka${index}Leg2`).value = 0;
+        if (parseInt(document.getElementById(`winnerTeammatePozostale${index}Leg1`).value) < 0 || document.getElementById(`winnerTeammatePozostale${index}Leg1`).value < 501) document.getElementById(`winnerTeammatePozostale${index}Leg1`).value = 501
+        if (parseInt(document.getElementById(`winnerTeammatePozostale${index}Leg1`).value) < 0 || document.getElementById(`winnerTeammatePozostale${index}Leg1`).value < 501) document.getElementById(`winnerTeammatePozostale${index}Leg1`).value = 501
+        if (parseInt(document.getElementById(`loserPozostale${index}Leg1`).value) < 0 || document.getElementById(`loserPozostale${index}Leg1`).value > 501) document.getElementById(`loserPozostale${index}Leg1`).value = 501
+        if (parseInt(document.getElementById(`loserPozostale${index}Leg2`).value) < 0 || document.getElementById(`loserPozostale${index}Leg2`).value > 501) document.getElementById(`loserPozostale${index}Leg2`).value = 501
+        if (parseInt(document.getElementById(`loserTeammatePozostale${index}Leg1`).value) < 0 || document.getElementById(`loserTeammatePozostale${index}Leg1`).value > 501) document.getElementById(`loserTeammatePozostale${index}Leg1`).value = 501
+        if (parseInt(document.getElementById(`loserTeammatePozostale${index}Leg2`).value) < 0 || document.getElementById(`loserTeammatePozostale${index}Leg2`).value > 501) document.getElementById(`loserTeammatePozostale${index}Leg2`).value = 501
       raport += `
       ${document.getElementById(`gracz1mecz${index}`).value}, ${document.getElementById(`gracz2mecz${index}`).value} - ${document.getElementById(`gracz3mecz${index}`).value}, ${document.getElementById(`gracz4mecz${index}`).value} (${hostPoints}:${guestPoints}) ---- ${hostTotalPoints}:${guestTotalPoints}<br>
-      - Leg1: Wygrał: ${winner1} (${document.getElementById(`winnerLotka${index}Leg1`).value} lotek) średnia (${srednia(document.getElementById(`winnerLotka${index}Leg1`).value)}) | ${winnerTeammate1} (pozostało punktów ${document.getElementById(`winnerTeammatePozostale${index}Leg1`).value}) średnia (${sredniaRemain(parseInt(document.getElementById(`winnerTeammatePozostale${index}Leg1`).value), parseInt(document.getElementById(`winnerTeammateLotka${index}Leg1`).value))})<br>
-      
+      - Leg1: Wygrał: ${winner1} (${document.getElementById(`winnerLotka${index}Leg1`).value} lotka) średnia (${srednia(document.getElementById(`winnerLotka${index}Leg1`).value)}) | ${winnerTeammate1} (pozostało punktów ${document.getElementById(`winnerTeammatePozostale${index}Leg1`).value}) średnia (${sredniaRemain(parseInt(document.getElementById(`winnerTeammatePozostale${index}Leg1`).value), parseInt(document.getElementById(`winnerTeammateLotka${index}Leg1`).value))})<br>
       Przegrali: ${loser1} (pozostało punktów ${document.getElementById(`loserPozostale${index}Leg1`).value}) średnia (${sredniaRemain(parseInt(document.getElementById(`loserPozostale${index}Leg1`).value), parseInt(document.getElementById(`loserLotka${index}Leg1`).value))}) | ${loserTeammate1} (pozostało punktów ${document.getElementById(`loserTeammatePozostale${index}Leg1`).value}) średnia (${sredniaRemain(parseInt(document.getElementById(`loserTeammatePozostale${index}Leg1`).value), parseInt(document.getElementById(`loserTeammateLotka${index}Leg1`).value))})<br>
-      
-      - Leg2: Wygrał: ${winner2} (${document.getElementById(`winnerLotka${index}Leg2`).value} lotek) średnia (${srednia(document.getElementById(`winnerLotka${index}Leg2`).value)}) | ${winnerTeammate2} (pozostało punktów ${document.getElementById(`winnerTeammatePozostale${index}Leg2`).value}) średnia (${sredniaRemain(parseInt(document.getElementById(`winnerTeammatePozostale${index}Leg2`).value), parseInt(document.getElementById(`winnerTeammateLotka${index}Leg2`).value))}) <br>
+      - Leg2: Wygrał: ${winner2} (${document.getElementById(`winnerLotka${index}Leg2`).value} lotka) średnia (${srednia(document.getElementById(`winnerLotka${index}Leg2`).value)}) | ${winnerTeammate2} (pozostało punktów ${document.getElementById(`winnerTeammatePozostale${index}Leg2`).value}) średnia (${sredniaRemain(parseInt(document.getElementById(`winnerTeammatePozostale${index}Leg2`).value), parseInt(document.getElementById(`winnerTeammateLotka${index}Leg2`).value))}) <br>
       Przegrali: ${loser2} (pozostało punktów ${document.getElementById(`loserPozostale${index}Leg2`).value}) średnia (${sredniaRemain(parseInt(document.getElementById(`loserPozostale${index}Leg2`).value), parseInt(document.getElementById(`loserLotka${index}Leg2`).value))}) | ${loserTeammate2} (pozostało punktów ${document.getElementById(`loserTeammatePozostale${index}Leg2`).value}) średnia (${sredniaRemain(parseInt(document.getElementById(`loserTeammatePozostale${index}Leg2`).value), parseInt(document.getElementById(`loserTeammateLotka${index}Leg2`).value))})<br>
       `;
+      if (parseInt(document.getElementById(`winnerLotka${index}Leg1`).value) >= 9 && parseInt(document.getElementById(`winnerLotka${index}Leg1`).value) <= 18) {
+        let obj = {
+          zawodnik: winner1,
+          lotka: parseInt(document.getElementById(`winnerLotka${index}Leg1`).value)
+        }
+        lotki.push(obj)
+      }
+      if (parseInt(document.getElementById(`winnerLotka${index}Leg2`).value) >= 9 && parseInt(document.getElementById(`winnerLotka${index}Leg2`).value) <= 18) {
+        let obj = {
+          zawodnik: winner2,
+          lotka: parseInt(document.getElementById(`winnerLotka${index}Leg2`).value)
+        }
+        lotki.push(obj)
+      }
     if (document.getElementById(`mecz${index}leg3`)) {
       const winner3 = document.getElementById(`winnerMecz${index}Leg3`).value;
       const winnerTeammate3 = document.getElementById(`winnerTeammate${index}Leg3`).value;
@@ -1566,11 +1620,19 @@ if ( form ) {
         guestTotalPoints+=1
         guestPoints+=1
       }
+      
       raport+=`
       Leg3: Rozpoczął ${document.getElementById(`whoStartedLeg3Mecz${index}`).value}<br> // 
-      Wygrali: ${winner3} (${document.getElementById(`winnerLotka${index}Leg3`).value} lotek) średnia (${srednia(document.getElementById(`winnerLotka${index}Leg3`).value)}) | ${winnerTeammate3} (pozostało punktów ${document.getElementById(`winnerTeammatePozostale${index}Leg3`).value}) średnia (${sredniaRemain(parseInt(document.getElementById(`winnerTeammatePozostale${index}Leg3`).value), parseInt(document.getElementById(`winnerTeammateLotka${index}Leg3`).value))})<br> 
+      Wygrali: ${winner3} (${document.getElementById(`winnerLotka${index}Leg3`).value} lotka) średnia (${srednia(document.getElementById(`winnerLotka${index}Leg3`).value)}) | ${winnerTeammate3} (pozostało punktów ${document.getElementById(`winnerTeammatePozostale${index}Leg3`).value}) średnia (${sredniaRemain(parseInt(document.getElementById(`winnerTeammatePozostale${index}Leg3`).value), parseInt(document.getElementById(`winnerTeammateLotka${index}Leg3`).value))})<br> 
       Przegrali: ${loser3} (pozostało punktów ${document.getElementById(`loserPozostale${index}Leg3`).value}) średnia (${sredniaRemain(parseInt(document.getElementById(`loserPozostale${index}Leg3`).value), parseInt(document.getElementById(`loserLotka${index}Leg3`).value))}) | ${loserTeammate3} (pozostało punktów ${document.getElementById(`loserTeammatePozostale${index}Leg3`).value}) średnia (${sredniaRemain(parseInt(document.getElementById(`loserTeammatePozostale${index}Leg3`).value), parseInt(document.getElementById(`loserTeammateLotka${index}Leg3`).value))})<br>
       `
+      if (parseInt(document.getElementById(`winnerLotka${index}Leg3`).value) >= 9 && parseInt(document.getElementById(`winnerLotka${index}Leg3`).value) <= 18) {
+        let obj = {
+          zawodnik: winner3,
+          lotka: parseInt(document.getElementById(`winnerLotka${index}Leg3`).value)
+        }
+        lotki.push(obj)
+      }
       for (let index = 0; index < zawodnicyWyniki.length; index++) {
           if (zawodnicyWyniki[index].name == winner3) zawodnicyWyniki[index].wonDouble++; 
           if (zawodnicyWyniki[index].name == loser3) zawodnicyWyniki[index].lostDouble++; 
@@ -1579,10 +1641,10 @@ if ( form ) {
       }
     } 
     for (let index = 0; index < zawodnicyWyniki.length; index++) {
-        if (zawodnicyWyniki[index].name == winner1) zawodnicyWyniki[index].wonDouble++; 
-        if (zawodnicyWyniki[index].name == loser1) zawodnicyWyniki[index].lostDouble++; 
-        if (zawodnicyWyniki[index].name == winnerTeammate1) zawodnicyWyniki[index].wonDouble++; 
-        if (zawodnicyWyniki[index].name == loserTeammate1) zawodnicyWyniki[index].lostDouble++; 
+        if (zawodnicyWyniki[index].name == winner1) {zawodnicyWyniki[index].wonDouble++; zawodnicyWyniki[index].matchesPlayed++}
+        if (zawodnicyWyniki[index].name == loser1) {zawodnicyWyniki[index].lostDouble++; zawodnicyWyniki[index].matchesPlayed++}
+        if (zawodnicyWyniki[index].name == winnerTeammate1) {zawodnicyWyniki[index].wonDouble++; zawodnicyWyniki[index].matchesPlayed++}
+        if (zawodnicyWyniki[index].name == loserTeammate1) {zawodnicyWyniki[index].lostDouble++; zawodnicyWyniki[index].matchesPlayed++}
 
         if (zawodnicyWyniki[index].name == winner2) zawodnicyWyniki[index].wonDouble++; 
         if (zawodnicyWyniki[index].name == loser2) zawodnicyWyniki[index].lostDouble++; 
@@ -1616,11 +1678,32 @@ if ( form ) {
         guestTotalPoints+=1
         guestPoints+=1
       }
+      
+        if (document.getElementById(`lotkaMecz${index}Leg1`).value < 9) document.getElementById(`lotkaMecz${index}Leg1`).value = 0
+        if (document.getElementById(`lotkaMecz${index}Leg2`).value < 9) document.getElementById(`lotkaMecz${index}Leg2`).value = 0
+        if (document.getElementById(`pozostaleMecz${index}Leg1`).value < 2 || document.getElementById(`pozostaleMecz${index}Leg1`).value > 501) document.getElementById(`pozostaleMecz${index}Leg1`).value = 501
+        if (document.getElementById(`pozostaleMecz${index}Leg2`).value < 2 || document.getElementById(`pozostaleMecz${index}Leg2`).value > 501) document.getElementById(`pozostaleMecz${index}Leg2`).value = 501
+        if (document.getElementById(`lotkaPrzegranyMecz${index}Leg1`).value < 0) document.getElementById(`lotkaPrzegranyMecz${index}Leg1`).value = 0
+        if (document.getElementById(`lotkaPrzegranyMecz${index}Leg2`).value < 0) document.getElementById(`lotkaPrzegranyMecz${index}Leg2`).value = 0
       raport += `
       ${document.getElementById(`gracz1mecz${index}`).value} - ${document.getElementById(`gracz2mecz${index}`).value} (${hostPoints}:${guestPoints}) ---- ${hostTotalPoints}:${guestTotalPoints}<br>
-      - Leg1: Wygrał: ${winner1} (${document.getElementById(`lotkaMecz${index}Leg1`).value}) średnia (${srednia(document.getElementById(`lotkaMecz${index}Leg1`).value)}) | Przegrał: ${loser1} (pozostało punktów ${document.getElementById(`pozostaleMecz${index}Leg1`).value}) średnia (${sredniaRemain(document.getElementById(`pozostaleMecz${index}Leg1`).value, document.getElementById(`lotkaPrzegranyMecz${index}Leg1`).value)}) <br>
-      - Leg2: Wygrał: ${winner2} (${document.getElementById(`lotkaMecz${index}Leg2`).value}) średnia (${srednia(document.getElementById(`lotkaMecz${index}Leg2`).value)}) | Przegrał: ${loser2} (pozostało punktów ${document.getElementById(`pozostaleMecz${index}Leg2`).value}) średnia (${sredniaRemain(document.getElementById(`pozostaleMecz${index}Leg2`).value, document.getElementById(`lotkaPrzegranyMecz${index}Leg2`).value)})<br>
+      - Leg1: Wygrał: ${winner1} (${document.getElementById(`lotkaMecz${index}Leg1`).value} lotka) średnia (${srednia(document.getElementById(`lotkaMecz${index}Leg1`).value)}) | Przegrał: ${loser1} (pozostało punktów ${document.getElementById(`pozostaleMecz${index}Leg1`).value}) średnia (${sredniaRemain(document.getElementById(`pozostaleMecz${index}Leg1`).value, document.getElementById(`lotkaPrzegranyMecz${index}Leg1`).value)}) <br>
+      - Leg2: Wygrał: ${winner2} (${document.getElementById(`lotkaMecz${index}Leg2`).value} lotka) średnia (${srednia(document.getElementById(`lotkaMecz${index}Leg2`).value)}) | Przegrał: ${loser2} (pozostało punktów ${document.getElementById(`pozostaleMecz${index}Leg2`).value}) średnia (${sredniaRemain(document.getElementById(`pozostaleMecz${index}Leg2`).value, document.getElementById(`lotkaPrzegranyMecz${index}Leg2`).value)})<br>
       `
+      if (parseInt(document.getElementById(`lotkaMecz${index}Leg1`).value) >= 9 && parseInt(document.getElementById(`lotkaMecz${index}Leg1`).value) <= 18) {
+        let obj = {
+          zawodnik: winner1,
+          lotka: parseInt(document.getElementById(`lotkaMecz${index}Leg1`).value)
+        }
+        lotki.push(obj)
+      }
+      if (parseInt(document.getElementById(`lotkaMecz${index}Leg2`).value) >= 9 && parseInt(document.getElementById(`lotkaMecz${index}Leg2`).value) <= 18) {
+        let obj = {
+          zawodnik: winner2,
+          lotka: parseInt(document.getElementById(`lotkaMecz${index}Leg2`).value)
+        }
+        lotki.push(obj)
+      }
       if (document.getElementById(`mecz${index}leg3`)) {
         const winner3 = document.getElementById(`winnerMecz${index}Leg3`).value;
         const loser3 = Array.from(document.getElementById(`winnerMecz${index}Leg3`).options)
@@ -1633,15 +1716,27 @@ if ( form ) {
           guestTotalPoints+=1
           guestPoints+=1
         }
-        raport += `- Zaczął: ${document.getElementById(`whoStartedLeg3Mecz${index}`).value} Wygrał: ${winner3} (${document.getElementById(`lotkaMecz${index}Leg3`).value}) średnia (${srednia(document.getElementById(`lotkaMecz${index}Leg3`).value)}) | Przegrał: ${loser3} (pozostało punktów ${document.getElementById(`pozostaleMecz${index}Leg3`).value}) średnia (${sredniaRemain(document.getElementById(`pozostaleMecz${index}Leg3`).value, document.getElementById(`lotkaPrzegranyMecz${index}Leg3`).value)}) <br>`
+        
+        if (document.getElementById(`lotkaMecz${index}Leg3`).value < 9) document.getElementById(`lotkaMecz${index}Leg3`).value = 0
+        if (document.getElementById(`lotkaPrzegranyMecz${index}Leg3`).value < 0) document.getElementById(`lotkaPrzegranyMecz${index}Leg3`).value = 0
+        if (document.getElementById(`pozostaleMecz${index}Leg3`).value < 2 || document.getElementById(`pozostaleMecz${index}Leg3`).value > 501) document.getElementById(`pozostaleMecz${index}Leg3`).value = 501
+
+        raport += `- Leg 3: Zaczął: ${document.getElementById(`whoStartedLeg3Mecz${index}`).value} Wygrał: ${winner3} (${document.getElementById(`lotkaMecz${index}Leg3`).value}) średnia (${srednia(document.getElementById(`lotkaMecz${index}Leg3`).value)}) | Przegrał: ${loser3} (pozostało punktów ${document.getElementById(`pozostaleMecz${index}Leg3`).value}) średnia (${sredniaRemain(document.getElementById(`pozostaleMecz${index}Leg3`).value, document.getElementById(`lotkaPrzegranyMecz${index}Leg3`).value)}) <br>`
         for (let index = 0; index < zawodnicyWyniki.length; index++) {
           if (zawodnicyWyniki[index].name == winner3) zawodnicyWyniki[index].wonSingle++; 
           if (zawodnicyWyniki[index].name == loser3) zawodnicyWyniki[index].lostSingle++; 
         }  
+        if (parseInt(document.getElementById(`lotkaMecz${index}Leg3`).value) >= 9 && parseInt(document.getElementById(`lotkaMecz${index}Leg3`).value) <= 18) {
+        let obj = {
+          zawodnik: winner3,
+          lotka: parseInt(document.getElementById(`lotkaMecz${index}Leg3`).value)
+        }
+        lotki.push(obj)
+        }
       }
       for (let index = 0; index < zawodnicyWyniki.length; index++) {
-        if (zawodnicyWyniki[index].name == winner1) zawodnicyWyniki[index].wonSingle++; 
-        if (zawodnicyWyniki[index].name == loser1) zawodnicyWyniki[index].lostSingle++; 
+        if (zawodnicyWyniki[index].name == winner1) {zawodnicyWyniki[index].wonSingle++; zawodnicyWyniki[index].matchesPlayed++}
+        if (zawodnicyWyniki[index].name == loser1) {zawodnicyWyniki[index].lostSingle++; zawodnicyWyniki[index].matchesPlayed++}
         if (zawodnicyWyniki[index].name == winner2) zawodnicyWyniki[index].wonSingle++; 
         if (zawodnicyWyniki[index].name == loser2) zawodnicyWyniki[index].lostSingle++; 
       }
@@ -1670,8 +1765,9 @@ if ( form ) {
       if (document.getElementById(`lostSingle${zawodnicyWyniki[index].name}`)) document.getElementById(`lostSingle${zawodnicyWyniki[index].name}`).innerHTML=zawodnicyWyniki[index].lostSingle
       if (document.getElementById(`wonDouble${zawodnicyWyniki[index].name}`)) document.getElementById(`wonDouble${zawodnicyWyniki[index].name}`).innerHTML=zawodnicyWyniki[index].wonDouble
       if (document.getElementById(`lostDouble${zawodnicyWyniki[index].name}`)) document.getElementById(`lostDouble${zawodnicyWyniki[index].name}`).innerHTML=zawodnicyWyniki[index].lostDouble
+      if (document.getElementById(`matchesPlayed${zawodnicyWyniki[index].name}`)) document.getElementById(`matchesPlayed${zawodnicyWyniki[index].name}`).innerHTML=zawodnicyWyniki[index].matchesPlayed
     }
 
   });
 }
-});
+);

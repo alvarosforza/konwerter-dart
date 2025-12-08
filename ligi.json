@@ -1,0 +1,22 @@
+[
+    {
+        "liga": "ekstraklasa",
+        "druzyny":
+        [
+            {"nazwa": "sernik", "kapitan":"A", "zawodnicy":["A","B","C","D","A2","B2","C2","D2"], "lokal":"lodówka", "adres":"kuchnia", "sponsorzy":""},
+            {"nazwa": "roztocza" , "kapitan":"E", "zawodnicy":["E","F","G","H","E2","F2","G2","H2"], "lokal":"dywan", "adres":"podłoga", "sponsorzy":""}, 
+            {"nazwa": "pliki" , "kapitan":"I", "zawodnicy":["I","J","K","L","I2","J2","K2","L2"], "lokal":"folder", "adres":"dysk", "sponsorzy":""},
+            {"nazwa": "switche" , "kapitan":"M", "zawodnicy":["M","N","O","P","M2","N2","O2","P2"], "lokal":"klawiatura", "adres":"biurko", "sponsorzy":""}
+        ]
+    },
+    {
+        "liga": "1 liga",
+        "druzyny":
+        [
+            {"nazwa": "SERNIK", "kapitan":"A", "zawodnicy":["A","B","C","D","A2","B2","C2","D2"], "lokal":"lodówka", "adres":"kuchnia", "sponsorzy":""},
+            {"nazwa": "roztocza" , "kapitan":"E", "zawodnicy":["E","F","G","H","E2","F2","G2","H2"], "lokal":"dywan", "adres":"podłoga", "sponsorzy":""}, 
+            {"nazwa": "pliki" , "kapitan":"I", "zawodnicy":["I","J","K","L","I2","J2","K2","L2"], "lokal":"folder", "adres":"dysk", "sponsorzy":""},
+            {"nazwa": "switche" , "kapitan":"M", "zawodnicy":["M","N","O","P","M2","N2","O2","P2"], "lokal":"klawiatura", "adres":"biurko", "sponsorzy":""}
+        ]
+    }
+]

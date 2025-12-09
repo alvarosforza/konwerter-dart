@@ -465,11 +465,11 @@ function leg(meczID, numer) {
   }
   legDiv.innerHTML+=`
   Którą lotką wygrano lega?
-  <input type="number" id="lotkaMecz${meczID}Leg${numer}" class="form-control" value="9" min="9" step="1" required><br>
+  <input type="number" id="lotkaMecz${meczID}Leg${numer}" class="form-control"  min="9" step="1" required><br>
   Ile lotek rzucił przegrany?
-  <input type="number" id="lotkaPrzegranyMecz${meczID}Leg${numer}" class="form-control" value="9" min="9" step="1" required><br>
+  <input type="number" id="lotkaPrzegranyMecz${meczID}Leg${numer}" class="form-control"  min="9" step="1" required><br>
   Ile pozostało punktów przegranemu?
-  <input type="number" id="pozostaleMecz${meczID}Leg${numer}" class="form-control" value="501" min="2" max="501" step="1" required>
+  <input type="number" id="pozostaleMecz${meczID}Leg${numer}" class="form-control" min="2" max="501" step="1" required>
   <br>`;
   // aktualizacje 
   selectZawodnik1.addEventListener("change", (x) => {
@@ -488,11 +488,11 @@ function leg(meczID, numer) {
     </select><br>`
     }
     legDiv.innerHTML+=`Którą lotką wygrano lega?
-      <input type="number" id="lotkaMecz${meczID}Leg${numer}" class="form-control" value="9" min="9" step="1" required><br>
+      <input type="number" id="lotkaMecz${meczID}Leg${numer}" class="form-control" min="9" step="1" required><br>
       Ile lotek rzucił przegrany?
-      <input type="number" id="lotkaPrzegranyMecz${meczID}Leg${numer}" class="form-control" value="9" min="1" step="1" required><br>
+      <input type="number" id="lotkaPrzegranyMecz${meczID}Leg${numer}" class="form-control" min="1" step="1" required><br>
       Ile pozostało punktów przegranemu?
-      <input type="number" id="pozostaleMecz${meczID}Leg${numer}" class="form-control" value="501" min="2" max="501" step="1" required>
+      <input type="number" id="pozostaleMecz${meczID}Leg${numer}" class="form-control" min="2" max="501" step="1" required>
       <br>`
   })
   selectZawodnik2.addEventListener("change", (x) => {
@@ -511,11 +511,11 @@ function leg(meczID, numer) {
     </select><br>`
     }
     legDiv.innerHTML+=`Którą lotką wygrano lega?
-      <input type="number" id="lotkaMecz${meczID}Leg${numer}" class="form-control" value="9" min="9" step="1" required><br>
+      <input type="number" id="lotkaMecz${meczID}Leg${numer}" class="form-control" min="9" step="1" required><br>
       Ile lotek rzucił przegrany?
-      <input type="number" id="lotkaPrzegranyMecz${meczID}Leg${numer}" class="form-control" value="9" min="9" step="1" required><br>
+      <input type="number" id="lotkaPrzegranyMecz${meczID}Leg${numer}" class="form-control"  min="9" step="1" required><br>
       Ile pozostało punktów przegranemu?
-      <input type="number" id="pozostaleMecz${meczID}Leg${numer}" class="form-control" value="501" min="2" max="501" step="1" required>
+      <input type="number" id="pozostaleMecz${meczID}Leg${numer}" class="form-control"  min="2" max="501" step="1" required>
       <br>`
   })
 
@@ -889,39 +889,39 @@ function legDouble(meczID, numer) {
     <div id="playerInputsMecz${meczID}Leg${numer}">
       <div class="player-block" data-idx="1">
         <label>${g1}</label>
-        rzucone lotki: <input type="number" value="9" min="1" id="lotkaMecz${meczID}Leg${numer}P1" class="form-control player-lotka" required/>
-        Pozostało punktów: <input type="number" value="0" min="0" max="501" id="pozostaleMecz${meczID}Leg${numer}P1" class="form-control player-pozostale" disabled/>
+        rzucone lotki: <input type="number"  min="1" id="lotkaMecz${meczID}Leg${numer}P1" class="form-control player-lotka" required/>
+        Pozostało punktów: <input type="number" min="0" max="501" id="pozostaleMecz${meczID}Leg${numer}P1" class="form-control player-pozostale" disabled/>
       </div>
       <div class="player-block" data-idx="2">
         <label>${g2}</label>
-        rzucone lotki: <input type="number" value="9" min="1" id="lotkaMecz${meczID}Leg${numer}P2" class="form-control player-lotka" required/>
-        Pozostało punktów: <input type="number" value="501" min="0" max="501" id="pozostaleMecz${meczID}Leg${numer}P2" class="form-control player-pozostale" required/>
+        rzucone lotki: <input type="number"  min="1" id="lotkaMecz${meczID}Leg${numer}P2" class="form-control player-lotka" required/>
+        Pozostało punktów: <input type="number"  min="0" max="501" id="pozostaleMecz${meczID}Leg${numer}P2" class="form-control player-pozostale" required/>
       </div>
       <div class="player-block" data-idx="3">
         <label>${g3}</label>
-        rzucone lotki: <input type="number" value="9" min="1" id="lotkaMecz${meczID}Leg${numer}P3" class="form-control player-lotka" required/>
-        Pozostało punktów: <input type="number" value="501" min="0" max="501" id="pozostaleMecz${meczID}Leg${numer}P3" class="form-control player-pozostale" required/>
+        rzucone lotki: <input type="number"  min="1" id="lotkaMecz${meczID}Leg${numer}P3" class="form-control player-lotka" required/>
+        Pozostało punktów: <input type="number"  min="0" max="501" id="pozostaleMecz${meczID}Leg${numer}P3" class="form-control player-pozostale" required/>
       </div>
       <div class="player-block" data-idx="4">
         <label>${g4}</label>
-        rzucone lotki: <input type="number" value="9" min="1" id="lotkaMecz${meczID}Leg${numer}P4" class="form-control player-lotka" required/>
-        Pozostało punktów: <input type="number" value="501" min="0" max="501" id="pozostaleMecz${meczID}Leg${numer}P4" class="form-control player-pozostale" required/>
+        rzucone lotki: <input type="number"  min="1" id="lotkaMecz${meczID}Leg${numer}P4" class="form-control player-lotka" required/>
+        Pozostało punktów: <input type="number"  min="0" max="501" id="pozostaleMecz${meczID}Leg${numer}P4" class="form-control player-pozostale" required/>
       </div>
     </div>
-    <input type="hidden" id="winnerLotka${meczID}Leg${numer}" value="9">
-    <input type="hidden" id="winnerPozostale${meczID}Leg${numer}" value="501">
+    <input type="hidden" id="winnerLotka${meczID}Leg${numer}" >
+    <input type="hidden" id="winnerPozostale${meczID}Leg${numer}" >
 
     <input type="hidden" id="winnerTeammate${meczID}Leg${numer}" value="${g2}"/>
-    <input type="hidden" id="winnerTeammateLotka${meczID}Leg${numer}" value="9">
-    <input type="hidden" id="winnerTeammatePozostale${meczID}Leg${numer}" value="501">
+    <input type="hidden" id="winnerTeammateLotka${meczID}Leg${numer}">
+    <input type="hidden" id="winnerTeammatePozostale${meczID}Leg${numer}">
 
     <input type="hidden" id="loser${meczID}Leg${numer}" value="${g3}"/>
-    <input type="hidden" id="loserLotka${meczID}Leg${numer}" value="9">
-    <input type="hidden" id="loserPozostale${meczID}Leg${numer}" value="501">
+    <input type="hidden" id="loserLotka${meczID}Leg${numer}">
+    <input type="hidden" id="loserPozostale${meczID}Leg${numer}">
 
     <input type="hidden" id="loserTeammate${meczID}Leg${numer}" value="${g4}"/>
-    <input type="hidden" id="loserTeammateLotka${meczID}Leg${numer}" value="9">
-    <input type="hidden" id="loserTeammatePozostale${meczID}Leg${numer}" value="501">
+    <input type="hidden" id="loserTeammateLotka${meczID}Leg${numer}" >
+    <input type="hidden" id="loserTeammatePozostale${meczID}Leg${numer}" >
   `; // nie zczytuje na bieżąco danych kiedy nie ma zmiany
   const getPlayerInputs = (idx) => {
     return {

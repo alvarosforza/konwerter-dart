@@ -892,7 +892,7 @@ function legDouble(meczID, numer) {
       <div class="player-block" data-idx="1">
         <label>${g1}</label>
         rzucone lotki: <input type="number"  min="9" id="lotkaMecz${meczID}Leg${numer}P1" class="form-control player-lotka" required/>
-        Pozostało punktów: <input type="number" min="2" max="501" id="pozostaleMecz${meczID}Leg${numer}P1" class="form-control player-pozostale" disabled/>
+        Pozostało punktów: <input type="number" value="0" min="2" max="501" id="pozostaleMecz${meczID}Leg${numer}P1" class="form-control player-pozostale" disabled/>
       </div>
       <div class="player-block" data-idx="2">
         <label>${g2}</label>
@@ -924,7 +924,7 @@ function legDouble(meczID, numer) {
     <input type="hidden" id="loserTeammate${meczID}Leg${numer}" value="${g4}"/>
     <input type="hidden" id="loserTeammateLotka${meczID}Leg${numer}" >
     <input type="hidden" id="loserTeammatePozostale${meczID}Leg${numer}" >
-  `; // nie zczytuje na bieżąco danych kiedy nie ma zmiany
+  `;
   const getPlayerInputs = (idx) => {
     return {
       lotka: document.getElementById(`lotkaMecz${meczID}Leg${numer}P${idx}`),
@@ -1055,83 +1055,99 @@ function legDouble(meczID, numer) {
 
   let winner = (document.getElementById(`winnerMecz${meczID}Leg${numer}`) || {}).value
   function updateLotki() {
-    switch (winner) {
-      case g1:
-        document.getElementById(`winnerLotka${meczID}Leg${numer}`).value = document.getElementById(`lotkaMecz${meczID}Leg${numer}P1`).value
-        document.getElementById(`winnerTeammate${meczID}Leg${numer}`).value = g2
-        document.getElementById(`winnerTeammateLotka${meczID}Leg${numer}`).value=document.getElementById(`lotkaMecz${meczID}Leg${numer}P2`).value
-        document.getElementById(`loser${meczID}Leg${numer}`).value = g3
-        document.getElementById(`loserLotka${meczID}Leg${numer}`).value=document.getElementById(`lotkaMecz${meczID}Leg${numer}P3`).value
-        document.getElementById(`loserTeammate${meczID}Leg${numer}`).value = g4
-        document.getElementById(`loserTeammateLotka${meczID}Leg${numer}`).value=document.getElementById(`lotkaMecz${meczID}Leg${numer}P4`).value
+    // Get current winner from the select element
+    const currentWinner = document.getElementById(`winnerMecz${meczID}Leg${numer}`)?.value || winner;
+    // Get current player values from selects (they may have changed due to substitution)
+    const currentG1 = selectZawodnik1 ? selectZawodnik1.value : g1;
+    const currentG2 = selectZawodnik2 ? selectZawodnik2.value : g2;
+    const currentG3 = selectZawodnik3 ? selectZawodnik3.value : g3;
+    const currentG4 = selectZawodnik4 ? selectZawodnik4.value : g4;
+    
+    switch (currentWinner) {
+      case currentG1:
+        document.getElementById(`winnerLotka${meczID}Leg${numer}`).value = document.getElementById(`lotkaMecz${meczID}Leg${numer}P1`).value || '0'
+        document.getElementById(`winnerTeammate${meczID}Leg${numer}`).value = currentG2
+        document.getElementById(`winnerTeammateLotka${meczID}Leg${numer}`).value=document.getElementById(`lotkaMecz${meczID}Leg${numer}P2`).value || '0'
+        document.getElementById(`loser${meczID}Leg${numer}`).value = currentG3
+        document.getElementById(`loserLotka${meczID}Leg${numer}`).value=document.getElementById(`lotkaMecz${meczID}Leg${numer}P3`).value || '0'
+        document.getElementById(`loserTeammate${meczID}Leg${numer}`).value = currentG4
+        document.getElementById(`loserTeammateLotka${meczID}Leg${numer}`).value=document.getElementById(`lotkaMecz${meczID}Leg${numer}P4`).value || '0'
         break;
-      case g2:
-        document.getElementById(`winnerLotka${meczID}Leg${numer}`).value = document.getElementById(`lotkaMecz${meczID}Leg${numer}P2`).value
-        document.getElementById(`winnerTeammate${meczID}Leg${numer}`).value = g1
-        document.getElementById(`winnerTeammateLotka${meczID}Leg${numer}`).value=document.getElementById(`lotkaMecz${meczID}Leg${numer}P1`).value
-        document.getElementById(`loser${meczID}Leg${numer}`).value = g3
-        document.getElementById(`loserLotka${meczID}Leg${numer}`).value=document.getElementById(`lotkaMecz${meczID}Leg${numer}P3`).value
-        document.getElementById(`loserTeammate${meczID}Leg${numer}`).value = g4
-        document.getElementById(`loserTeammateLotka${meczID}Leg${numer}`).value=document.getElementById(`lotkaMecz${meczID}Leg${numer}P4`).value
+      case currentG2:
+        document.getElementById(`winnerLotka${meczID}Leg${numer}`).value = document.getElementById(`lotkaMecz${meczID}Leg${numer}P2`).value || '0'
+        document.getElementById(`winnerTeammate${meczID}Leg${numer}`).value = currentG1
+        document.getElementById(`winnerTeammateLotka${meczID}Leg${numer}`).value=document.getElementById(`lotkaMecz${meczID}Leg${numer}P1`).value || '0'
+        document.getElementById(`loser${meczID}Leg${numer}`).value = currentG3
+        document.getElementById(`loserLotka${meczID}Leg${numer}`).value=document.getElementById(`lotkaMecz${meczID}Leg${numer}P3`).value || '0'
+        document.getElementById(`loserTeammate${meczID}Leg${numer}`).value = currentG4
+        document.getElementById(`loserTeammateLotka${meczID}Leg${numer}`).value=document.getElementById(`lotkaMecz${meczID}Leg${numer}P4`).value || '0'
         break;
-      case g3:
-        document.getElementById(`winnerLotka${meczID}Leg${numer}`).value = document.getElementById(`lotkaMecz${meczID}Leg${numer}P3`).value
-        document.getElementById(`winnerTeammate${meczID}Leg${numer}`).value = g4
-        document.getElementById(`winnerTeammateLotka${meczID}Leg${numer}`).value=document.getElementById(`lotkaMecz${meczID}Leg${numer}P4`).value
-        document.getElementById(`loser${meczID}Leg${numer}`).value = g1
-        document.getElementById(`loserLotka${meczID}Leg${numer}`).value=document.getElementById(`lotkaMecz${meczID}Leg${numer}P1`).value
-        document.getElementById(`loserTeammate${meczID}Leg${numer}`).value = g2
-        document.getElementById(`loserTeammateLotka${meczID}Leg${numer}`).value=document.getElementById(`lotkaMecz${meczID}Leg${numer}P2`).value
+      case currentG3:
+        document.getElementById(`winnerLotka${meczID}Leg${numer}`).value = document.getElementById(`lotkaMecz${meczID}Leg${numer}P3`).value || '0'
+        document.getElementById(`winnerTeammate${meczID}Leg${numer}`).value = currentG4
+        document.getElementById(`winnerTeammateLotka${meczID}Leg${numer}`).value=document.getElementById(`lotkaMecz${meczID}Leg${numer}P4`).value || '0'
+        document.getElementById(`loser${meczID}Leg${numer}`).value = currentG1
+        document.getElementById(`loserLotka${meczID}Leg${numer}`).value=document.getElementById(`lotkaMecz${meczID}Leg${numer}P1`).value || '0'
+        document.getElementById(`loserTeammate${meczID}Leg${numer}`).value = currentG2
+        document.getElementById(`loserTeammateLotka${meczID}Leg${numer}`).value=document.getElementById(`lotkaMecz${meczID}Leg${numer}P2`).value || '0'
         break;
-      case g4:
-        document.getElementById(`winnerLotka${meczID}Leg${numer}`).value = document.getElementById(`lotkaMecz${meczID}Leg${numer}P4`).value
-        document.getElementById(`winnerTeammate${meczID}Leg${numer}`).value = g3
-        document.getElementById(`winnerTeammateLotka${meczID}Leg${numer}`).value=document.getElementById(`lotkaMecz${meczID}Leg${numer}P3`).value
-        document.getElementById(`loser${meczID}Leg${numer}`).value = g1
-        document.getElementById(`loserLotka${meczID}Leg${numer}`).value=document.getElementById(`lotkaMecz${meczID}Leg${numer}P1`).value
-        document.getElementById(`loserTeammate${meczID}Leg${numer}`).value = g2
-        document.getElementById(`loserTeammateLotka${meczID}Leg${numer}`).value=document.getElementById(`lotkaMecz${meczID}Leg${numer}P2`).value
+      case currentG4:
+        document.getElementById(`winnerLotka${meczID}Leg${numer}`).value = document.getElementById(`lotkaMecz${meczID}Leg${numer}P4`).value || '0'
+        document.getElementById(`winnerTeammate${meczID}Leg${numer}`).value = currentG3
+        document.getElementById(`winnerTeammateLotka${meczID}Leg${numer}`).value=document.getElementById(`lotkaMecz${meczID}Leg${numer}P3`).value || '0'
+        document.getElementById(`loser${meczID}Leg${numer}`).value = currentG1
+        document.getElementById(`loserLotka${meczID}Leg${numer}`).value=document.getElementById(`lotkaMecz${meczID}Leg${numer}P1`).value || '0'
+        document.getElementById(`loserTeammate${meczID}Leg${numer}`).value = currentG2
+        document.getElementById(`loserTeammateLotka${meczID}Leg${numer}`).value=document.getElementById(`lotkaMecz${meczID}Leg${numer}P2`).value || '0'
         break;
     }
   }
 
   function updatePozostale() {
-    switch (winner) {
-      case g1:
-        document.getElementById(`winnerPozostale${meczID}Leg${numer}`).value = document.getElementById(`pozostaleMecz${meczID}Leg${numer}P1`).value
-        document.getElementById(`winnerTeammate${meczID}Leg${numer}`).value = g2
-        document.getElementById(`winnerTeammatePozostale${meczID}Leg${numer}`).value=document.getElementById(`pozostaleMecz${meczID}Leg${numer}P2`).value
-        document.getElementById(`loser${meczID}Leg${numer}`).value = g3
-        document.getElementById(`loserPozostale${meczID}Leg${numer}`).value=document.getElementById(`pozostaleMecz${meczID}Leg${numer}P3`).value
-        document.getElementById(`loserTeammate${meczID}Leg${numer}`).value = g4
-        document.getElementById(`loserTeammatePozostale${meczID}Leg${numer}`).value=document.getElementById(`pozostaleMecz${meczID}Leg${numer}P4`).value
+    // Get current winner from the select element
+    const currentWinner = document.getElementById(`winnerMecz${meczID}Leg${numer}`)?.value || winner;
+    // Get current player values from selects (they may have changed due to substitution)
+    const currentG1 = selectZawodnik1 ? selectZawodnik1.value : g1;
+    const currentG2 = selectZawodnik2 ? selectZawodnik2.value : g2;
+    const currentG3 = selectZawodnik3 ? selectZawodnik3.value : g3;
+    const currentG4 = selectZawodnik4 ? selectZawodnik4.value : g4;
+    
+    switch (currentWinner) {
+      case currentG1:
+        document.getElementById(`winnerPozostale${meczID}Leg${numer}`).value = document.getElementById(`pozostaleMecz${meczID}Leg${numer}P1`).value || '0'
+        document.getElementById(`winnerTeammate${meczID}Leg${numer}`).value = currentG2
+        document.getElementById(`winnerTeammatePozostale${meczID}Leg${numer}`).value=document.getElementById(`pozostaleMecz${meczID}Leg${numer}P2`).value || '0'
+        document.getElementById(`loser${meczID}Leg${numer}`).value = currentG3
+        document.getElementById(`loserPozostale${meczID}Leg${numer}`).value=document.getElementById(`pozostaleMecz${meczID}Leg${numer}P3`).value || '0'
+        document.getElementById(`loserTeammate${meczID}Leg${numer}`).value = currentG4
+        document.getElementById(`loserTeammatePozostale${meczID}Leg${numer}`).value=document.getElementById(`pozostaleMecz${meczID}Leg${numer}P4`).value || '0'
         break;
-      case g2:
-        document.getElementById(`winnerPozostale${meczID}Leg${numer}`).value = document.getElementById(`pozostaleMecz${meczID}Leg${numer}P2`).value
-        document.getElementById(`winnerTeammate${meczID}Leg${numer}`).value = g1
-        document.getElementById(`winnerTeammatePozostale${meczID}Leg${numer}`).value=document.getElementById(`pozostaleMecz${meczID}Leg${numer}P1`).value
-        document.getElementById(`loser${meczID}Leg${numer}`).value = g3
-        document.getElementById(`loserPozostale${meczID}Leg${numer}`).value=document.getElementById(`pozostaleMecz${meczID}Leg${numer}P3`).value
-        document.getElementById(`loserTeammate${meczID}Leg${numer}`).value = g4
-        document.getElementById(`loserTeammatePozostale${meczID}Leg${numer}`).value=document.getElementById(`pozostaleMecz${meczID}Leg${numer}P4`).value
+      case currentG2:
+        document.getElementById(`winnerPozostale${meczID}Leg${numer}`).value = document.getElementById(`pozostaleMecz${meczID}Leg${numer}P2`).value || '0'
+        document.getElementById(`winnerTeammate${meczID}Leg${numer}`).value = currentG1
+        document.getElementById(`winnerTeammatePozostale${meczID}Leg${numer}`).value=document.getElementById(`pozostaleMecz${meczID}Leg${numer}P1`).value || '0'
+        document.getElementById(`loser${meczID}Leg${numer}`).value = currentG3
+        document.getElementById(`loserPozostale${meczID}Leg${numer}`).value=document.getElementById(`pozostaleMecz${meczID}Leg${numer}P3`).value || '0'
+        document.getElementById(`loserTeammate${meczID}Leg${numer}`).value = currentG4
+        document.getElementById(`loserTeammatePozostale${meczID}Leg${numer}`).value=document.getElementById(`pozostaleMecz${meczID}Leg${numer}P4`).value || '0'
         break;
-      case g3:
-        document.getElementById(`winnerPozostale${meczID}Leg${numer}`).value = document.getElementById(`pozostaleMecz${meczID}Leg${numer}P3`).value
-        document.getElementById(`winnerTeammate${meczID}Leg${numer}`).value = g4
-        document.getElementById(`winnerTeammatePozostale${meczID}Leg${numer}`).value=document.getElementById(`pozostaleMecz${meczID}Leg${numer}P4`).value
-        document.getElementById(`loser${meczID}Leg${numer}`).value = g1
-        document.getElementById(`loserPozostale${meczID}Leg${numer}`).value=document.getElementById(`pozostaleMecz${meczID}Leg${numer}P1`).value
-        document.getElementById(`loserTeammate${meczID}Leg${numer}`).value = g2
-        document.getElementById(`loserTeammatePozostale${meczID}Leg${numer}`).value=document.getElementById(`pozostaleMecz${meczID}Leg${numer}P2`).value
+      case currentG3:
+        document.getElementById(`winnerPozostale${meczID}Leg${numer}`).value = document.getElementById(`pozostaleMecz${meczID}Leg${numer}P3`).value || '0'
+        document.getElementById(`winnerTeammate${meczID}Leg${numer}`).value = currentG4
+        document.getElementById(`winnerTeammatePozostale${meczID}Leg${numer}`).value=document.getElementById(`pozostaleMecz${meczID}Leg${numer}P4`).value || '0'
+        document.getElementById(`loser${meczID}Leg${numer}`).value = currentG1
+        document.getElementById(`loserPozostale${meczID}Leg${numer}`).value=document.getElementById(`pozostaleMecz${meczID}Leg${numer}P1`).value || '0'
+        document.getElementById(`loserTeammate${meczID}Leg${numer}`).value = currentG2
+        document.getElementById(`loserTeammatePozostale${meczID}Leg${numer}`).value=document.getElementById(`pozostaleMecz${meczID}Leg${numer}P2`).value || '0'
         break;
-      case g4:
-        document.getElementById(`winnerPozostale${meczID}Leg${numer}`).value = document.getElementById(`pozostaleMecz${meczID}Leg${numer}P4`).value
-        document.getElementById(`winnerTeammate${meczID}Leg${numer}`).value = g3
-        document.getElementById(`winnerTeammatePozostale${meczID}Leg${numer}`).value=document.getElementById(`pozostaleMecz${meczID}Leg${numer}P3`).value
-        document.getElementById(`loser${meczID}Leg${numer}`).value = g1
-        document.getElementById(`loserPozostale${meczID}Leg${numer}`).value=document.getElementById(`pozostaleMecz${meczID}Leg${numer}P1`).value
-        document.getElementById(`loserTeammate${meczID}Leg${numer}`).value = g2
-        document.getElementById(`loserTeammatePozostale${meczID}Leg${numer}`).value=document.getElementById(`pozostaleMecz${meczID}Leg${numer}P2`).value
+      case currentG4:
+        document.getElementById(`winnerPozostale${meczID}Leg${numer}`).value = document.getElementById(`pozostaleMecz${meczID}Leg${numer}P4`).value || '0'
+        document.getElementById(`winnerTeammate${meczID}Leg${numer}`).value = currentG3
+        document.getElementById(`winnerTeammatePozostale${meczID}Leg${numer}`).value=document.getElementById(`pozostaleMecz${meczID}Leg${numer}P3`).value || '0'
+        document.getElementById(`loser${meczID}Leg${numer}`).value = currentG1
+        document.getElementById(`loserPozostale${meczID}Leg${numer}`).value=document.getElementById(`pozostaleMecz${meczID}Leg${numer}P1`).value || '0'
+        document.getElementById(`loserTeammate${meczID}Leg${numer}`).value = currentG2
+        document.getElementById(`loserTeammatePozostale${meczID}Leg${numer}`).value=document.getElementById(`pozostaleMecz${meczID}Leg${numer}P2`).value || '0'
         break;
     }
   }
@@ -1144,6 +1160,12 @@ function legDouble(meczID, numer) {
   document.getElementById(`pozostaleMecz${meczID}Leg${numer}P2`).addEventListener("change", updatePozostale)
   document.getElementById(`pozostaleMecz${meczID}Leg${numer}P3`).addEventListener("change", updatePozostale)
   document.getElementById(`pozostaleMecz${meczID}Leg${numer}P4`).addEventListener("change", updatePozostale)
+  
+  // Add listeners to player selects to update hidden fields when substitutions occur
+  if (selectZawodnik1) selectZawodnik1.addEventListener('change', () => { updateLotki(); updatePozostale(); });
+  if (selectZawodnik2) selectZawodnik2.addEventListener('change', () => { updateLotki(); updatePozostale(); });
+  if (selectZawodnik3) selectZawodnik3.addEventListener('change', () => { updateLotki(); updatePozostale(); });
+  if (selectZawodnik4) selectZawodnik4.addEventListener('change', () => { updateLotki(); updatePozostale(); });
 
   sumLegHost++
   document.getElementById(`winnerMecz${meczID}Leg${numer}`).addEventListener("change", (x) => {
@@ -1292,6 +1314,11 @@ const setupSubstitutionTracking = () => {
     if (!matchIdMatch) return;
     const changedMatchId = parseInt(matchIdMatch[1]);
 
+    // Track this substitution globally
+    if (!substitutedPlayers.has(oldValue)) {
+      substitutedPlayers.set(oldValue, changedMatchId);
+    }
+
     // Determine if this is a host or guest player based on team arrays
     const isHost = (skladGospodarz || []).includes(newValue);
     
@@ -1312,61 +1339,61 @@ const setupSubstitutionTracking = () => {
         const s4 = document.getElementById(`gracz4mecz${matchId}`);
         if (s1) allMatchSelects.push({ select: s1, matchId, isHost: true });
         if (s2) allMatchSelects.push({ select: s2, matchId, isHost: true });
-        if (s3) allMatchSelects.push({ select: s3, matchId, isHost: false });
-        if (s4) allMatchSelects.push({ select: s4, matchId, isHost: false });
-      }
-    }
-    
-    // Update all match selects from the same team in subsequent matches
-    allMatchSelects.forEach(({ select: matchSelect, matchId: targetMatchId, isHost: matchIsHost }) => {
-      // Only update selects from the same team
-      if (matchIsHost !== isHost) {
-      return;
-      }
-      
-      // If this select currently has the old player selected, switch to new player
-      if (matchSelect.value === oldValue) {
-      matchSelect.value = newValue;
-      matchSelect.setAttribute('data-previous-value', newValue);
-      
-      // Trigger change event to update dependent logic
-      matchSelect.dispatchEvent(new Event('change', { bubbles: true }));
-      }
-    });
-    
-    // Disable the substituted player in ALL subsequent match player selects (both teams)
-    for (let mId = changedMatchId + 1; mId <= 12; mId++) {
-      const selectIds = [];
-      if (mId <= 4 || mId >= 9) {
-      // Singles matches
-      selectIds.push(`gracz1mecz${mId}`, `gracz2mecz${mId}`);
-      } else {
-      // Doubles matches
-      selectIds.push(`gracz1mecz${mId}`, `gracz2mecz${mId}`, `gracz3mecz${mId}`, `gracz4mecz${mId}`);
-      }
-      
-      selectIds.forEach(selectId => {
-      const matchSelect = document.getElementById(selectId);
-      if (!matchSelect) return;
-      
-      // Disable the old (substituted) player option
-      const oldOption = Array.from(matchSelect.options).find(opt => opt.value === oldValue);
-      if (oldOption) {
-        oldOption.disabled = true;
-        
-        // If this select has the substituted player selected, switch to first available
-        if (matchSelect.value === oldValue) {
-        const firstEnabled = Array.from(matchSelect.options).find(o => !o.disabled && o.value);
-        if (firstEnabled) {
-          matchSelect.value = firstEnabled.value;
-          matchSelect.setAttribute('data-previous-value', firstEnabled.value);
-          matchSelect.dispatchEvent(new Event('change', { bubbles: true }));
-        }
-        }
-      }
-      });
-    }
-    
+        allMatchSelects.push({ select: s3, matchId, isHost: false });
+          if (s4) allMatchSelects.push({ select: s4, matchId, isHost: false });
+              }
+            }
+            
+          // Update all match selects from the same team in subsequent matches
+          allMatchSelects.forEach(({ select: matchSelect, matchId: targetMatchId, isHost: matchIsHost }) => {
+            // Only update selects from the same team
+            if (matchIsHost !== isHost) {
+              return;
+            }
+              
+            // If this select currently has the old player selected, switch to new player
+            if (matchSelect.value === oldValue) {
+              matchSelect.value = newValue;
+              matchSelect.setAttribute('data-previous-value', newValue);
+            }
+          });
+            
+          // Disable ALL substituted players in subsequent match player selects (both teams)
+          for (let mId = changedMatchId + 1; mId <= 12; mId++) {
+            const selectIds = [];
+            if (mId <= 4 || mId >= 9) {
+              // Singles matches
+              selectIds.push(`gracz1mecz${mId}`, `gracz2mecz${mId}`);
+            } else {
+              // Doubles matches
+              selectIds.push(`gracz1mecz${mId}`, `gracz2mecz${mId}`, `gracz3mecz${mId}`, `gracz4mecz${mId}`);
+            }
+            
+            selectIds.forEach(selectId => {
+              const matchSelect = document.getElementById(selectId);
+              if (!matchSelect) return;
+              
+              // Disable all previously substituted players
+              substitutedPlayers.forEach((substMatchId, substPlayer) => {
+                if (substMatchId < mId) {
+                  const opt = Array.from(matchSelect.options).find(o => o.value === substPlayer);
+                  if (opt) {
+                    opt.disabled = true;
+                    
+                    // If this select has the substituted player selected, switch to first available
+                    if (matchSelect.value === substPlayer) {
+                      const firstEnabled = Array.from(matchSelect.options).find(o => !o.disabled && o.value);
+                      if (firstEnabled) {
+                        matchSelect.value = firstEnabled.value;
+                        matchSelect.setAttribute('data-previous-value', firstEnabled.value);
+                        matchSelect.dispatchEvent(new Event('change', { bubbles: true }));
+                      }
+                    }
+                  }
+                }
+              });
+            });
+          }
     // Update winner options in leg selects for subsequent matches only
     for (let mId = changedMatchId + 1; mId <= 12; mId++) {
       for (let legNum = 1; legNum <= 3; legNum++) {
@@ -1449,6 +1476,9 @@ const setupSubstitutionTracking = () => {
     }
   }
 };
+
+// Track all substitutions globally (player -> matchId where they were substituted out)
+const substitutedPlayers = new Map();
 
 // Call this after matches are initialized
 document.getElementById('zatwierdzSklady').addEventListener('click', () => {
@@ -2066,68 +2096,56 @@ buildOptionsAll(document.getElementById(`zawodnikSkonczenie0`), zawodnicy, chose
     } 
     raport+=document.getElementById(`adnotacje`).value
     document.body.innerHTML=raport
+    // Process wyniki (best results)
+    const wynikElements = new Set();
     for (let index = 0; index < wyniki.length; index++) {
       if (zawodnicy.find((e) => e == wyniki[index].zawodnik)) {
-        let el = wyniki[index].zawodnik
-        if (wyniki.length==1) {
-          document.getElementById(`${el}`).innerHTML+=`Najwyższy wynik: ${wyniki[index].wynik}<br>`
-          continue
-        } 
-        else {
-          if (index==0) {
-          document.getElementById(`${el}`).innerHTML+=`Najwyższy wynik: ${wyniki[index].wynik}`
-          continue
-          }
-          else if (index>0 && index<wyniki.length-1) {
-            document.getElementById(`${el}`).innerHTML+=`, ${wyniki[index].wynik}`
-          }
-          else {
-            document.getElementById(`${el}`).innerHTML+=`, ${wyniki[index].wynik}<br>`
-          }
-        }
-    }}
+      let el = wyniki[index].zawodnik;
+      wynikElements.add(el);
+      if (!document.getElementById(`${el}`).innerHTML.includes('Najlepszy wynik:')) {
+        document.getElementById(`${el}`).innerHTML += `Najlepszy wynik: `;
+      }
+      document.getElementById(`${el}`).innerHTML += `${wyniki[index].wynik}, `;
+      }
+    }
+    // Add <br> after wyniki section for each player
+    wynikElements.forEach(el => {
+      document.getElementById(`${el}`).innerHTML += `<br>`;
+    });
+
+    // Process lotki (best darts)
+    const lotkiElements = new Set();
     for (let index = 0; index < lotki.length; index++) {
       if (zawodnicy.find((e) => e == lotki[index].zawodnik)) {
-        let el = lotki[index].zawodnik
-        if (lotki.length==1) {
-          document.getElementById(`${el}`).innerHTML+=`Najszybsza lotka: ${lotki[index].lotka}<br>`
-          continue
-        }
-        else {
-          if (index==0) {
-            document.getElementById(`${el}`).innerHTML+=`Najszybsza lotka: ${lotki[index].lotka}`
-            continue
-          }
-          else if (index>0 && index<lotki.length-1) {
-            document.getElementById(`${el}`).innerHTML+=`, ${lotki[index].lotka}`
-          }
-          else {
-            document.getElementById(`${el}`).innerHTML+=`, ${lotki[index].lotka}<br>`
-          }
-        }
-          
-    }}
+      let el = lotki[index].zawodnik;
+      lotkiElements.add(el);
+      if (!document.getElementById(`${el}`).innerHTML.includes('Najlepsza lotka:')) {
+        document.getElementById(`${el}`).innerHTML += `Najlepsza lotka: `;
+      }
+      document.getElementById(`${el}`).innerHTML += `${lotki[index].lotka}, `;
+      }
+    }
+    // Add <br> after lotki section for each player
+    lotkiElements.forEach(el => {
+      document.getElementById(`${el}`).innerHTML += `<br>`;
+    });
+
+    // Process skonczenia (high finishes)
+    const skonczeniaElements = new Set();
     for (let index = 0; index < skonczenia.length; index++) {
       if (zawodnicy.find((e) => e == skonczenia[index].zawodnik)) {
-        let el = skonczenia[index].zawodnik
-        if (skonczenia.length==1) {
-          document.getElementById(`${el}`).innerHTML+=`Najwyższe skończenie: ${skonczenia[index].skonczenie}<br>`
-          continue
-        }
-        else {
-          if (index==0) {
-          document.getElementById(`${el}`).innerHTML+=`Najwyższe skończenie: ${skonczenia[index].skonczenie}`
-          continue
-          }
-          else if (index>0 && index<skonczenia.length-1) {
-            document.getElementById(`${el}`).innerHTML+=`, ${skonczenia[index].skonczenie}`
-          }
-          else {
-            document.getElementById(`${el}`).innerHTML+=`, ${skonczenia[index].skonczenie}<br>`
-          }
-        }
-        
-    }}
+      let el = skonczenia[index].zawodnik;
+      skonczeniaElements.add(el);
+      if (!document.getElementById(`${el}`).innerHTML.includes('Najwyższe skończenie:')) {
+        document.getElementById(`${el}`).innerHTML += `Najwyższe skończenie: `;
+      }
+      document.getElementById(`${el}`).innerHTML += `${skonczenia[index].skonczenie}, `;
+      }
+    }
+    // Add <br> after skonczenia section for each player
+    skonczeniaElements.forEach(el => {
+      document.getElementById(`${el}`).innerHTML += `<br>`;
+    });
     for (let index = 0; index < zawodnicyWyniki.length; index++) {
       if (document.getElementById(`wonTotal${zawodnicyWyniki[index].name}`)) document.getElementById(`wonTotal${zawodnicyWyniki[index].name}`).innerHTML=zawodnicyWyniki[index].wonSingle+zawodnicyWyniki[index].wonDouble
       if (document.getElementById(`lostTotal${zawodnicyWyniki[index].name}`)) document.getElementById(`lostTotal${zawodnicyWyniki[index].name}`).innerHTML=zawodnicyWyniki[index].lostSingle+zawodnicyWyniki[index].lostDouble
@@ -2137,18 +2155,23 @@ buildOptionsAll(document.getElementById(`zawodnikSkonczenie0`), zawodnicy, chose
       if (document.getElementById(`lostDouble${zawodnicyWyniki[index].name}`)) document.getElementById(`lostDouble${zawodnicyWyniki[index].name}`).innerHTML=zawodnicyWyniki[index].lostDouble
       if (document.getElementById(`matchesPlayed${zawodnicyWyniki[index].name}`)) document.getElementById(`matchesPlayed${zawodnicyWyniki[index].name}`).innerHTML=zawodnicyWyniki[index].matchesPlayed
       if (document.getElementById(`${zawodnicyWyniki[index].name}`)) {
+
         let averageSingle = (zawodnicyWyniki[index].totalPointsSingle / zawodnicyWyniki[index].lotkiThrownSingle) * 3
+        if (isNaN(averageSingle)) averageSingle = 0
         document.getElementById(zawodnicyWyniki[index].name).innerHTML+=`Średnia singel: ${averageSingle.toFixed(2)}<br>`
-        console.log(zawodnicyWyniki[index].totalPointsDouble)
-        console.log(zawodnicyWyniki[index].lotkiThrownDouble)
+
         let averageDouble = (zawodnicyWyniki[index].totalPointsDouble / zawodnicyWyniki[index].lotkiThrownDouble) * 3
+        if (isNaN(averageDouble)) averageDouble = 0
         document.getElementById(zawodnicyWyniki[index].name).innerHTML+=`Średnia debel: ${averageDouble.toFixed(2)}<br>`
+
         let totalLotki = zawodnicyWyniki[index].lotkiThrownSingle + zawodnicyWyniki[index].lotkiThrownDouble
         let totalPoints = zawodnicyWyniki[index].totalPointsSingle + zawodnicyWyniki[index].totalPointsDouble
         let totalaverage = (totalPoints / totalLotki) * 3
+        if (isNaN(totalaverage)) totalaverage = 0
         document.getElementById(zawodnicyWyniki[index].name).innerHTML+=`Średnia ogółem: ${totalaverage.toFixed(2)}<br>`
       }
     }
+    console.log(zawodnicyWyniki)
 });
 }
 );

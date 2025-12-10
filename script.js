@@ -1295,7 +1295,7 @@ const setupSubstitutionTracking = () => {
     // Determine if this is a host or guest player based on team arrays
     const isHost = (skladGospodarz || []).includes(newValue);
     
-    // Get all match player selects for subsequent matches
+    // Get all match player selects for subsequent matches only
     const allMatchSelects = [];
     for (let matchId = changedMatchId + 1; matchId <= 12; matchId++) {
       if (matchId <= 4 || matchId >= 9) {
@@ -1317,29 +1317,122 @@ const setupSubstitutionTracking = () => {
       }
     }
     
-    // Update all subsequent match selects that had the old player selected
-    allMatchSelects.forEach(({ select: matchSelect, isHost: matchIsHost }) => {
+    // Update all match selects from the same team in subsequent matches
+    allMatchSelects.forEach(({ select: matchSelect, matchId: targetMatchId, isHost: matchIsHost }) => {
       // Only update selects from the same team
       if (matchIsHost !== isHost) {
-        return;
+      return;
       }
       
-      // Check if this select currently has the old player selected
+      // If this select currently has the old player selected, switch to new player
       if (matchSelect.value === oldValue) {
-        // Try to find the new player in the options
-        const newOption = Array.from(matchSelect.options).find(opt => opt.value === newValue);
-        
-        if (newOption && !newOption.disabled) {
-          // Update to the new substituted player
-          matchSelect.value = newValue;
-          matchSelect.setAttribute('data-previous-value', newValue);
-          
-          // Trigger change event to update any dependent logic
-          matchSelect.dispatchEvent(new Event('change', { bubbles: true }));
-        }
+      matchSelect.value = newValue;
+      matchSelect.setAttribute('data-previous-value', newValue);
+      
+      // Trigger change event to update dependent logic
+      matchSelect.dispatchEvent(new Event('change', { bubbles: true }));
       }
     });
-  });
+    
+    // Disable the substituted player in ALL subsequent match player selects (both teams)
+    for (let mId = changedMatchId + 1; mId <= 12; mId++) {
+      const selectIds = [];
+      if (mId <= 4 || mId >= 9) {
+      // Singles matches
+      selectIds.push(`gracz1mecz${mId}`, `gracz2mecz${mId}`);
+      } else {
+      // Doubles matches
+      selectIds.push(`gracz1mecz${mId}`, `gracz2mecz${mId}`, `gracz3mecz${mId}`, `gracz4mecz${mId}`);
+      }
+      
+      selectIds.forEach(selectId => {
+      const matchSelect = document.getElementById(selectId);
+      if (!matchSelect) return;
+      
+      // Disable the old (substituted) player option
+      const oldOption = Array.from(matchSelect.options).find(opt => opt.value === oldValue);
+      if (oldOption) {
+        oldOption.disabled = true;
+        
+        // If this select has the substituted player selected, switch to first available
+        if (matchSelect.value === oldValue) {
+        const firstEnabled = Array.from(matchSelect.options).find(o => !o.disabled && o.value);
+        if (firstEnabled) {
+          matchSelect.value = firstEnabled.value;
+          matchSelect.setAttribute('data-previous-value', firstEnabled.value);
+          matchSelect.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+        }
+      }
+      });
+    }
+    
+    // Update winner options in leg selects for subsequent matches only
+    for (let mId = changedMatchId + 1; mId <= 12; mId++) {
+      for (let legNum = 1; legNum <= 3; legNum++) {
+      const winnerSelect = document.getElementById(`winnerMecz${mId}Leg${legNum}`);
+      if (!winnerSelect) continue;
+      
+      const currentWinner = winnerSelect.value;
+      
+      // Get current match players
+      let matchPlayers = [];
+      if (mId <= 4 || mId >= 9) {
+        // Singles
+        const p1 = document.getElementById(`gracz1mecz${mId}`);
+        const p2 = document.getElementById(`gracz2mecz${mId}`);
+        if (p1) matchPlayers.push(p1.value);
+        if (p2) matchPlayers.push(p2.value);
+      } else {
+        // Doubles
+        const p1 = document.getElementById(`gracz1mecz${mId}`);
+        const p2 = document.getElementById(`gracz2mecz${mId}`);
+        const p3 = document.getElementById(`gracz3mecz${mId}`);
+        const p4 = document.getElementById(`gracz4mecz${mId}`);
+        if (p1) matchPlayers.push(p1.value);
+        if (p2) matchPlayers.push(p2.value);
+        if (p3) matchPlayers.push(p3.value);
+        if (p4) matchPlayers.push(p4.value);
+      }
+      
+      matchPlayers = matchPlayers.filter(Boolean);
+      
+      // Rebuild winner options
+      winnerSelect.innerHTML = '';
+      matchPlayers.forEach(player => {
+        const opt = document.createElement('option');
+        opt.value = player;
+        opt.textContent = player;
+        
+        // Disable if player not currently chosen in team selects
+        const hostChosen = getSelectsForSide('host').map(s => s.value).filter(Boolean);
+        const guestChosen = getSelectsForSide('guest').map(s => s.value).filter(Boolean);
+        
+        if (skladGospodarz && skladGospodarz.includes(player)) {
+        opt.disabled = !hostChosen.includes(player);
+        } else if (skladGosc && skladGosc.includes(player)) {
+        opt.disabled = !guestChosen.includes(player);
+        }
+        
+        winnerSelect.appendChild(opt);
+      });
+      
+      // Restore previous selection if still valid, otherwise pick first enabled
+      if (currentWinner && matchPlayers.includes(currentWinner)) {
+        const opt = Array.from(winnerSelect.options).find(o => o.value === currentWinner);
+        if (opt && !opt.disabled) {
+        winnerSelect.value = currentWinner;
+        } else {
+        const firstEnabled = Array.from(winnerSelect.options).find(o => !o.disabled);
+        if (firstEnabled) winnerSelect.value = firstEnabled.value;
+        }
+      } else {
+        const firstEnabled = Array.from(winnerSelect.options).find(o => !o.disabled);
+        if (firstEnabled) winnerSelect.value = firstEnabled.value;
+      }
+      }
+    }
+    });
 
   // Initialize data-previous-value for all match selects
   for (let matchId = 1; matchId <= 12; matchId++) {

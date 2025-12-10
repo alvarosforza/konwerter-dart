@@ -1,5 +1,6 @@
 //DISCLAIMER: jeśli ktokolwiek będzie tu zaglądał proszę wyjebać nazewnictwo zmiennych do kosza bo sam nie wiem co jest czym
-const ligi = JSON.parse(`[{"liga": "ekstraklasa",
+const ligi = JSON.parse(
+`[{"liga": "ekstraklasa",
 "druzyny":
 [{"nazwa": "sernik", "kapitan":"A", "zawodnicy":["A","B","C","D","A2","B2","C2","D2"], "lokal":"lodówka", "adres":"kuchnia", "sponsorzy":""},
 {"nazwa": "roztocza" , "kapitan":"E", "zawodnicy":["E","F","G","H","E2","F2","G2","H2"], "lokal":"dywan", "adres":"podłoga", "sponsorzy":""}, 
@@ -11,7 +12,8 @@ const ligi = JSON.parse(`[{"liga": "ekstraklasa",
 [{"nazwa": "rodzynki", "kapitan":"A", "zawodnicy":["a","b","c","d","a2","b2","c2","d2"], "lokal":"na pewno nie w serniku", "adres":"kuchnia", "sponsorzy":""},
 {"nazwa": "if" , "kapitan":"E", "zawodnicy":["e","f","g","h","e2","f2","g2","h2"], "lokal":"if", "adres":"script.js", "sponsorzy":""}, 
 {"nazwa": "autor" , "kapitan":"I", "zawodnicy":["i","j","k","l","i2","j2","k2","l2"], "lokal":"mirage", "adres":"cs2", "sponsorzy":""},
-{"nazwa": "lotka" , "kapitan":"M", "zawodnicy":["m","n","o","p","m2","n2","o2","p2"], "lokal":"tarcza", "adres":"lokal", "sponsorzy":""}]}]`)
+{"nazwa": "lotka" , "kapitan":"M", "zawodnicy":["m","n","o","p","m2","n2","o2","p2"], "lokal":"tarcza", "adres":"lokal", "sponsorzy":""}]}]`
+)
 
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById("formKonwerter");
@@ -1157,50 +1159,50 @@ function legDouble(meczID, numer) {
         p1.setAttribute("value", "0")
         p2.removeAttribute("disabled")
         p2.setAttribute("required", "")
-        p2.setAttribute("value", "501")
+        p2.setAttribute("value", "")
         p3.removeAttribute("disabled")
         p3.setAttribute("required", "")
-        p3.setAttribute("value", "501")
+        p3.setAttribute("value", "")
         p4.removeAttribute("disabled")
         p4.setAttribute("required", "")
-        p4.setAttribute("value", "501")
+        p4.setAttribute("value", "")
         break;
       case g2:
         p1.removeAttribute("disabled")
         p1.setAttribute("required", "")
-        p1.setAttribute("value", "501")
+        p1.setAttribute("value", "")
         p2.setAttribute("disabled", "")
         p2.setAttribute("value", "0")
         p3.removeAttribute("disabled")
         p3.setAttribute("required", "")
-        p3.setAttribute("value", "501")
+        p3.setAttribute("value", "")
         p4.removeAttribute("disabled")
         p4.setAttribute("required", "")
-        p4.setAttribute("value", "501")
+        p4.setAttribute("value", "")
         break;
       case g3:
         p1.removeAttribute("disabled")
         p1.setAttribute("required", "")
-        p1.setAttribute("value", "501")
+        p1.setAttribute("value", "")
         p2.removeAttribute("disabled")
         p2.setAttribute("required", "")
-        p2.setAttribute("value", "501")
+        p2.setAttribute("value", "")
         p3.setAttribute("disabled", "")
         p3.setAttribute("value", "0")
         p4.removeAttribute("disabled")
         p4.setAttribute("required", "")
-        p4.setAttribute("value", "501")
+        p4.setAttribute("value", "")
         break;
       case g4:
         p1.removeAttribute("disabled")
         p1.setAttribute("required", "")
-        p1.setAttribute("value", "501")
+        p1.setAttribute("value", "")
         p2.removeAttribute("disabled")
         p2.setAttribute("required", "")
-        p2.setAttribute("value", "501")
+        p2.setAttribute("value", "")
         p3.removeAttribute("disabled")
         p3.setAttribute("required", "")
-        p3.setAttribute("value", "501")
+        p3.setAttribute("value", "")
         p4.setAttribute("disabled", "")
         p4.setAttribute("value", "0")
         break;
@@ -1231,8 +1233,6 @@ document.getElementById(`zatwierdzSklady`).addEventListener("click", (x) => {
   document.getElementById(`liga`).setAttribute("disabled", "")
   document.getElementById(`gospodarz`).setAttribute("disabled", "")
   document.getElementById(`gosc`).setAttribute("disabled", "")
-  document.getElementById(`dodajHostRezerwowy`).disabled=true;
-  document.getElementById(`dodajGoscRezerwowy`).disabled=true;
   for (let index = 1; index <= 4; index++) {
     document.getElementById(`h${index}`).setAttribute("disabled", "")
     document.getElementById(`g${index}`).setAttribute("disabled", "")

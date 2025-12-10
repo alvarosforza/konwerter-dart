@@ -492,7 +492,7 @@ function leg(meczID, numer) {
     legDiv.innerHTML+=`Którą lotką wygrano lega?
       <input type="number" id="lotkaMecz${meczID}Leg${numer}" class="form-control" min="9" step="1" required><br>
       Ile lotek rzucił przegrany?
-      <input type="number" id="lotkaPrzegranyMecz${meczID}Leg${numer}" class="form-control" min="1" step="1" required><br>
+      <input type="number" id="lotkaPrzegranyMecz${meczID}Leg${numer}" class="form-control" min="9" step="1" required><br>
       Ile pozostało punktów przegranemu?
       <input type="number" id="pozostaleMecz${meczID}Leg${numer}" class="form-control" min="2" max="501" step="1" required>
       <br>`
@@ -891,23 +891,23 @@ function legDouble(meczID, numer) {
     <div id="playerInputsMecz${meczID}Leg${numer}">
       <div class="player-block" data-idx="1">
         <label>${g1}</label>
-        rzucone lotki: <input type="number"  min="1" id="lotkaMecz${meczID}Leg${numer}P1" class="form-control player-lotka" required/>
-        Pozostało punktów: <input type="number" min="0" max="501" id="pozostaleMecz${meczID}Leg${numer}P1" class="form-control player-pozostale" disabled/>
+        rzucone lotki: <input type="number"  min="9" id="lotkaMecz${meczID}Leg${numer}P1" class="form-control player-lotka" required/>
+        Pozostało punktów: <input type="number" min="2" max="501" id="pozostaleMecz${meczID}Leg${numer}P1" class="form-control player-pozostale" disabled/>
       </div>
       <div class="player-block" data-idx="2">
         <label>${g2}</label>
-        rzucone lotki: <input type="number"  min="1" id="lotkaMecz${meczID}Leg${numer}P2" class="form-control player-lotka" required/>
-        Pozostało punktów: <input type="number"  min="0" max="501" id="pozostaleMecz${meczID}Leg${numer}P2" class="form-control player-pozostale" required/>
+        rzucone lotki: <input type="number"  min="9" id="lotkaMecz${meczID}Leg${numer}P2" class="form-control player-lotka" required/>
+        Pozostało punktów: <input type="number"  min="2" max="501" id="pozostaleMecz${meczID}Leg${numer}P2" class="form-control player-pozostale" required/>
       </div>
       <div class="player-block" data-idx="3">
         <label>${g3}</label>
-        rzucone lotki: <input type="number"  min="1" id="lotkaMecz${meczID}Leg${numer}P3" class="form-control player-lotka" required/>
-        Pozostało punktów: <input type="number"  min="0" max="501" id="pozostaleMecz${meczID}Leg${numer}P3" class="form-control player-pozostale" required/>
+        rzucone lotki: <input type="number"  min="9" id="lotkaMecz${meczID}Leg${numer}P3" class="form-control player-lotka" required/>
+        Pozostało punktów: <input type="number"  min="2" max="501" id="pozostaleMecz${meczID}Leg${numer}P3" class="form-control player-pozostale" required/>
       </div>
       <div class="player-block" data-idx="4">
         <label>${g4}</label>
-        rzucone lotki: <input type="number"  min="1" id="lotkaMecz${meczID}Leg${numer}P4" class="form-control player-lotka" required/>
-        Pozostało punktów: <input type="number"  min="0" max="501" id="pozostaleMecz${meczID}Leg${numer}P4" class="form-control player-pozostale" required/>
+        rzucone lotki: <input type="number"  min="9" id="lotkaMecz${meczID}Leg${numer}P4" class="form-control player-lotka" required/>
+        Pozostało punktów: <input type="number"  min="2" max="501" id="pozostaleMecz${meczID}Leg${numer}P4" class="form-control player-pozostale" required/>
       </div>
     </div>
     <input type="hidden" id="winnerLotka${meczID}Leg${numer}" >
@@ -1976,17 +1976,64 @@ buildOptionsAll(document.getElementById(`zawodnikSkonczenie0`), zawodnicy, chose
     for (let index = 0; index < wyniki.length; index++) {
       if (zawodnicy.find((e) => e == wyniki[index].zawodnik)) {
         let el = wyniki[index].zawodnik
-        document.getElementById(`${el}`).innerHTML+=`Najwyższe wyniki: ${wyniki[index].wynik}<br>`
+        if (wyniki.length==1) {
+          document.getElementById(`${el}`).innerHTML+=`Najwyższy wynik: ${wyniki[index].wynik}<br>`
+          continue
+        } 
+        else {
+          if (index==0) {
+          document.getElementById(`${el}`).innerHTML+=`Najwyższy wynik: ${wyniki[index].wynik}`
+          continue
+          }
+          else if (index>0 && index<wyniki.length-1) {
+            document.getElementById(`${el}`).innerHTML+=`, ${wyniki[index].wynik}`
+          }
+          else {
+            document.getElementById(`${el}`).innerHTML+=`, ${wyniki[index].wynik}<br>`
+          }
+        }
     }}
     for (let index = 0; index < lotki.length; index++) {
       if (zawodnicy.find((e) => e == lotki[index].zawodnik)) {
         let el = lotki[index].zawodnik
-        document.getElementById(`${el}`).innerHTML+=`Najszybsza lotka: ${lotki[index].lotka}<br>`
+        if (lotki.length==1) {
+          document.getElementById(`${el}`).innerHTML+=`Najszybsza lotka: ${lotki[index].lotka}<br>`
+          continue
+        }
+        else {
+          if (index==0) {
+            document.getElementById(`${el}`).innerHTML+=`Najszybsza lotka: ${lotki[index].lotka}`
+            continue
+          }
+          else if (index>0 && index<lotki.length-1) {
+            document.getElementById(`${el}`).innerHTML+=`, ${lotki[index].lotka}`
+          }
+          else {
+            document.getElementById(`${el}`).innerHTML+=`, ${lotki[index].lotka}<br>`
+          }
+        }
+          
     }}
     for (let index = 0; index < skonczenia.length; index++) {
       if (zawodnicy.find((e) => e == skonczenia[index].zawodnik)) {
         let el = skonczenia[index].zawodnik
-        document.getElementById(`${el}`).innerHTML+=`Najwyższe skończenia: ${skonczenia[index].skonczenie}<br>`
+        if (skonczenia.length==1) {
+          document.getElementById(`${el}`).innerHTML+=`Najwyższe skończenie: ${skonczenia[index].skonczenie}<br>`
+          continue
+        }
+        else {
+          if (index==0) {
+          document.getElementById(`${el}`).innerHTML+=`Najwyższe skończenie: ${skonczenia[index].skonczenie}`
+          continue
+          }
+          else if (index>0 && index<skonczenia.length-1) {
+            document.getElementById(`${el}`).innerHTML+=`, ${skonczenia[index].skonczenie}`
+          }
+          else {
+            document.getElementById(`${el}`).innerHTML+=`, ${skonczenia[index].skonczenie}<br>`
+          }
+        }
+        
     }}
     for (let index = 0; index < zawodnicyWyniki.length; index++) {
       if (document.getElementById(`wonTotal${zawodnicyWyniki[index].name}`)) document.getElementById(`wonTotal${zawodnicyWyniki[index].name}`).innerHTML=zawodnicyWyniki[index].wonSingle+zawodnicyWyniki[index].wonDouble
@@ -1997,18 +2044,18 @@ buildOptionsAll(document.getElementById(`zawodnikSkonczenie0`), zawodnicy, chose
       if (document.getElementById(`lostDouble${zawodnicyWyniki[index].name}`)) document.getElementById(`lostDouble${zawodnicyWyniki[index].name}`).innerHTML=zawodnicyWyniki[index].lostDouble
       if (document.getElementById(`matchesPlayed${zawodnicyWyniki[index].name}`)) document.getElementById(`matchesPlayed${zawodnicyWyniki[index].name}`).innerHTML=zawodnicyWyniki[index].matchesPlayed
       if (document.getElementById(`${zawodnicyWyniki[index].name}`)) {
-        let averageSingle = (zawodnicyWyniki[index].totalPointsSingle / zawodnicyWyniki[index].lotkiThrownSingle)
+        let averageSingle = (zawodnicyWyniki[index].totalPointsSingle / zawodnicyWyniki[index].lotkiThrownSingle) * 3
         document.getElementById(zawodnicyWyniki[index].name).innerHTML+=`Średnia singel: ${averageSingle.toFixed(2)}<br>`
         console.log(zawodnicyWyniki[index].totalPointsDouble)
         console.log(zawodnicyWyniki[index].lotkiThrownDouble)
-        let averageDouble = (zawodnicyWyniki[index].totalPointsDouble / zawodnicyWyniki[index].lotkiThrownDouble)
+        let averageDouble = (zawodnicyWyniki[index].totalPointsDouble / zawodnicyWyniki[index].lotkiThrownDouble) * 3
         document.getElementById(zawodnicyWyniki[index].name).innerHTML+=`Średnia debel: ${averageDouble.toFixed(2)}<br>`
         let totalLotki = zawodnicyWyniki[index].lotkiThrownSingle + zawodnicyWyniki[index].lotkiThrownDouble
         let totalPoints = zawodnicyWyniki[index].totalPointsSingle + zawodnicyWyniki[index].totalPointsDouble
-        let totalaverage = (totalPoints / totalLotki)
+        let totalaverage = (totalPoints / totalLotki) * 3
         document.getElementById(zawodnicyWyniki[index].name).innerHTML+=`Średnia ogółem: ${totalaverage.toFixed(2)}<br>`
       }
     }
-  });
+});
 }
 );

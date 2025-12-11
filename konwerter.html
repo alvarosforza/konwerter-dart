@@ -26,30 +26,7 @@
 	<link rel="manifest" href="https://dart.org.pl/assets/img/manifest.json">
 
 	<link href="bootstrap.min.css" rel="stylesheet">
-	
 	<script src="jquery-3.6.0.min.js"></script>
-    <!-- <style>
-      .bd-placeholder-img {
-        font-size: 1.125rem;
-        text-anchor: middle;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        user-select: none;
-      }
-
-      @media (min-width: 768px) {
-        .bd-placeholder-img-lg {
-          font-size: 3.5rem;
-        }
-      }
-    </style>
-	<script>
-		$(document).ready(function(){
-			$('.wynik').mask('0:0');
-			$('.date').datepicker();
-		});
-	</script> -->
-
 </head>
 <body class="bg-light">
 	<script	src="script.js"></script>
@@ -101,12 +78,11 @@
             </div>
 			<div class="col-12">Lokalizacja:
 				<input type="text" class="form-control" value="lodówka" id="lokalizacja" name="lokalizacja" disabled>
-			  
 			</div>
 			<p id="zawodnicy"> 
 				<h4 class="mb-3  mt-5 btn btn-success text-white">Składy:</h4>
 				<div class="col-6" id="hosty">
-					Hosty:
+					<p>Gospodarze:</p>
 					<select type="text" class="form-control" id="h1" name="h1" required="">
 						<option value="Host 1" selected>h1</option>
 					</select>&nbsp;
@@ -119,6 +95,7 @@
 					<select type="text" class="form-control" id="h4" name="h4" required="">
 						<option value="Host 4" selected>h4</option>
 					</select>&nbsp;
+					<p>Rezerwowi gospodarze:</p>
 					<select type="text" class="form-control" id="hr1" name="hr1">
 						<option value="Host Rezerwowy 1" selected>hr1</option>
 					</select>&nbsp;
@@ -133,7 +110,7 @@
 					</select>&nbsp;
 				</div>
 				<div class="col-6" id="goscie">
-					Goście:
+					<p>Goście:</p>
 					<select type="text" class="form-control" id="g1" name="g1" required="">
 						<option value="Guest 1" selected>g1</option>
 					</select>&nbsp;
@@ -146,6 +123,7 @@
 					<select type="text" class="form-control" id="g4" name="g4" required="">
 						<option value="Guest 4" selected>g4</option>
 					</select>&nbsp;
+					<p>Rezerwowi goście:</p>
 					<select type="text" class="form-control" id="gr1" name="gr1">
 						<option value="Guest Rezerwowy 1" selected>gr1</option>
 					</select>&nbsp;
@@ -161,7 +139,7 @@
 				</div>
 			</p>
 			<div class="col-12">
-				<input type="button" value="Zatwierdź Składy" class="w-100 btn btn-danger btn-lg" id="zatwierdzSklady">
+				<input type="button" value="Zatwierdź dane meczu i składy" class="w-100 btn btn-danger btn-lg" id="zatwierdzSklady">
 			</div>
     </div>
 

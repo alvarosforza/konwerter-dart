@@ -215,7 +215,7 @@ document.addEventListener('DOMContentLoaded', () => {
   observeSubs(document.getElementById('hosty'), 'host');
   observeSubs(document.getElementById('goscie'), 'guest');
   
-function single(meczID) {
+function singleSimple(meczID) {
   const mecz = document.createElement("div");
   mecz.id = `mecz${meczID}`;
   mecz.className = "row";
@@ -326,8 +326,8 @@ function single(meczID) {
   });
 
   // create legs and keep their initial return values
-  let leg1Val = leg(meczID, 1);
-  let leg2Val = leg(meczID, 2);
+  let leg1Val = legSimple(meczID, 1);
+  let leg2Val = legSimple(meczID, 2);
   let leg3Val;
 
   // helper to read current values from DOM for a given leg number
@@ -389,7 +389,7 @@ function single(meczID) {
 
     if (w1 !== w2) {
       if (!document.getElementById(`mecz${meczID}leg3`)) {
-        leg3Val = leg(meczID, 3);
+        leg3Val = legSimple(meczID, 3);
       }
     } else {
       const leg3 = document.getElementById(`mecz${meczID}leg3`);
@@ -436,7 +436,7 @@ function single(meczID) {
   };
 }
 
-function leg(meczID, numer) {
+function legSimple(meczID, numer) {
   let legDiv = document.createElement("div")
   legDiv.id=`mecz${meczID}leg${numer}`
   let legName = document.createElement("div")
@@ -514,7 +514,7 @@ function leg(meczID, numer) {
   })
 }
 
-function double(meczID) {
+function doubleSimple(meczID) {
   const mecz = document.createElement("div");
   mecz.id = `mecz${meczID}`;
   mecz.className = "row";
@@ -689,8 +689,8 @@ function double(meczID) {
       updateMatchPlayerOptions();
     }
   });
-  let leg1Val = legDouble(meczID, 1);
-  let leg2Val = legDouble(meczID, 2);
+  let leg1Val = legDoubleSimple(meczID, 1);
+  let leg2Val = legDoubleSimple(meczID, 2);
   let leg3Val;
 
   const getLegValues = (n) => {
@@ -777,7 +777,7 @@ function double(meczID) {
 
     if (leg1IsHost !== leg2IsHost) {
       if (!document.getElementById(`mecz${meczID}leg3`)) {
-        leg3Val = legDouble(meczID, 3);
+        leg3Val = legDoubleSimple(meczID, 3);
       }
     } else {
       const leg3 = document.getElementById(`mecz${meczID}leg3`);
@@ -822,7 +822,7 @@ function double(meczID) {
   };
 }
 
-function legDouble(meczID, numer) {
+function legDoubleSimple(meczID, numer) {
   let legDiv = document.createElement("div")
   legDiv.id = `mecz${meczID}leg${numer}`
   let legName = document.createElement("div")
@@ -1008,20 +1008,20 @@ document.getElementById(`zatwierdzSklady`).addEventListener("click", (x) => {
   }
   
   // Initialize match functions after confirmation
-  single(1);
-  single(2);
-  single(3);
-  single(4);
+  singleSimple(1);
+  singleSimple(2);
+  singleSimple(3);
+  singleSimple(4);
 
-  double(5);
-  double(6);
-  double(7);
-  double(8);
+  doubleSimple(5);
+  doubleSimple(6);
+  doubleSimple(7);
+  doubleSimple(8);
 
-  single(9);
-  single(10);
-  single(11);
-  single(12);
+  singleSimple(9);
+  singleSimple(10);
+  singleSimple(11);
+  singleSimple(12);
 })
 
 // Track player substitutions and update subsequent matches

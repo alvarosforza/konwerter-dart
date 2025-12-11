@@ -61,21 +61,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // function to populate team selects based on current league
     const populateTeamSelects = () => {
-    gospodarz.innerHTML = '';
-    gosc.innerHTML = '';
-    for (let index = 0; index < ligi[ligaVal].druzyny.length; index++) {
-      gospodarz.innerHTML += `<option value="${ligi[ligaVal].druzyny[index].nazwa}">${ligi[ligaVal].druzyny[index].nazwa}</option>`;
-      gosc.innerHTML += `<option value="${ligi[ligaVal].druzyny[index].nazwa}">${ligi[ligaVal].druzyny[index].nazwa}</option>`;
-    }
-    setOptionValues(gospodarz);
-    setOptionValues(gosc);
-    
-    // Sync selects to disable same team selection
-    syncSelects(gospodarz, gosc);
-    syncSelects(gosc, gospodarz);
-    
-    // Update location after populating teams
-    lokalizacja.value = (ligi[ligaVal].druzyny.find(d => d.nazwa === gospodarz.value) || {}).lokal || '';
+      gospodarz.innerHTML = '';
+      gosc.innerHTML = '';
+      for (let index = 0; index < ligi[ligaVal].druzyny.length; index++) {
+        gospodarz.innerHTML += `<option value="${ligi[ligaVal].druzyny[index].nazwa}">${ligi[ligaVal].druzyny[index].nazwa}</option>`;
+        gosc.innerHTML += `<option value="${ligi[ligaVal].druzyny[index].nazwa}">${ligi[ligaVal].druzyny[index].nazwa}</option>`;
+      }
+      setOptionValues(gospodarz);
+      setOptionValues(gosc);
+      
+      // Sync selects to disable same team selection
+      syncSelects(gospodarz, gosc);
+      syncSelects(gosc, gospodarz);
+      
+      // Update location after populating teams
+      const team = ligi[ligaVal].druzyny.find(d => d.nazwa === gospodarz.value) || {};
+      lokalizacja.value = (team.lokal || '') + ' – ' + (team.adres || '');
     };
 
     // Initial population
